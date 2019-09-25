@@ -1,17 +1,12 @@
 #include <iostream>
-#include <vector>
-#include <map>
-#include "min_heap.h"
-#include "b_tree.h"
 #include "b_tree_test.cpp"
-#include <string>
-#include <iterator>
-#include <queue>
-
+#include "find_elements_equelse_to_sum_test.cpp"
+#include "top_k_frequent_word_test.cpp"
 
 int main() {
   testBTree();
+  testSolutionOfSum();
+  testTopKFrequentWords();
 
-  std::cout << "Hello, World!" << std::endl;
   return 0;
 }

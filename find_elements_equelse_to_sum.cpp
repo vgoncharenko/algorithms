@@ -20,14 +20,3 @@ vector<int> SolutionOfSum::twoSum(vector<int> &nums, int target) {
 
   return vector<int>{0};
 }
-
-void testSolutionOfSum ()
-{
-  std::vector<int> vecOfNums = { 33, 45, 54, 1, 3, 7, 8, 22, 43, 19 };
-  int target = 9;
-  auto * solution = new SolutionOfSum();
-  std::vector<int> result = solution->twoSum(vecOfNums, target);
-  for (int i : result)
-    std::cout << ' ' << i;
-  std::cout << '\n';
-}

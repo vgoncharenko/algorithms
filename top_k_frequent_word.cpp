@@ -37,11 +37,3 @@ vector<string> TopKFrequentWords::topKFrequent(std::vector<string> &words, int k
 
   return result;
 }
-
-void testTopKFrequentWords() {
-  vector<string> input = {"i", "love", "leetcode", "i", "love", "coding", "love", "coding", "coding", "coding"};
-  auto *solution = new TopKFrequentWords();
-  vector<string> result = solution->topKFrequent(input, 2);
-  for (string item : result)
-    std::cout << ' ' << item;
-}

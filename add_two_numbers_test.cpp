@@ -4,15 +4,14 @@
 
 #include "add_two_numbers.h"
 
-void testAddTwoNumbers()
-{
+void testAddTwoNumbers() {
   // ex1
-  vector <int> input1 = {2, 4, 3};
-  vector <int> input2 = {5, 6, 4};
-  vector <int> expected = {7, 0, 8};
+  vector<int> input1 = {2, 4, 3};
+  vector<int> input2 = {5, 6, 4};
+  vector<int> expected = {7, 0, 8};
 
   auto *sumator = new AddTwoNumbers();
-  vector <int> output = sumator->sum(input1, input2);
+  vector<int> output = sumator->sum(input1, input2);
 
   for (int i = 0; i < output.size(); i++)
     if (expected[i] != output[i])
@@ -39,4 +38,31 @@ void testAddTwoNumbers()
   for (int i = 0; i < output.size(); i++)
     if (expected[i] != output[i])
       cout << "FAIL: testAddTwoNumbers: \nexpected: " << expected[i] << "\nactual: " << output[i] << endl;
+}
+
+void testAddTwoNumbers2() {
+  // ex1
+  auto *input1 = new AddTwoNumbers::ListNode(2);
+  input1->next = new AddTwoNumbers::ListNode(4);
+  input1->next->next = new AddTwoNumbers::ListNode(3);
+
+  auto *input2 = new AddTwoNumbers::ListNode(5);
+  input2->next = new AddTwoNumbers::ListNode(6);
+  input2->next->next = new AddTwoNumbers::ListNode(4);
+
+  auto *expected = new AddTwoNumbers::ListNode(7);
+  expected->next = new AddTwoNumbers::ListNode(0);
+  expected->next->next = new AddTwoNumbers::ListNode(8);
+
+  auto *sumator = new AddTwoNumbers();
+  AddTwoNumbers::ListNode *output = sumator->sum(input1, input2);
+
+  while (expected != nullptr) {
+    if (expected->val != output->val) {
+      cout << "FAIL: testAddTwoNumbers: \nexpected: " << expected->val << "\nactual: " << output->val << endl;
+    }
+
+    expected = expected->next;
+    output = output->next;
+  }
 }

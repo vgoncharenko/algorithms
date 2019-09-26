@@ -7,11 +7,10 @@
 vector<int> SolutionOfSum::twoSum(vector<int> &nums, int target) {
   map<int, int> myMap;
   int complement;
-  map<int, int, __1::less<int>, __1::allocator<__1::pair<const int, int>>>::iterator index;
 
   for (int i = 0; i < nums.size(); i++) {
     complement = target - nums[i];
-    index = myMap.find(complement);
+    auto index = myMap.find(complement);
     if (index != myMap.end()) {
       return vector<int>{index->second, i};
     }

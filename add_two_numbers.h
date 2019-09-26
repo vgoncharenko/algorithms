@@ -14,7 +14,16 @@ using namespace std;
 
 class AddTwoNumbers {
 public:
-  vector<int> sum(vector<int> input1, vector<int> input2);
+    struct ListNode {
+        int val;
+        ListNode *next;
+
+        explicit ListNode(int x) : val(x), next(nullptr) {}
+    };
+
+    vector<int> sum(vector<int> input1, vector<int> input2);
+
+    ListNode *sum(ListNode *l1, ListNode *l2);
 };
 
 

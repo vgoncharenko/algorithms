@@ -9,8 +9,8 @@ int main() {
   testSolutionOfSum();
   testTopKFrequentWords();
   testAddTwoNumbers();
+  testAddTwoNumbers2();
 
   cout << "SUCCESS!" << endl;
-
   return 0;
 }

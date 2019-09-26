@@ -96,8 +96,6 @@ void testInsert(BTree *tree) {
   }
 
   //TODO: test balancing.
-
-  cout << "SUCCESS!" << endl;
 }
 
 void testSearch(BTree *tree) {

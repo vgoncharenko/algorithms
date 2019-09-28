@@ -4,6 +4,8 @@
 #include "top_k_frequent_word_test.cpp"
 #include "add_two_numbers_test.cpp"
 #include "length_of_longest_substring_test.cpp"
+#include "find_median_sorted_arrays_test.cpp"
+#include "longest_palindrome_test.cpp"
 
 int main() {
   testBTree();
@@ -12,6 +14,8 @@ int main() {
   testAddTwoNumbers();
   testAddTwoNumbers2();
   testLengthOfLongestSubstring();
+  testFindMedianSortedArrays();
+  testLongestPalindrome();
 
   cout << "SUCCESS!" << endl;
   return 0;

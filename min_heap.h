@@ -11,10 +11,10 @@ using namespace std;
 
 struct Term {
     string term = "";
-    uint8_t frequency = 0;
+    uint8_t value = 0;
 public:
-    explicit Term(string _term = "", uint8_t _frequency = 0);
-    uint8_t getFrequency() const;
+    explicit Term(string _term = "", uint8_t _value = 0);
+    uint8_t getValue() const;
 };
 
 // To compare two terms

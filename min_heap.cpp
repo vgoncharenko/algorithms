@@ -4,13 +4,13 @@
 
 #include "min_heap.h"
 
-Term::Term(string _term, uint8_t _frequency) {
+Term::Term(string _term, uint8_t _value) {
   term = move(_term);
-  frequency = _frequency;
+  value = _value;
 }
 
-uint8_t Term::getFrequency() const { return frequency; }
+uint8_t Term::getValue() const { return value; }
 
 int TermComparator::operator()(const Term &t1, const Term &t2) {
-  return t1.getFrequency() > t2.getFrequency();
+  return t1.getValue() > t2.getValue();
 }

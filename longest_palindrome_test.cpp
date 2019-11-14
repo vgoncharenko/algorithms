@@ -6,7 +6,7 @@
 
 void ruTest (string input, string expected, string variationName) {
   auto solution = new LongestPalindrome();
-  string result = solution->find2(input);
+  string result = solution->find3(input);
   if (expected != result)
     cout << "FAIL " + variationName + ": testLongestPalindrome: \nexpected: " << expected << "\nactual: " << result << "size: " << result.length() << endl;
   else

@@ -8,13 +8,13 @@
 #include "longest_palindrome_test.cpp"
 
 int main() {
-  testBTree();
-  testSolutionOfSum();
-  testTopKFrequentWords();
-  testAddTwoNumbers();
-  testAddTwoNumbers2();
-  testLengthOfLongestSubstring();
-  testFindMedianSortedArrays();
+//  testBTree();
+//  testSolutionOfSum();
+//  testTopKFrequentWords();
+//  testAddTwoNumbers();
+//  testAddTwoNumbers2();
+//  testLengthOfLongestSubstring();
+//  testFindMedianSortedArrays();
   testLongestPalindrome();
 
   cout << "SUCCESS!" << endl;

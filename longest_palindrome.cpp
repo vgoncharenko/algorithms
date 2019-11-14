@@ -61,8 +61,8 @@ string LongestPalindrome::find2(string s) {
   }
 
   string substr = "",
-         substr1 = "",
-         substr2 = "";
+          substr1 = "",
+          substr2 = "";
   priority_queue<TermMax, vector<TermMax>, TermMaxComparator> maxHeap;
   unsigned long n = s.length();
 
@@ -87,7 +87,7 @@ string LongestPalindrome::find2(string s) {
         substr += substr2;
         reverse(substr2.begin(), substr2.end());
         if (substr1 == substr2) {
-          if (substr.length() == n ) {
+          if (substr.length() == n) {
             return substr;
           }
           maxHeap.push(TermMax(substr, substr.length()));
@@ -116,4 +116,109 @@ int LongestPalindrome::checkIndexesCorrelation(vector<int> &v1, vector<int> &v2)
   }
 
   return *max_element(results.begin(), results.end());
+}
+
+string LongestPalindrome::find3(string s) {
+  if (s.size() <= 1) {
+    return s;
+  }
+
+//  string t = "#";
+//  for (char i : s) {
+//    t += i;
+//    t += "#";
+//  }
+
+  int N = (int) s.size(),
+          LPS[N],
+          center = 1,
+          centerR = 2,
+          curL = 0,
+          maxLPSLength = 0,
+          maxLPSCenterPosition = 0;
+
+  LPS[0] = 0;
+  LPS[1] = 1;
+  bool expand;
+
+  for (int curR = 2; curR < N; curR++) {
+    curL = 2 * center - curR;
+    //Reset expand - means no expansion required
+    expand = false;
+    //If currentRightPosition is within centerRightPosition
+    if (centerR - curR > 0) {
+      if (LPS[curL] < centerR - curR) {
+//      Case 1: L[currentRightPosition] = L[currentLeftPosition] applies when:
+//      i-left palindrome is completely contained in center palindrome
+//      i-left palindrome is NOT a prefix of center palindrome
+//      Both above conditions are satisfied when
+//      L[currentLeftPosition] < centerRightPosition – currentRightPosition
+        LPS[curR] = LPS[curL];
+      } else if (LPS[curL] == centerR - curR && curR == N - 1) {
+//      Case 2: L[currentRightPosition] = L[currentLeftPosition] applies when:
+//      i-left palindrome is prefix of center palindrome (means completely contained also)
+//      center palindrome is suffix of input string
+//      Above conditions are satisfied when
+//      L[currentLeftPosition] = centerRightPosition – currentRightPosition (For 1st condition) AND
+//      centerRightPosition = 2*N where N is input string length N (For 2nd condition).
+        LPS[curR] = LPS[curL];
+      } else if (LPS[curL] == centerR - curR && curR < N - 1) {
+//      Case 3: L[currentRightPosition] > = L[currentLeftPosition] applies when:
+//      i-left palindrome is prefix of center palindrome (and so i-left palindrome is completely contained in center palindrome)
+//      center palindrome is NOT suffix of input string
+//      Above conditions are satisfied when
+//      L[currentLeftPosition] = centerRightPosition – currentRightPosition (For 1st condition) AND
+//      centerRightPosition < 2*N where N is input string length N (For 2nd condition).
+        LPS[curR] = LPS[curL];
+        expand = true;  // expansion required
+//        centerR = curR + LPS[curR];
+//        curR = curR + LPS[curR];
+      } else if (LPS[curL] > centerR - curR) {
+//      Case 4: L[currentRightPosition] > = centerRightPosition – currentRightPosition applies when:
+//      i-left palindrome is NOT completely contained in center palindrome
+//      Above condition is satisfied when
+//      L[currentLeftPosition] > centerRightPosition – currentRightPosition
+//      In this case, length of i-right palindrome is at least as long (centerRightPosition – currentRightPosition) and there is a possibility of i-right palindrome expansion.
+        LPS[curR] = centerR - curR;
+        expand = true;  // expansion required
+//        centerR = curR + LPS[curR];
+//        curR = curR + LPS[curR];
+      }
+    } else {
+      LPS[curR] = 0;
+      expand = true;  // expansion required
+    }
+
+    //Attempt to expand palindrome centered at currentRightPosition
+    //Here for odd positions, we compare characters and
+    //if match then increment LPS Length by ONE
+    //If even position, we just increment LPS by ONE without
+    //any character comparison
+    if (expand) {
+      while (((curR + LPS[curR]) < N && (curR - LPS[curR]) > 0) &&
+             (((curR + LPS[curR] + 1) % 2 == 0) ||
+              (s[(curR + LPS[curR] + 1) / 2] == s[(curR - LPS[curR] - 1) / 2]))) {
+        LPS[curR]++;
+      }
+    }
+
+    if(LPS[curR] > maxLPSLength)  // Track maxLPSLength
+    {
+      maxLPSLength = LPS[curR];
+      maxLPSCenterPosition = curR;
+    }
+
+    // If palindrome centered at currentRightPosition
+    // expand beyond centerRightPosition R,
+    // adjust centerPosition C based on expanded palindrome.
+    if (curR + LPS[curR] > centerR)
+    {
+      center = curR;
+      centerR = curR + LPS[curR];
+    }
+
+  }
+
+  return s.substr(static_cast<unsigned long>((maxLPSCenterPosition - maxLPSLength) / 2),
+                  static_cast<unsigned long>(maxLPSLength - 1));
 }

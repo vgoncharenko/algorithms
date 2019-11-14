@@ -20,6 +20,7 @@ class LongestPalindrome {
 public:
     string find(string s);
     string find2(string s);
+    string find3(string s);
 };
 
 

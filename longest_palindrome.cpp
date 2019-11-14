@@ -118,18 +118,13 @@ int LongestPalindrome::checkIndexesCorrelation(vector<int> &v1, vector<int> &v2)
   return *max_element(results.begin(), results.end());
 }
 
+// https://www.geeksforgeeks.org/manachers-algorithm-linear-time-longest-palindromic-substring-part-3-2/
 string LongestPalindrome::find3(string s) {
   if (s.size() <= 1) {
     return s;
   }
 
-//  string t = "#";
-//  for (char i : s) {
-//    t += i;
-//    t += "#";
-//  }
-
-  int N = (int) s.size(),
+  int N = (int) s.size() * 2 + 1,
           LPS[N],
           center = 1,
           centerR = 2,
@@ -171,8 +166,6 @@ string LongestPalindrome::find3(string s) {
 //      centerRightPosition < 2*N where N is input string length N (For 2nd condition).
         LPS[curR] = LPS[curL];
         expand = true;  // expansion required
-//        centerR = curR + LPS[curR];
-//        curR = curR + LPS[curR];
       } else if (LPS[curL] > centerR - curR) {
 //      Case 4: L[currentRightPosition] > = centerRightPosition – currentRightPosition applies when:
 //      i-left palindrome is NOT completely contained in center palindrome
@@ -181,8 +174,6 @@ string LongestPalindrome::find3(string s) {
 //      In this case, length of i-right palindrome is at least as long (centerRightPosition – currentRightPosition) and there is a possibility of i-right palindrome expansion.
         LPS[curR] = centerR - curR;
         expand = true;  // expansion required
-//        centerR = curR + LPS[curR];
-//        curR = curR + LPS[curR];
       }
     } else {
       LPS[curR] = 0;
@@ -196,8 +187,11 @@ string LongestPalindrome::find3(string s) {
     //any character comparison
     if (expand) {
       while (((curR + LPS[curR]) < N && (curR - LPS[curR]) > 0) &&
-             (((curR + LPS[curR] + 1) % 2 == 0) ||
-              (s[(curR + LPS[curR] + 1) / 2] == s[(curR - LPS[curR] - 1) / 2]))) {
+             (
+               ((curR + LPS[curR] + 1) % 2 == 0)
+               || (s[(curR + LPS[curR] + 1) / 2] == s[(curR - LPS[curR] - 1) / 2])
+             )
+              ) {
         LPS[curR]++;
       }
     }
@@ -220,5 +214,5 @@ string LongestPalindrome::find3(string s) {
   }
 
   return s.substr(static_cast<unsigned long>((maxLPSCenterPosition - maxLPSLength) / 2),
-                  static_cast<unsigned long>(maxLPSLength - 1));
+                  static_cast<unsigned long>(maxLPSLength));
 }

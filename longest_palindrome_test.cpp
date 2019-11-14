@@ -8,7 +8,7 @@ void ruTest (string input, string expected, string variationName) {
   auto solution = new LongestPalindrome();
   string result = solution->find3(input);
   if (expected != result)
-    cout << "FAIL " + variationName + ": testLongestPalindrome: \nexpected: " << expected << "\nactual: " << result << "size: " << result.length() << endl;
+    cout << "FAIL " + variationName + ": testLongestPalindrome: \nexpected: " << expected << "\nactual: " << result << " size: " << result.length() << endl;
   else
     cout << variationName + " SUCCESS!" << endl;
 }
@@ -35,12 +35,12 @@ void testLongestPalindrome() {
 
   variationName = "ex3";
   input = "acbdft";
-  expected = "a";
+  expected = "c";
   ruTest(input, expected, variationName);
 
   variationName = "ex4";
   input = "ac";
-  expected = "a";
+  expected = "c";
   ruTest(input, expected, variationName);
 
   variationName = "ex5";
@@ -65,7 +65,7 @@ void testLongestPalindrome() {
 
   variationName = "ex9";
   input = "abcdasdfghjkldcba";
-  expected = "a";
+  expected = "b";
   ruTest(input, expected, variationName);
 
   variationName = "ex10";

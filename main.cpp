@@ -6,16 +6,18 @@
 #include "length_of_longest_substring_test.cpp"
 #include "find_median_sorted_arrays_test.cpp"
 #include "longest_palindrome_test.cpp"
+#include "deep_copy_list_with_random_pointer_test.cpp"
 
 int main() {
-  testBTree();
-  testSolutionOfSum();
-  testTopKFrequentWords();
-  testAddTwoNumbers();
-  testAddTwoNumbers2();
-  testLengthOfLongestSubstring();
+//  testBTree();
+//  testSolutionOfSum();
+//  testTopKFrequentWords();
+//  testAddTwoNumbers();
+//  testAddTwoNumbers2();
+//  testLengthOfLongestSubstring();
 //  testFindMedianSortedArrays();
-  testLongestPalindrome();
+//  testLongestPalindrome();
+  testDeepCopyListWithRandomPointerTest();
 
   cout << "SUCCESS!" << endl;
   return 0;

@@ -18,13 +18,43 @@ void testDeepCopyListWithRandomPointerTest() {
   auto solution = new DeepCopyListWithRandomPointer();
   Node *result = solution->copyRandomList(input);
 
-  if (result->next == result->random)
-    cout << "FAIL " + variationName + ": testDeepCopyListWithRandomPointerTest: \nnext: " << result->next << "\nrandom: " << result->random << endl;
+  if (input->next == result->next)
+    cout << "FAIL " + variationName + ": testDeepCopyListWithRandomPointerTest: \ninput->next: " << input->next << "\nresult->next: " << result->next << endl;
   else
     cout << variationName + " SUCCESS!" << endl;
 
-  if (result->next->random == result->next)
-    cout << "FAIL " + variationName + ": testDeepCopyListWithRandomPointerTest: \nresult->next->random: " << result->next->random << "\nresult->next: " << result->next << endl;
+  if (input->next->random == result->next->random)
+    cout << "FAIL " + variationName + ": testDeepCopyListWithRandomPointerTest: \ninput->next->random: " << result->next->random << "\nresult->next->random: " << result->next->random << endl;
+  else
+    cout << variationName + " SUCCESS!" << endl;
+
+  //NULL
+  variationName = "ex1";
+  input = nullptr;
+
+  result = solution->copyRandomList(input);
+
+  if (result != nullptr)
+    cout << "FAIL " + variationName + ": testDeepCopyListWithRandomPointerTest: \nresult: " << result << endl;
+  else
+    cout << variationName + " SUCCESS!" << endl;
+
+  //{"$id":"1","next":null,"random":{"$ref":"1"},"val":-1}
+  variationName = "ex2";
+  input = new Node();
+  input->val = -1;
+  input->next = nullptr;
+  input->random = input;
+
+  result = solution->copyRandomList(input);
+
+  if (result == input)
+    cout << "FAIL " + variationName + ": testDeepCopyListWithRandomPointerTest: \nresult: " << result << endl;
+  else
+    cout << variationName + " SUCCESS!" << endl;
+
+  if (result->random == input->random)
+    cout << "FAIL " + variationName + ": testDeepCopyListWithRandomPointerTest: \nresult->random: " << result->random << "\ninput->random" << input->random << endl;
   else
     cout << variationName + " SUCCESS!" << endl;
 }

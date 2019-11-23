@@ -1,10 +1,14 @@
 //
 // Created by Vitaliy on 2019-09-25.
-// https://leetcode.com/problems/longest-substring-without-repeating-characters/
+// https://leetcode.com/problems/copy-list-with-random-pointer/
 //
 
 #ifndef TREE_DEEP_COPY_LIST_WITH_RANDOM_POINTER_H
 #define TREE_DEEP_COPY_LIST_WITH_RANDOM_POINTER_H
+
+#include <map>
+#include <vector>
+#include <string>
 
 using namespace std;
 

@@ -7,6 +7,7 @@
 #include "find_median_sorted_arrays_test.cpp"
 #include "longest_palindrome_test.cpp"
 #include "deep_copy_list_with_random_pointer_test.cpp"
+#include "reverse_words_in_a_string_test.cpp"
 
 int main() {
 //  testBTree();
@@ -17,7 +18,8 @@ int main() {
 //  testLengthOfLongestSubstring();
 //  testFindMedianSortedArrays();
 //  testLongestPalindrome();
-  testDeepCopyListWithRandomPointerTest();
+//  testDeepCopyListWithRandomPointerTest();
+  reverseWordsInAStringTest();
 
   cout << "SUCCESS!" << endl;
   return 0;

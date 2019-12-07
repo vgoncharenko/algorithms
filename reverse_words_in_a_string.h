@@ -12,7 +12,7 @@ using namespace std;
 
 class ReverseWordsInAString {
 public:
-    string reverseWords(string s);
+    static string reverseWords(string s);
 };
 
 

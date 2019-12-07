@@ -24,6 +24,16 @@ void reverseWordsInAStringTest() {
   expected = "";
   runTest(variationName, input, expected);
 
+  variationName = "ex0.1";
+  input = "       ";
+  expected = "";
+  runTest(variationName, input, expected);
+
+  variationName = "ex0.2";
+  input = "  hello world!  ";
+  expected = "world! hello";
+  runTest(variationName, input, expected);
+
   variationName = "ex1";
   input = "abc def ght";
   expected = "ght def abc";
@@ -62,6 +72,11 @@ void reverseWordsInAStringTest() {
   variationName = "ex8";
   input = "d         ";
   expected = "d";
+  runTest(variationName, input, expected);
+
+  variationName = "ex8.1";
+  input = "da         ";
+  expected = "da";
   runTest(variationName, input, expected);
 
   variationName = "ex9";

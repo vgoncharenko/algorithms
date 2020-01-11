@@ -10,6 +10,7 @@
 #include "reverse_words_in_a_string_test.cpp"
 #include "median_of_two_sorted_arrays_test.cpp"
 #include "number_of_islands_test.cpp"
+#include "word_search_test.cpp"
 
 int main() {
 //  testBTree();
@@ -23,7 +24,8 @@ int main() {
 //  testDeepCopyListWithRandomPointerTest();
 //  reverseWordsInAStringTest();
 //  medianOfTwoSortedArraysTest();
-    numberOfIslandsTest();
+//  numberOfIslandsTest();
+    wordSearchTest();
 
   cout << "SUCCESS!" << endl;
   return 0;

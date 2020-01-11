@@ -9,6 +9,7 @@
 #include "deep_copy_list_with_random_pointer_test.cpp"
 #include "reverse_words_in_a_string_test.cpp"
 #include "median_of_two_sorted_arrays_test.cpp"
+#include "number_of_islands_test.cpp"
 
 int main() {
 //  testBTree();
@@ -21,8 +22,8 @@ int main() {
 //  testLongestPalindrome();
 //  testDeepCopyListWithRandomPointerTest();
 //  reverseWordsInAStringTest();
-  medianOfTwoSortedArraysTest();
-
+//  medianOfTwoSortedArraysTest();
+    numberOfIslandsTest();
 
   cout << "SUCCESS!" << endl;
   return 0;

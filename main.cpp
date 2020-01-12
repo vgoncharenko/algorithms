@@ -12,6 +12,7 @@
 #include "number_of_islands_test.cpp"
 #include "word_search_test.cpp"
 #include "validate_binary_search_tree_test.cpp"
+#include "word_break_test.cpp"
 
 int main() {
 //  testBTree();
@@ -27,7 +28,8 @@ int main() {
 //  medianOfTwoSortedArraysTest();
 //  numberOfIslandsTest();
 //    wordSearchTest();
-  validateBinarySearchTreeTest();
+//  validateBinarySearchTreeTest();
+  wordBreakTest();
 
 
   cout << "SUCCESS!" << endl;

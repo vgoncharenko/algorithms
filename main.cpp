@@ -11,6 +11,7 @@
 #include "median_of_two_sorted_arrays_test.cpp"
 #include "number_of_islands_test.cpp"
 #include "word_search_test.cpp"
+#include "validate_binary_search_tree_test.cpp"
 
 int main() {
 //  testBTree();
@@ -25,7 +26,9 @@ int main() {
 //  reverseWordsInAStringTest();
 //  medianOfTwoSortedArraysTest();
 //  numberOfIslandsTest();
-    wordSearchTest();
+//    wordSearchTest();
+  validateBinarySearchTreeTest();
+
 
   cout << "SUCCESS!" << endl;
   return 0;

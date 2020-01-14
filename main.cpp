@@ -13,6 +13,8 @@
 #include "word_search_test.cpp"
 #include "validate_binary_search_tree_test.cpp"
 #include "word_break_test.cpp"
+#include "maxset_test.cpp"
+#include "arraybug_test.cpp"
 
 int main() {
 //  testBTree();
@@ -29,7 +31,9 @@ int main() {
 //  numberOfIslandsTest();
 //    wordSearchTest();
 //  validateBinarySearchTreeTest();
-  wordBreakTest();
+//  wordBreakTest();
+//    maxSetTest();
+  ArrayBugTest();
 
 
   cout << "SUCCESS!" << endl;

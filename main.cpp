@@ -16,6 +16,7 @@
 #include "maxset_test.cpp"
 #include "arraybug_test.cpp"
 #include "dijkstra_test.cpp"
+#include "sqrt_test.cpp"
 
 int main() {
 //  testBTree();
@@ -35,7 +36,8 @@ int main() {
 //  wordBreakTest();
 //    maxSetTest();
 //  ArrayBugTest();
-    dijkstraTest();
+//    dijkstraTest();
+    sqrtTest();
 
   cout << "SUCCESS!" << endl;
   return 0;

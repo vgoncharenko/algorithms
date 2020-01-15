@@ -15,6 +15,7 @@
 #include "word_break_test.cpp"
 #include "maxset_test.cpp"
 #include "arraybug_test.cpp"
+#include "dijkstra_test.cpp"
 
 int main() {
 //  testBTree();
@@ -33,8 +34,8 @@ int main() {
 //  validateBinarySearchTreeTest();
 //  wordBreakTest();
 //    maxSetTest();
-  ArrayBugTest();
-
+//  ArrayBugTest();
+    dijkstraTest();
 
   cout << "SUCCESS!" << endl;
   return 0;

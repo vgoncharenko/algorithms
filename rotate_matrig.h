@@ -15,4 +15,4 @@ public:
     void rotate(vector<vector<int> > &A);
 };
 
-#endif //TREE_ARRAYBUG_H
+#endif //TREE_ROTATE_MATRIX_H

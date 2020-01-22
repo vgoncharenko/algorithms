@@ -17,6 +17,7 @@
 #include "arraybug_test.cpp"
 #include "dijkstra_test.cpp"
 #include "sqrt_test.cpp"
+#include "spiral-order-matrix-i_test.cpp"
 
 int main() {
 //  testBTree();
@@ -37,7 +38,8 @@ int main() {
 //    maxSetTest();
 //  ArrayBugTest();
 //    dijkstraTest();
-    sqrtTest();
+//    sqrtTest();
+  spiralOrderMatrixITest();
 
   cout << "SUCCESS!" << endl;
   return 0;

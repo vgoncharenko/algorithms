@@ -18,6 +18,7 @@
 #include "dijkstra_test.cpp"
 #include "sqrt_test.cpp"
 #include "spiral-order-matrix-i_test.cpp"
+#include "repeat-and-missing-number-array_test.cpp"
 
 int main() {
 //  testBTree();
@@ -39,7 +40,8 @@ int main() {
 //  ArrayBugTest();
 //    dijkstraTest();
 //    sqrtTest();
-  spiralOrderMatrixITest();
+//  spiralOrderMatrixITest();
+  repeatAndMissingNumberArrayTest();
 
   cout << "SUCCESS!" << endl;
   return 0;

@@ -19,6 +19,7 @@
 #include "sqrt_test.cpp"
 #include "spiral-order-matrix-i_test.cpp"
 #include "repeat-and-missing-number-array_test.cpp"
+#include "reverse-integer_test.cpp"
 
 int main() {
 //  testBTree();
@@ -41,7 +42,8 @@ int main() {
 //    dijkstraTest();
 //    sqrtTest();
 //  spiralOrderMatrixITest();
-  repeatAndMissingNumberArrayTest();
+//  repeatAndMissingNumberArrayTest();
+    reverseIntegerTest();
 
   cout << "SUCCESS!" << endl;
   return 0;

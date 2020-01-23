@@ -20,6 +20,7 @@
 #include "spiral-order-matrix-i_test.cpp"
 #include "repeat-and-missing-number-array_test.cpp"
 #include "reverse-integer_test.cpp"
+#include "valid-parentheses_test.cpp"
 
 int main() {
 //  testBTree();
@@ -43,7 +44,8 @@ int main() {
 //    sqrtTest();
 //  spiralOrderMatrixITest();
 //  repeatAndMissingNumberArrayTest();
-    reverseIntegerTest();
+//    reverseIntegerTest();
+    validParenthesesTest();
 
   cout << "SUCCESS!" << endl;
   return 0;

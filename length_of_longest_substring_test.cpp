@@ -61,5 +61,12 @@ void testLengthOfLongestSubstring() {
   if (expected != result)
     cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << endl;
 
+  input = "abcdbzkb";
+  expected = 5;
+  result = solution->getLength(input);
+
+  if (expected != result)
+    cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << endl;
+
   std::cout << '\n';
 }

@@ -4,7 +4,6 @@
 #include "top_k_frequent_word_test.cpp"
 #include "add_two_numbers_test.cpp"
 #include "length_of_longest_substring_test.cpp"
-#include "find_median_sorted_arrays_test.cpp"
 #include "longest_palindrome_test.cpp"
 #include "deep_copy_list_with_random_pointer_test.cpp"
 #include "reverse_words_in_a_string_test.cpp"
@@ -36,7 +35,7 @@ int main() {
 //  medianOfTwoSortedArraysTest();
 //  numberOfIslandsTest();
 //    wordSearchTest();
-//  validateBinarySearchTreeTest();
+  validateBinarySearchTreeTest();
 //  wordBreakTest();
 //    maxSetTest();
 //  ArrayBugTest();
@@ -45,7 +44,7 @@ int main() {
 //  spiralOrderMatrixITest();
 //  repeatAndMissingNumberArrayTest();
 //    reverseIntegerTest();
-    validParenthesesTest();
+//    validParenthesesTest();
 
   cout << "SUCCESS!" << endl;
   return 0;

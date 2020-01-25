@@ -27,7 +27,9 @@ bool isLand(vector<vector<char>> &grid, int row, int col, bool *const *checked) 
   return grid[row][col] == '1' && !checked[row][col];
 }
 
-bool checkBoundaries(int N, int M, int row, int col) { return (row >= 0) && (row < N) && (col >= 0) && (col < M); }
+bool checkBoundaries(int N, int M, int row, int col) {
+  return (row >= 0) && (row < N) && (col >= 0) && (col < M);
+}
 
 int NumberOfIslands::numIslands(vector<vector<char>> &grid) {
   if (grid.empty()) {

@@ -16,7 +16,8 @@ bool check(TrieNode *root, string s, uint32_t pos, uint32_t N) {
 
 bool check2(TrieNode *root, string s) {
   uint32_t N = s.length();
-  if (0 == N) return true;
+  if (0 == N)
+    return true;
 
   bool **d = new bool *[N + 1];
   for (int i = 0; i <= N; i++) {

@@ -10,7 +10,8 @@ class MaxSubArray {
       for (int i = 0; i < n; i++) {
         curSum += A[i];
         maxSum = max(maxSum, curSum);
-        if (curSum < 0) curSum = 0;
+        if (curSum < 0)
+          curSum = 0;
       }
       return maxSum;
     }

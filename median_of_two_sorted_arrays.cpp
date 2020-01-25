@@ -15,9 +15,13 @@ double MedianOfTwoSortedArrays::findMedianSortedArrays(vector<int> &nums1, vecto
   vector<int> v(2);
 
   do {
-    if ((j <= M - 1 && i <= N - 1 && nums1[i] >= nums2[j]) || i > N - 1) v[k] = nums2[j++];
-    else v[k] = nums1[i++];
-    if (isPair && I - 1 == 0) k++;
+    if ((j <= M - 1 && i <= N - 1 && nums1[i] >= nums2[j]) || i > N - 1)
+      v[k] = nums2[j++];
+    else
+      v[k] = nums1[i++];
+
+    if (isPair && I - 1 == 0)
+      k++;
   } while (--I >= 0);
 
   return isPair

@@ -37,30 +37,22 @@ vector<int> AddTwoNumbers::sum(vector<int> input1, vector<int> input2) {
 
 AddTwoNumbers::ListNode *AddTwoNumbers::sum(ListNode *l1, ListNode *l2) {
   AddTwoNumbers::ListNode *output = new AddTwoNumbers::ListNode(0), *item;
-  int carryBit = 0, l1v, l2v;
+  int carryBit = 0;
 
   item = output;
   while (true) {
-    l1v = l2v = 0;
-    if (nullptr != l1) {
-      l1v = l1->val;
-      l1 = l1->next;
-    }
-    if (nullptr != l2) {
-      l2v = l2->val;
-      l2 = l2->next;
-    }
-
-    item->val = l1v + l2v + carryBit;
+    item->val = l1->val + l2->val + carryBit;
     carryBit = 0;
     if (item->val >= 10) {
       carryBit = 1;
       item->val -= 10;
     }
 
-    if (l1 == nullptr && l2 == nullptr) {
+    if (l1->next == nullptr && l2->next == nullptr) {
       break;
     }
+    l1 = l1->next;
+    l2 = l2->next;
     item->next = new AddTwoNumbers::ListNode(0);
     item = item->next;
   }

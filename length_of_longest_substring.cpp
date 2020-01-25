@@ -5,23 +5,20 @@
 #include "length_of_longest_substring.h"
 
 int lengthOfLongestSubstring::getLength(string s) {
-  int max = 0, n = s.length();
+  int ans = 0, n = s.length();
   unordered_map<char, int> map;
 
   for(int i = 0, j = 0 ; j < n; j++) {
     auto index = map.find(s[j]);
     if (index != map.end() && i < index->second) {
-      i = index->second;
+      i = max(i, index->second);
     }
 
-    if (max < j - i + 1) {
-      max = j - i + 1;
-    }
-
+    ans = max(ans, j - i + 1);
     map[s[j]] = j + 1;
   }
 
-  return max;
+  return ans;
 }
 
 int lengthOfLongestSubstring::getLength2(string s) {

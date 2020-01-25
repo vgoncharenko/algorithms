@@ -38,22 +38,14 @@ bool check(TreeNode *current, map<uint64_t, int> &keys, uint64_t i, int l) {
 }
 
 bool check2(TreeNode *current, int lh, int gh) {
-  if ((lh != 0 && current->val >= lh) || (gh != 0 && current->val <= gh))
+  if ((lh != -1 && current->val >= lh) || (gh != -1 && current->val <= gh))
     return false;
 
-  if (nullptr != current->left) {
-    if (current->left->val >= current->val)
-      return false;
-
-    if (!check2(current->left, current->val, gh))
+  if (nullptr != current->left && !check2(current->left, current->val, gh)) {
       return false;
   }
 
-  if (nullptr != current->right) {
-    if (current->right->val <= current->val)
-      return false;
-
-    if (!check2(current->right, lh, current->val))
+  if (nullptr != current->right && !check2(current->right, lh, current->val)) {
       return false;
   }
 
@@ -63,5 +55,5 @@ bool check2(TreeNode *current, int lh, int gh) {
 bool ValidateBinarySearchTree::isValidBST(struct TreeNode *root) {
   if (nullptr == root)
     return true;
-  return check2(root, 0, 0);
+  return check2(root, -1, -1);
 }

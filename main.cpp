@@ -20,6 +20,7 @@
 #include "repeat-and-missing-number-array_test.cpp"
 #include "reverse-integer_test.cpp"
 #include "valid-parentheses_test.cpp"
+#include "single-number-ii_test.cpp"
 
 int main() {
 //  testBTree();
@@ -35,7 +36,7 @@ int main() {
 //  medianOfTwoSortedArraysTest();
 //  numberOfIslandsTest();
 //    wordSearchTest();
-  validateBinarySearchTreeTest();
+//  validateBinarySearchTreeTest();
 //  wordBreakTest();
 //    maxSetTest();
 //  ArrayBugTest();
@@ -45,6 +46,7 @@ int main() {
 //  repeatAndMissingNumberArrayTest();
 //    reverseIntegerTest();
 //    validParenthesesTest();
+singleNumberIITest();
 
   cout << "SUCCESS!" << endl;
   return 0;

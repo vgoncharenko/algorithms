@@ -21,6 +21,7 @@
 #include "reverse-integer_test.cpp"
 #include "valid-parentheses_test.cpp"
 #include "single-number-ii_test.cpp"
+#include "3sum_test.cpp"
 
 int main() {
 //  testBTree();
@@ -46,7 +47,8 @@ int main() {
 //  repeatAndMissingNumberArrayTest();
 //    reverseIntegerTest();
 //    validParenthesesTest();
-singleNumberIITest();
+//singleNumberIITest();
+  Sum3Test();
 
   cout << "SUCCESS!" << endl;
   return 0;

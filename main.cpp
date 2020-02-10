@@ -34,7 +34,7 @@ int main() {
 //  testLongestPalindrome();
 //  testDeepCopyListWithRandomPointerTest();
 //  reverseWordsInAStringTest();
-//  medianOfTwoSortedArraysTest();
+  medianOfTwoSortedArraysTest();
 //  numberOfIslandsTest();
 //    wordSearchTest();
 //  validateBinarySearchTreeTest();
@@ -48,7 +48,7 @@ int main() {
 //    reverseIntegerTest();
 //    validParenthesesTest();
 //singleNumberIITest();
-  Sum3Test();
+//  Sum3Test();
 
   cout << "SUCCESS!" << endl;
   return 0;

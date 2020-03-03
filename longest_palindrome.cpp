@@ -142,14 +142,14 @@ string LongestPalindrome::find3(string s) {
     expand = false;
     //If currentRightPosition is within centerRightPosition
     if (centerR - curR > 0) {
-      if (LPS[curL] < centerR - curR) {
+      if (LPS[curL] < center - curL) {
 //      Case 1: L[currentRightPosition] = L[currentLeftPosition] applies when:
 //      i-left palindrome is completely contained in center palindrome
 //      i-left palindrome is NOT a prefix of center palindrome
 //      Both above conditions are satisfied when
 //      L[currentLeftPosition] < centerRightPosition – currentRightPosition
         LPS[curR] = LPS[curL];
-      } else if (LPS[curL] == centerR - curR && curR == N - 1) {
+      } else if (LPS[curL] == center - curL && curR == N - 1) {
 //      Case 2: L[currentRightPosition] = L[currentLeftPosition] applies when:
 //      i-left palindrome is prefix of center palindrome (means completely contained also)
 //      center palindrome is suffix of input string
@@ -157,7 +157,7 @@ string LongestPalindrome::find3(string s) {
 //      L[currentLeftPosition] = centerRightPosition – currentRightPosition (For 1st condition) AND
 //      centerRightPosition = 2*N where N is input string length N (For 2nd condition).
         LPS[curR] = LPS[curL];
-      } else if (LPS[curL] == centerR - curR && curR < N - 1) {
+      } else if (LPS[curL] == center - curL && curR < N - 1) {
 //      Case 3: L[currentRightPosition] > = L[currentLeftPosition] applies when:
 //      i-left palindrome is prefix of center palindrome (and so i-left palindrome is completely contained in center palindrome)
 //      center palindrome is NOT suffix of input string
@@ -166,13 +166,13 @@ string LongestPalindrome::find3(string s) {
 //      centerRightPosition < 2*N where N is input string length N (For 2nd condition).
         LPS[curR] = LPS[curL];
         expand = true;  // expansion required
-      } else if (LPS[curL] > centerR - curR) {
+      } else if (LPS[curL] > center - curL) {
 //      Case 4: L[currentRightPosition] > = centerRightPosition – currentRightPosition applies when:
 //      i-left palindrome is NOT completely contained in center palindrome
 //      Above condition is satisfied when
 //      L[currentLeftPosition] > centerRightPosition – currentRightPosition
 //      In this case, length of i-right palindrome is at least as long (centerRightPosition – currentRightPosition) and there is a possibility of i-right palindrome expansion.
-        LPS[curR] = centerR - curR;
+        LPS[curR] = center - curL;
         expand = true;  // expansion required
       }
     } else {

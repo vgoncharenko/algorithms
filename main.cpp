@@ -31,10 +31,10 @@ int main() {
 //  testAddTwoNumbers2();
 //  testLengthOfLongestSubstring();
 //  testFindMedianSortedArrays();
-//  testLongestPalindrome();
+  testLongestPalindrome();
 //  testDeepCopyListWithRandomPointerTest();
 //  reverseWordsInAStringTest();
-  medianOfTwoSortedArraysTest();
+//  medianOfTwoSortedArraysTest();
 //  numberOfIslandsTest();
 //    wordSearchTest();
 //  validateBinarySearchTreeTest();

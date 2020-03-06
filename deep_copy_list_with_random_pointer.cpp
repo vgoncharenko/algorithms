@@ -38,3 +38,28 @@ Node *DeepCopyListWithRandomPointer::copyRandomList(Node *head) {
 
   return result;
 }
+
+Node *DeepCopyListWithRandomPointer::copyRandomListInPlace(Node *head) {
+  if (head == nullptr)
+    return nullptr;
+
+  Node* tmp = head;
+  while (tmp != nullptr){
+    tmp->next = new Node(tmp->val, tmp->next, tmp->random);
+    tmp = tmp->next->next;
+  }
+  tmp = head->next;
+  while (tmp->next != nullptr){
+    if (tmp->random != nullptr)
+      tmp->random = tmp->random->next;
+    tmp = tmp->next->next;
+  }
+  head = head->next;
+  tmp = head;
+  while (tmp->next != nullptr){
+    tmp->next = tmp->next->next;
+    tmp = tmp->next;
+  }
+
+  return head;
+}

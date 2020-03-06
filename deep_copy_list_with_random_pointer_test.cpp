@@ -10,10 +10,10 @@ void testDeepCopyListWithRandomPointerTest() {
   //{"$id":"1","next":{"$id":"2","next":null,"random":{"$ref":"2"},"val":2},"random":{"$ref":"2"},"val":1}
   variationName = "ex0";
   Node *temp = new Node();
-  Node *input = new Node(1, temp, temp);
   temp->val = 2;
   temp->next = nullptr;
   temp->random = temp;
+  Node *input = new Node(1, temp, temp);
 
   auto solution = new DeepCopyListWithRandomPointer();
   Node *result = solution->copyRandomList(input);

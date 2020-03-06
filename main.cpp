@@ -22,6 +22,7 @@
 #include "valid-parentheses_test.cpp"
 #include "single-number-ii_test.cpp"
 #include "3sum_test.cpp"
+#include "is-subsequence-test.cpp"
 
 int main() {
 //  testBTree();
@@ -31,7 +32,7 @@ int main() {
 //  testAddTwoNumbers2();
 //  testLengthOfLongestSubstring();
 //  testFindMedianSortedArrays();
-  testLongestPalindrome();
+//  testLongestPalindrome();
 //  testDeepCopyListWithRandomPointerTest();
 //  reverseWordsInAStringTest();
 //  medianOfTwoSortedArraysTest();
@@ -49,6 +50,8 @@ int main() {
 //    validParenthesesTest();
 //singleNumberIITest();
 //  Sum3Test();
+//  testDeepCopyListWithRandomPointerTest();
+testIsSubsecuenceTest();
 
   cout << "SUCCESS!" << endl;
   return 0;

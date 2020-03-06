@@ -30,6 +30,7 @@ public:
 class DeepCopyListWithRandomPointer {
 public:
     Node* copyRandomList(Node* head);
+    Node* copyRandomListInPlace(Node* head);
 };
 
 

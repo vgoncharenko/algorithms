@@ -23,6 +23,7 @@
 #include "single-number-ii_test.cpp"
 #include "3sum_test.cpp"
 #include "is-subsequence-test.cpp"
+#include "rotting-oranges_test.cpp"
 
 int main() {
 //  testBTree();
@@ -51,7 +52,9 @@ int main() {
 //singleNumberIITest();
 //  Sum3Test();
 //  testDeepCopyListWithRandomPointerTest();
-testIsSubsecuenceTest();
+//testIsSubsecuenceTest();
+  rottingOrangesTest();
+
 
   cout << "SUCCESS!" << endl;
   return 0;

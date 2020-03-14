@@ -24,6 +24,7 @@
 #include "3sum_test.cpp"
 #include "is-subsequence-test.cpp"
 #include "rotting-oranges_test.cpp"
+#include "hand-of-straights-test.cpp"
 
 int main() {
 //  testBTree();
@@ -53,7 +54,9 @@ int main() {
 //  Sum3Test();
 //  testDeepCopyListWithRandomPointerTest();
 //testIsSubsecuenceTest();
-  rottingOrangesTest();
+//  rottingOrangesTest();
+
+  testHandOfStraightsTest();
 
 
   cout << "SUCCESS!" << endl;

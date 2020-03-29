@@ -25,6 +25,7 @@
 #include "is-subsequence-test.cpp"
 #include "rotting-oranges_test.cpp"
 #include "hand-of-straights-test.cpp"
+#include "Overiding.cpp"
 
 int main() {
 //  testBTree();
@@ -55,8 +56,9 @@ int main() {
 //  testDeepCopyListWithRandomPointerTest();
 //testIsSubsecuenceTest();
 //  rottingOrangesTest();
+ //testHandOfStraightsTest();
 
-  testHandOfStraightsTest();
+  testOveriding();
 
 
   cout << "SUCCESS!" << endl;

@@ -3,10 +3,22 @@
 //
 
 #include <thread>
+#include <mutex>
+
+mutex m1;
 
 void thread_task(int i){
+  try{
+    while (i-->0) {
+      m1.lock();
+      cout << "Thread id: " << this_thread::get_id() << " i: " << i << endl;
+      m1.unlock();
+    }
+  } catch (exception e) {
+    m1.unlock();
+  };
+
   this_thread::sleep_for(chrono::seconds(1));
-  cout << "Thread id: " << this_thread::get_id() << " i: " << i << endl;
 }
 
 vector<thread> runThreads(int x) {

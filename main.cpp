@@ -26,6 +26,8 @@
 #include "rotting-oranges_test.cpp"
 #include "hand-of-straights-test.cpp"
 #include "Overiding.cpp"
+#include "rvalue-lvalue.cpp"
+#include "threads.cpp"
 
 int main() {
 //  testBTree();
@@ -57,8 +59,10 @@ int main() {
 //testIsSubsecuenceTest();
 //  rottingOrangesTest();
  //testHandOfStraightsTest();
+  //testOveriding();
+ // rvalue_lvalue();
+  mainThreads();
 
-  testOveriding();
 
 
   cout << "SUCCESS!" << endl;

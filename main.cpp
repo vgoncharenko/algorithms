@@ -28,6 +28,8 @@
 #include "Overiding.cpp"
 #include "rvalue-lvalue.cpp"
 #include "threads.cpp"
+#include "crack-coding-interview.cpp"
+#include "crack-coding-interview-3-6.cpp"
 
 int main() {
 //  testBTree();
@@ -61,8 +63,9 @@ int main() {
  //testHandOfStraightsTest();
   //testOveriding();
  // rvalue_lvalue();
-  mainThreads();
+ // mainThreads();
 
+// testAlg_1_1();
 
 
   cout << "SUCCESS!" << endl;

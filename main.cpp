@@ -66,6 +66,7 @@ int main() {
  // mainThreads();
 
 // testAlg_1_1();
+  myfunction();
 
 
   cout << "SUCCESS!" << endl;

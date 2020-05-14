@@ -128,14 +128,16 @@ char foo::get_c() const
   return m_c;
 }
 
-template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value>::type>
-int sum(T a)
+template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value>>
+//concept Arithmetic = std:: is_arithmetic <T>::value;
+T sum(T a)
 {
   return a;
 }
 
 template <typename T, typename... Args>
-int sum(T a, Args... args)
+//concept Arithmetic = std:: is_arithmetic <T>::value;
+auto sum(T a, Args... args) -> std::common_type_t<T, Args...>
 {
   return a + sum(args...);
 }

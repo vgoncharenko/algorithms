@@ -114,3 +114,23 @@ void testAlg_5_3()
   else
     cout << variationName + " SUCCESS!" << endl;
 }
+
+void alg_8_6(int n, stack<int> &s1, stack<int> &s2, stack<int> &s3)
+{
+  if (n <= 0) return;
+  alg_8_6(n-1, s1, s3, s2);
+  s3.push(s1.top());
+  s1.pop();
+  alg_8_6(n-1, s2, s1, s3);
+}
+
+void testAlg_8_6()
+{
+  stack<int> s1, s2, s3;
+  s1.push(5);
+  s1.push(4);
+  s1.push(3);
+  s1.push(2);
+  s1.push(1);
+  alg_8_6(5, s1, s2, s3);
+}

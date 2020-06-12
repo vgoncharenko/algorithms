@@ -67,7 +67,8 @@ int main() {
 
 // testAlg_1_1();
 //  myfunction();
-  testAlg_5_3();
+//  testAlg_5_3();
+  testAlg_8_6();
 
   cout << "SUCCESS!" << endl;
   return 0;

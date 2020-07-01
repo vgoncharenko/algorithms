@@ -1,5 +1,5 @@
 //
-// Created by Vitaliy on 2019-09-23.
+// Created by Vitaliy on 2020-07-01.
 //
 
 class DangerousClassInheritance

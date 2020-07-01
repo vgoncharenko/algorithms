@@ -30,6 +30,7 @@
 #include "threads.cpp"
 #include "crack-coding-interview.cpp"
 #include "crack-coding-interview-3-6.cpp"
+#include "cpp/problems.cpp"
 
 int main() {
 //  testBTree();
@@ -68,7 +69,8 @@ int main() {
 // testAlg_1_1();
 //  myfunction();
 //  testAlg_5_3();
-  testAlg_8_6();
+//  testAlg_8_6();
+//  testClassInheritance();
 
   cout << "SUCCESS!" << endl;
   return 0;

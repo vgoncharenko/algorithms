@@ -31,6 +31,8 @@
 #include "crack-coding-interview.cpp"
 #include "crack-coding-interview-3-6.cpp"
 #include "cpp/problems.cpp"
+//#include "VariadicTemplates.h"
+#include "slicingProblem.h"
 
 int main() {
 //  testBTree();
@@ -71,6 +73,12 @@ int main() {
 //  testAlg_5_3();
 //  testAlg_8_6();
 //  testClassInheritance();
+  //std::unique_ptr<VariadicTemplates> vt = std::make_unique<VariadicTemplates>();;
+  //vt->print("asader", 1, 2, 4);
+
+  auto s = slicingProblem();
+  s.slicingProblemTest1();
+
 
   cout << "SUCCESS!" << endl;
   return 0;

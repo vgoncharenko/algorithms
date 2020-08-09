@@ -28,3 +28,7 @@ void testClassInheritance()
 
   d1->dddPublic(d2);
 }
+
+void problem12_1(string fileName, int k) {
+//  getline();
+}

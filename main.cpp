@@ -33,6 +33,7 @@
 #include "cpp/problems.cpp"
 //#include "VariadicTemplates.h"
 #include "slicingProblem.h"
+#include "AdjacentExample.cpp"
 
 int main() {
 //  testBTree();
@@ -76,8 +77,10 @@ int main() {
   //std::unique_ptr<VariadicTemplates> vt = std::make_unique<VariadicTemplates>();;
   //vt->print("asader", 1, 2, 4);
 
-  auto s = slicingProblem();
-  s.slicingProblemTest1();
+//  auto s = slicingProblem();
+//  s.slicingProblemTest1();
+
+  adjacentExample1();
 
 
   cout << "SUCCESS!" << endl;

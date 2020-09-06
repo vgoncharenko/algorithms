@@ -34,6 +34,7 @@
 //#include "VariadicTemplates.h"
 #include "slicingProblem.h"
 #include "AdjacentExample.cpp"
+#include "copy_vs_move.cpp"
 
 int main() {
 //  testBTree();
@@ -80,7 +81,8 @@ int main() {
 //  auto s = slicingProblem();
 //  s.slicingProblemTest1();
 
-  adjacentExample1();
+//  adjacentExample1();
+  copy_vs_move_test();
 
 
   cout << "SUCCESS!" << endl;

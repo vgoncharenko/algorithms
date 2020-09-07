@@ -61,16 +61,16 @@ public:
     }
 };
 
-class BiRide {
+class BiRideSmalltalk {
 public:
-    explicit BiRide (std::string _filename): filename(std::move(_filename)) {
+    explicit BiRideSmalltalk (std::string _filename): filename(std::move(_filename)) {
       this->lineParser = std::make_unique<LineParser>();
     }
 
     void print() {
       this->createMap();
       for(const auto& item : this->getSortedList()) {
-        std::cout << item.first << ": " << item.second << std::endl;
+        //std::cout << item.first << ": " << item.second << std::endl;
       }
     }
 
@@ -112,6 +112,70 @@ private:
     }
 };
 
+class BiRideFortran {
+public:
+    explicit BiRideFortran (std::string _filename): filename(std::move(_filename)) {
+      this->lineParser = std::make_unique<LineParser>();
+    }
+
+    void print() {
+      this->createMap();
+      this->makeUnique();
+      for(const auto& item : this->getSortedList()) {
+        //std::cout << item.first << ": " << item.second << std::endl;
+      }
+    }
+
+private:
+    const std::string filename;
+    std::unique_ptr<LineParser> lineParser;
+
+    std::vector<std::pair<std::string, int>> biRideMap;
+
+    std::vector<std::pair<std::string, int>> createMap() {
+      std::unique_ptr<FileReader> fileReader = std::make_unique<FileReader>(this->filename);
+      std::string line = fileReader->getLine();
+      auto currentWord = this->lineParser->getNextWord(line);
+
+      while (true) {
+        if (line.empty()) { break; }
+        while (currentWord.second < line.length()) {
+          auto nextWord = this->lineParser->getNextWord(line, currentWord.second);
+          biRideMap.emplace_back(std::make_pair<std::string, int>(currentWord.first + ' ' + nextWord.first, 1));
+          currentWord = nextWord;
+        }
+        line = fileReader->getLine();
+        currentWord.second = 0;
+      }
+
+      return biRideMap;
+    }
+
+    std::vector<std::pair<std::string, int>> getSortedList() {
+      sort(biRideMap.begin(), biRideMap.end(), [](const auto &a, const auto &b) { return a.second < b.second; });
+
+      return biRideMap;
+    }
+
+    std::vector<std::pair<std::string, int>> makeUnique() {
+      sort(biRideMap.begin(), biRideMap.end(), [](const auto &a, const auto &b) { return a.first < b.first; });
+
+      auto leftPosition = biRideMap.begin();
+      for (auto rightPosition=biRideMap.begin() + 1; rightPosition != biRideMap.end(); rightPosition++) {
+        if (leftPosition->first == rightPosition->first) {
+          leftPosition->second++;
+        } else{
+          leftPosition++;
+          leftPosition->first = move(rightPosition->first);
+          leftPosition->second = rightPosition->second;
+        }
+      }
+      biRideMap.erase(leftPosition + 1, biRideMap.end());
+
+      return biRideMap;
+    }
+};
+
 template <typename Callable>
 void measure(Callable f) {
   auto start = std::chrono::high_resolution_clock::now();
@@ -125,7 +189,10 @@ void measure(Callable f) {
 
 void testBiRide() {
   std::string FILE_NAME = "/magento/tree/data/shakespeare.txt";
-  std::shared_ptr<BiRide> b = std::make_shared<BiRide>(FILE_NAME);
+  std::shared_ptr<BiRideSmalltalk> smalltalkWay = std::make_shared<BiRideSmalltalk>(FILE_NAME);
 
-  measure([b] { b->print(); });
+  measure([smalltalkWay] { smalltalkWay->print(); });
+
+  std::shared_ptr<BiRideFortran> fortranWay = std::make_shared<BiRideFortran>(FILE_NAME);
+  measure([fortranWay] { fortranWay->print(); });
 }

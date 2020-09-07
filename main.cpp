@@ -35,6 +35,7 @@
 #include "slicingProblem.h"
 #include "AdjacentExample.cpp"
 #include "copy_vs_move.cpp"
+#include "biride.cpp"
 
 int main() {
 //  testBTree();
@@ -82,7 +83,8 @@ int main() {
 //  s.slicingProblemTest1();
 
 //  adjacentExample1();
-  copy_vs_move_test();
+//  copy_vs_move_test();
+    testBiRide();
 
 
   cout << "SUCCESS!" << endl;

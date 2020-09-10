@@ -36,6 +36,7 @@
 #include "AdjacentExample.cpp"
 #include "copy_vs_move.cpp"
 #include "biride.cpp"
+#include "shared_pointers.cpp"
 
 int main() {
 //  testBTree();
@@ -84,8 +85,8 @@ int main() {
 
 //  adjacentExample1();
 //  copy_vs_move_test();
-    testBiRide();
-
+//    testBiRide();
+  sharedPointerTest();
 
   cout << "SUCCESS!" << endl;
   return 0;

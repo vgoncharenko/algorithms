@@ -11,11 +11,11 @@ public:
 };
 
 void constSharedF(std::shared_ptr<const SharedPTest> p) {
-//  p->x = 20;
+//  p->x = 20;          wrong!!!
 }
 
 void constSharedF2(std::shared_ptr<const SharedPTest> p1, std::shared_ptr<const SharedPTest> p2) {
-//  *p1 = *p2;
+//  *p1 = *p2;          wrong!!!
 }
 
 void sharedPointerTest() {

@@ -35,7 +35,7 @@
 #include "slicingProblem.h"
 #include "AdjacentExample.cpp"
 #include "copy_vs_move.cpp"
-#include "biride.cpp"
+#include "bigrams.cpp"
 #include "shared_pointers.cpp"
 
 int main() {
@@ -85,8 +85,8 @@ int main() {
 
 //  adjacentExample1();
 //  copy_vs_move_test();
-//    testBiRide();
-  sharedPointerTest();
+  testBiGrams();
+//  sharedPointerTest();
 
   cout << "SUCCESS!" << endl;
   return 0;

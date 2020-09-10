@@ -61,9 +61,9 @@ public:
     }
 };
 
-class BiRideSmalltalk {
+class BiGramsSmalltalk {
 public:
-    explicit BiRideSmalltalk (std::string _filename): filename(std::move(_filename)) {
+    explicit BiGramsSmalltalk (std::string _filename): filename(std::move(_filename)) {
       this->lineParser = std::make_unique<LineParser>();
     }
 
@@ -112,9 +112,9 @@ private:
     }
 };
 
-class BiRideFortran {
+class BiGramsFortran {
 public:
-    explicit BiRideFortran (std::string _filename): filename(std::move(_filename)) {
+    explicit BiGramsFortran (std::string _filename): filename(std::move(_filename)) {
       this->lineParser = std::make_unique<LineParser>();
     }
 
@@ -187,12 +187,12 @@ void measure(Callable f) {
 }
 
 
-void testBiRide() {
-  std::string FILE_NAME = "/magento/tree/data/shakespeare.txt";
-  std::shared_ptr<BiRideSmalltalk> smalltalkWay = std::make_shared<BiRideSmalltalk>(FILE_NAME);
+void testBiGrams() {
+  std::string FILE_NAME = "/magento/cpp/stepanov-conversations-course/data/shakespe.are";
+  std::shared_ptr<BiGramsSmalltalk> smalltalkWay = std::make_shared<BiGramsSmalltalk>(FILE_NAME);
 
   measure([smalltalkWay] { smalltalkWay->print(); });
 
-  std::shared_ptr<BiRideFortran> fortranWay = std::make_shared<BiRideFortran>(FILE_NAME);
+  std::shared_ptr<BiGramsFortran> fortranWay = std::make_shared<BiGramsFortran>(FILE_NAME);
   measure([fortranWay] { fortranWay->print(); });
 }

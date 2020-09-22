@@ -1,4 +1,5 @@
 #include <iostream>
+#include "measure.cpp"
 #include "b_tree_test.cpp"
 #include "find_elements_equelse_to_sum_test.cpp"
 #include "top_k_frequent_word_test.cpp"
@@ -37,6 +38,7 @@
 #include "copy_vs_move.cpp"
 #include "bigrams.cpp"
 #include "shared_pointers.cpp"
+#include "astepanov/egyption_multiplication.cpp"
 
 int main() {
 //  testBTree();
@@ -85,8 +87,10 @@ int main() {
 
 //  adjacentExample1();
 //  copy_vs_move_test();
-  testBiGrams();
+//  testBiGrams();
 //  sharedPointerTest();
+
+  testEgyptMult();
 
   cout << "SUCCESS!" << endl;
   return 0;

@@ -2,13 +2,11 @@
 // Created by Vitaliy on 9/6/20.
 //
 #include <unordered_map>
-#include <iostream>
 #include <fstream>
 #include <string>
 #include <memory>
 #include <utility>
 #include <vector>
-#include <chrono>
 
 class FileReader {
 public:
@@ -175,17 +173,6 @@ private:
       return biRideMap;
     }
 };
-
-template <typename Callable>
-void measure(Callable f) {
-  auto start = std::chrono::high_resolution_clock::now();
-  f();
-  auto stop = std::chrono::high_resolution_clock::now();
-  auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-  std::cout << "\n\nTime taken by function: "
-       << duration.count() << " microseconds" << std::endl;
-}
-
 
 void testBiGrams() {
   std::string FILE_NAME = "/magento/cpp/stepanov-conversations-course/data/shakespe.are";

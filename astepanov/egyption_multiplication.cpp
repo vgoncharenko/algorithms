@@ -3,6 +3,9 @@
 //
 #include <iostream>
 
+/**
+ * Naive approach - SUM. O(y)
+ */
 template<typename T>
 T egpt_mult1(T x, T y) {
   T result = 0;
@@ -12,6 +15,9 @@ T egpt_mult1(T x, T y) {
   return result;
 }
 
+/**
+ * Naive approach - SUM. O(min(x,y))
+ */
 template<typename T>
 T egpt_mult2(T x, T y) {
   T min_v = min(x, y);
@@ -24,9 +30,12 @@ T egpt_mult2(T x, T y) {
 }
 
 /*
+ * Egyptian multiplication (recursive) O(log(n))
+ *
  * a = 4;
  * b = 3;
  *
+ * Law of associativity:
  * result = a + a + a + a = (a + a) + (a + a)
  */
 template<typename T>
@@ -59,9 +68,8 @@ T egpt_mult3(T x, T y) {
 }
 
 /**
- * Small optimization for if (n == 1)
+ * Egyptian multiplication (recursive) +small optimization for if (n == 1) branch O(log(n))
  */
-
 template<typename T>
 T egpt_mult4_helper(T r, T x, T n) {
   if (isOdd(n)) {
@@ -82,9 +90,8 @@ T egpt_mult4(T x, T y) {
 
 
 /**
- * No Recursion.
+ * Egyptian multiplication No Recursion O(log(n)).
  */
-
 template<typename T>
 T egpt_mult5_helper(T r, T x, T n) {
   while(true) {
@@ -107,9 +114,8 @@ T egpt_mult5(T x, T y) {
 }
 
 /**
- * Final version.
+ * Egyptian multiplication. Optimization for even number of multiplication O(log(n)).
  */
-
 template<typename T>
 T egpt_mult6_helper(T r, T x, T n) {
   while(true) {
@@ -138,9 +144,8 @@ T egpt_mult6(T x, T y) {
 }
 
 /**
- * Processor mult
+ * Processor's multiplication O(1)
  */
-
 template<typename T>
 T egpt_mult7(T x, T y) {
   return x * y;
@@ -155,38 +160,45 @@ void testEgyptMult() {
 //  long y = 67108865;
 //  long expected = 562949961809920;
 
-  long x = 8388609;
-  long y = 67108865;
-  long expected = 562950028918785;
-
 //  long x = 99;
 //  long y = 100;
 //  long expected = 9900;
+
+  long x = 8388609;
+  long y = 67108865;
+  long expected = 562950028918785;
   long result = 0;
 
+  std::cout << "Naive approach - SUM. O(y):" << std::endl;
   measure( [&x, &y, &result]{ result = egpt_mult1(x, y); } );
   assert(expected == result);
 
+  std::cout << "\n\nNaive approach - SUM. O(min(x,y)):" << std::endl;
   result = 0;
   measure( [&x, &y, &result]{ result = egpt_mult2(x, y); } );
   assert(expected == result);
 
+  std::cout << "\n\nEgyptian multiplication (recursive) O(log(n)):" << std::endl;
   result = 0;
   measure( [&x, &y, &result]{ result = egpt_mult3(x, y); } );
   assert(expected == result);
 
+  std::cout << "\n\nEgyptian multiplication (recursive) +small optimization for if (n == 1) branch O(log(n)):" << std::endl;
   result = 0;
   measure( [&x, &y, &result]{ result = egpt_mult4(x, y); } );
   assert(expected == result);
 
+  std::cout << "\n\nEgyptian multiplication No Recursion O(log(n)):" << std::endl;
   result = 0;
   measure( [&x, &y, &result]{ result = egpt_mult5(x, y); } );
   assert(expected == result);
 
+  std::cout << "\n\nEgyptian multiplication. Optimization for even number of multiplication O(log(n)):" << std::endl;
   result = 0;
   measure( [&x, &y, &result]{ result = egpt_mult6(x, y); } );
   assert(expected == result);
 
+  std::cout << "\n\nProcessor's multiplication O(1)" << std::endl;
   result = 0;
   measure( [&x, &y, &result]{ result = egpt_mult7(x, y); } );
   assert(expected == result);

@@ -17,6 +17,6 @@ void measure(Callable f, int iterations = 10) {
   }
 
   std::sort(results.begin(), results.end());
-  std::cout << "\n\nMedian of time taken by function: "
+  std::cout << "Median of time taken by function: "
             << results[iterations/2] << " nanoseconds" << std::endl;
 }

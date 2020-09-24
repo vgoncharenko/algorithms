@@ -39,6 +39,7 @@
 #include "bigrams.cpp"
 #include "shared_pointers.cpp"
 #include "astepanov/egyption_multiplication.cpp"
+#include "astepanov/prime_numbers.cpp"
 
 int main() {
 //  testBTree();
@@ -90,7 +91,8 @@ int main() {
 //  testBiGrams();
 //  sharedPointerTest();
 
-  testEgyptMult();
+//  testEgyptMult();
+testPrimeNumbers();
 
   cout << "SUCCESS!" << endl;
   return 0;

@@ -155,19 +155,19 @@ void testPrimeNumbers() {
   measure( [&x, &result]{ result = prime1(x); } );
   assert(expected == result);
 
-//  std::cout << "\n\nSieve of Eratosthenes for all positive integers O(n*sqrt(n)):" << std::endl;
-//  measure( [&x, &result]{ result = prime2(x); } );
-//  assert(expected == result);
-//
-//  std::cout << "\n\nSieve of Eratosthenes for odd positive integers O(n/2*sqrt(n/2)):" << std::endl;
-//  measure( [&x, &result]{ result = prime3(x); } );
-//  assert(expected == result);
-//
-//  std::cout << "\n\nSieve of Eratosthenes for odd positive integers with value as bool (true/false) O(n/2*sqrt(n/2)):" << std::endl;
-//  measure( [&x, &result]{ result = prime4(x); } );
-//  assert(expected == result);
-//
-//  std::cout << "\n\nSieve of Eratosthenes for odd positive integers with bitmap as value (1 or 0) O(n/2*sqrt(n/2)):" << std::endl;
-//  measure( [&x, &result]{ result = prime5(x); } );
-//  assert(expected == result);
+  std::cout << "\n\nSieve of Eratosthenes for all positive integers O(n*sqrt(n)):" << std::endl;
+  measure( [&x, &result]{ result = prime2(x); } );
+  assert(expected == result);
+
+  std::cout << "\n\nSieve of Eratosthenes for odd positive integers O(n/2*sqrt(n/2)):" << std::endl;
+  measure( [&x, &result]{ result = prime3(x); } );
+  assert(expected == result);
+
+  std::cout << "\n\nSieve of Eratosthenes for odd positive integers with value as bool (true/false) O(n/2*sqrt(n/2)):" << std::endl;
+  measure( [&x, &result]{ result = prime4(x); } );
+  assert(expected == result);
+
+  std::cout << "\n\nSieve of Eratosthenes for odd positive integers with bitmap as value (1 or 0) O(n/2*sqrt(n/2)):" << std::endl;
+  measure( [&x, &result]{ result = prime5(x); } );
+  assert(expected == result);
 }

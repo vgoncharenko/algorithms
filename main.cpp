@@ -91,8 +91,8 @@ int main() {
 //  testBiGrams();
 //  sharedPointerTest();
 
-//  testEgyptMult();
-testPrimeNumbers();
+  testEgyptMult();
+//testPrimeNumbers();
 
   cout << "SUCCESS!" << endl;
   return 0;

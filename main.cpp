@@ -93,7 +93,7 @@ int main() {
 //  testBiGrams();
 //  sharedPointerTest();
 
-//  testEgyptMult();
+  testEgyptMult();
 //testPrimeNumbers();
 
 //  testStringViewExample();

@@ -151,6 +151,36 @@ T mult7(T x, T y) {
   return x * y;
 }
 
+/**
+ * Results for x = 8388608; y = 67108865;
+ *
+Naive approach - SUM. O(y):
+Median of time taken by function: 155'913'739 nanoseconds
+
+
+Naive approach - SUM. O(min(x,y)):
+Median of time taken by function: 18'936'170 nanoseconds
+
+
+Egyptian multiplication (recursive) O(log(min(x,y))):
+Median of time taken by function: 173 nanoseconds
+
+
+Egyptian multiplication (recursive) +small optimization for if (n == 1) branch O(log(min(x,y))):
+Median of time taken by function: 176 nanoseconds
+
+
+Egyptian multiplication No Recursion O(log(min(x,y))):
+Median of time taken by function: 133 nanoseconds
+
+
+Egyptian multiplication. Optimization for even number of multiplication O(log(min(x,y))):
+Median of time taken by function: 126 nanoseconds
+
+
+Processor's multiplication O(1)
+Median of time taken by function: 35 nanoseconds
+ */
 void testEgyptMult() {
 //  long x = 9845623;
 //  long y = 98459903;

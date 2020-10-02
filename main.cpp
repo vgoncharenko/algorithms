@@ -40,6 +40,8 @@
 #include "shared_pointers.cpp"
 #include "astepanov/egyption_multiplication.cpp"
 #include "astepanov/prime_numbers.cpp"
+#include "cppCoreGuidline/semantic_parameters_passing.cpp"
+#include "cppCoreGuidline/classes_and_class_hierarchies.cpp"
 
 int main() {
 //  testBTree();
@@ -91,8 +93,16 @@ int main() {
 //  testBiGrams();
 //  sharedPointerTest();
 
-  testEgyptMult();
+//  testEgyptMult();
 //testPrimeNumbers();
+
+//  testStringViewExample();
+//  testPointerVsReference();
+
+//  testPointersComparisonOperator();
+
+//  testC83();
+
 
   cout << "SUCCESS!" << endl;
   return 0;

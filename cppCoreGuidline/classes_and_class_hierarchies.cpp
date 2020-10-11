@@ -92,6 +92,26 @@ public:
     }
 };
 
+class NotDerivedFromBase {
+public:
+    char character = 'd';
+//    virtual bool operator==(const D& a) const
+//    {
+//      return name == a.name && number == a.number && character == a.character;
+//    }
+    // ...
+    virtual void f() {
+      std::cout << "NotDerivedFromBase::F()" << endl;
+    }
+};
+
+class DerivedFromNotDerivedFromBase : public NotDerivedFromBase, public B {
+    void f() override {
+      std::cout << "DerivedFromNotDerivedFromBase::F()" << endl;
+    }
+};
+
+
 bool operator==(const B& a, const B& b) noexcept {
   return a.name == b.name && a.number == b.number;
 }
@@ -111,3 +131,44 @@ void testC83() {
   bb->f2(); // call to B::F2() because non-virtual
 }
 
+
+void testC147_f(NotDerivedFromBase a) { // +slice
+  try {
+    B base = dynamic_cast<B&>(a);
+  } catch (exception e) {
+    std::cout << "C.147: Use dynamic_cast to a reference type when failure to find the required class is considered an error\n";
+  }
+}
+
+void testC147() {
+  DerivedFromNotDerivedFromBase notDerivedFromBase = DerivedFromNotDerivedFromBase();
+  testC147_f(notDerivedFromBase); // +slice
+}
+
+void testC148_f(NotDerivedFromBase* const p) {
+  auto base = dynamic_cast<B*>(p);
+  if (base == nullptr) {
+    std::cout << "C.148: Use dynamic_cast to a pointer type when failure to find the required class is considered a valid alternative\n";
+  }
+}
+
+void testC148() {
+  NotDerivedFromBase *notDerivedFromBaseP = new NotDerivedFromBase();
+  testC148_f(notDerivedFromBaseP);
+}
+
+void testC166() {
+  int x = 10;
+  int *y = &x; // pointer
+  int &z = x;  // ref
+  int g = z;   // copy
+
+  *y += 1;
+  std::cout << "x=" << x << "; *y=" << *y << "; z=" << z << "; g=" << g << std::endl;
+
+  z += 1;
+  std::cout << "x=" << x << "; *y=" << *y << "; z=" << z << "; g=" << g << std::endl;
+
+  g += 1;
+  std::cout << "x=" << x << "; *y=" << *y << "; z=" << z << "; g=" << g << std::endl;
+}

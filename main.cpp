@@ -93,7 +93,7 @@ int main() {
 //  testBiGrams();
 //  sharedPointerTest();
 
-  testEgyptMult();
+//  testEgyptMult();
 //testPrimeNumbers();
 
 //  testStringViewExample();
@@ -102,6 +102,9 @@ int main() {
 //  testPointersComparisonOperator();
 
 //  testC83();
+//  testC147();
+//  testC148();
+//  testC166();
 
 
   cout << "SUCCESS!" << endl;

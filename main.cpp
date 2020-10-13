@@ -43,6 +43,7 @@
 #include "cppCoreGuidline/semantic_parameters_passing.cpp"
 #include "cppCoreGuidline/classes_and_class_hierarchies.cpp"
 #include "astepanov/gcd.cpp"
+#include "cppCoreGuidline/atomic_and_memory_model.cpp"
 
 int main() {
 //  testBTree();
@@ -106,7 +107,8 @@ int main() {
 //  testC147();
 //  testC148();
 //  testC166();
-  test_gcd();
+//  test_gcd();
+  testAtomic();
 
   cout << "SUCCESS!" << endl;
   return 0;

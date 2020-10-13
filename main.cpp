@@ -42,6 +42,7 @@
 #include "astepanov/prime_numbers.cpp"
 #include "cppCoreGuidline/semantic_parameters_passing.cpp"
 #include "cppCoreGuidline/classes_and_class_hierarchies.cpp"
+#include "astepanov/gcd.cpp"
 
 int main() {
 //  testBTree();
@@ -105,7 +106,7 @@ int main() {
 //  testC147();
 //  testC148();
 //  testC166();
-
+  test_gcd();
 
   cout << "SUCCESS!" << endl;
   return 0;

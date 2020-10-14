@@ -96,7 +96,7 @@ int main() {
 //  sharedPointerTest();
 
 //  testEgyptMult();
-//testPrimeNumbers();
+testPrimeNumbers();
 
 //  testStringViewExample();
 //  testPointerVsReference();
@@ -108,7 +108,7 @@ int main() {
 //  testC148();
 //  testC166();
 //  test_gcd();
-  testAtomic();
+//  testAtomic();
 
   cout << "SUCCESS!" << endl;
   return 0;

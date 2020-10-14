@@ -2,6 +2,9 @@
 // Created by Vitaliy on 9/23/20.
 //
 
+#include <cstddef>
+
+
 /**
  * Naive approach O(n^2)
  */
@@ -147,6 +150,38 @@ vector<T> prime5(T n) {
 }
 
 /**
+ * Sieve of Eratosthenes for odd positive with std::byte as a bitmap value (1 or 0) O(n/2*sqrt(n/2))
+ *
+ * A = {1 2 3 4 5 6 7 8 9 10 11 12}
+ * P = {  2 3   5   7        11   } // only odd numbers
+ * B = {3 5 7 9 11}
+ */
+template<typename T>
+vector<T> prime6(T n) {
+  if (n == 0) return {};
+  T m = n/2-1;
+  std::byte bit { 0b0000'0001 };
+  std::byte fullMask { 0b1111'1111 };
+  vector<std::byte> v1(m/8+1, fullMask);
+
+  for (size_t i=0, value = 3, startIndex = 3; startIndex < n; i++, value = ((i<<1) + 3), startIndex = (value<<1)+i) {
+    for (T j=startIndex; j<=m; j+=value) {
+      v1[j/8] &= ~(bit<<(j%8));
+    }
+  }
+
+  vector<T> result;
+  result.push_back(2);
+  for (size_t i=0; i<m; i++) {
+    if (std::byte b = (bit << (i % 8));
+            (v1[i / 8] & b) == b)
+      result.push_back((i << 1) + 3);
+  }
+
+  return result;
+}
+
+/**
  * Results for x = 1'0'000:
  *
 Naive approach O(n^2)
@@ -167,6 +202,10 @@ Median of time taken by function: 407'095 nanoseconds
 
 Sieve of Eratosthenes for odd positive integers with bitmap as value (1 or 0) O(n/2*sqrt(n/2)):
 Median of time taken by function: 151'625 nanoseconds
+
+
+Sieve of Eratosthenes for odd positive with std::byte as bitmap value (1 or 0) O(n/2*sqrt(n/2)):
+Median of time taken by function: 292'869 nanoseconds
  */
 void testPrimeNumbers() {
   long x = 1'0'000;
@@ -191,5 +230,9 @@ void testPrimeNumbers() {
 
   std::cout << "\n\nSieve of Eratosthenes for odd positive integers with bitmap as value (1 or 0) O(n/2*sqrt(n/2)):" << std::endl;
   measure( [&x, &result]{ result = prime5(x); } );
+  //assert(expected == result);
+
+  std::cout << "\n\nSieve of Eratosthenes for odd positive with std::byte as bitmap value (1 or 0) O(n/2*sqrt(n/2)):" << std::endl;
+  measure( [&x, &result]{ result = prime6(x); } );
   //assert(expected == result);
 }

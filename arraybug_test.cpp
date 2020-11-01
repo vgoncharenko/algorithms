@@ -4,20 +4,20 @@
 
 #include "arraybug.h"
 
-void runTest(string variationName, vector<int> &A, int B, vector<int> &expected)
+void runTest(std::string variationName, std::vector<int> &A, int B, std::vector<int> &expected)
 {
   ArrayBug *solution = new ArrayBug();
-  vector<int> result = solution->rotateArray(A, B);
+  std::vector<int> result = solution->rotateArray(A, B);
   for (int i = 0; i < expected.size(); ++i) {
     if (expected[i] != result[i])
-      cout << "FAIL " + variationName + ": MaxSet: \nresult[" << i << "] = '" << result[i] << "'\nexpected[" << i << "] = '" << expected[i] << "'" << endl;
+      std::cout << "FAIL " + variationName + ": MaxSet: \nresult[" << i << "] = '" << result[i] << "'\nexpected[" << i << "] = '" << expected[i] << "'" << std::endl;
   }
-  cout << variationName + " SUCCESS!" << endl;
+  std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 void ArrayBugTest() {
-  string variationName;
-  vector<int> A, expected;
+  std::string variationName;
+  std::vector<int> A, expected;
   int B;
 
   variationName = "ex0";

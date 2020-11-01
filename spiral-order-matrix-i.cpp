@@ -4,12 +4,12 @@
 
 #include "spiral-order-matrix-i.h"
 
-vector<int> SpiralOrderMatrixI::spiralOrder(const vector<vector<int>> &A) {
+std::vector<int> SpiralOrderMatrixI::spiralOrder(const std::vector<std::vector<int>> &A) {
   int N = A.size();
   if (N == 0) return {};
   int M = A[0].size();
 
-  vector<int> result;
+  std::vector<int> result;
 
   int TOP = 0,
           BOTTOM = N - 1,

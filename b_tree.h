@@ -9,7 +9,6 @@
 #include <vector>
 #include <string>
 
-using namespace std;
 
 class BTree {
 public:
@@ -18,7 +17,7 @@ public:
     struct Lief {
         Lief *next;
         Lief *prev;
-        string v;
+        std::string v;
     };
 
     struct Node {
@@ -29,37 +28,37 @@ public:
         u_int8_t childCount = 0;
         u_int8_t liefCount = 0;
         Lief *lief;
-        string max;
+        std::string max;
     };
 
     BTree();
 
     Node *getRoot() const;
 
-    void insert(string word);
+    void insert(std::string word);
 
-    string search(string word);
+    std::string search(std::string word);
 
-    string startsWith(string prefix);
+    std::string startsWith(std::string prefix);
 
 private:
     Node *root;
 
-    Node *addNode(string v = "", Node *parent = nullptr, Node *prev = nullptr, Node *next = nullptr);
+    Node *addNode(std::string v = "", Node *parent = nullptr, Node *prev = nullptr, Node *next = nullptr);
 
-    Lief *addLief(string v = "", Lief *prev = nullptr, Lief *next = nullptr);
+    Lief *addLief(std::string v = "", Lief *prev = nullptr, Lief *next = nullptr);
 
-    void changeMax(string newMax, Node *node);
+    void changeMax(std::string newMax, Node *node);
 
-    Lief *traverseLief(const string &term, const Node *seekNode) const;
+    Lief *traverseLief(const std::string &term, const Node *seekNode) const;
 
-    Lief *traverseLiefToStrongEqual(const string &term, const Node *seekNode, bool prefix = false) const;
+    Lief *traverseLiefToStrongEqual(const std::string &term, const Node *seekNode, bool prefix = false) const;
 
-    Node *lookupNode(const string &term, Node *node) const;
+    Node *lookupNode(const std::string &term, Node *node) const;
 
     Node *getTailNode(Node *node) const;
 
-//    Node *lookupNode2(const string &term, Node *node) const;
+//    Node *lookupNode2(const std::string &term, Node *node) const;
 
     void splitMiddleNode(Node *node);
 

@@ -5,8 +5,8 @@
 
 void testStringViewExample() {
   std::string_view sv = "asdasdasdasdasdasdad";
-  //sv += "asd";         // bad, string_view is a read only data structure
-  std::cout << sv << endl;
+  //sv += "asd";         // bad, std::string_view is a read only data structure
+  std::cout << sv << std::endl;
 }
 
 void testPointerVsReference() {
@@ -15,12 +15,12 @@ void testPointerVsReference() {
   int &ra = a;
 
   *pa = 11;
-  std::cout << "Original a: " << a << endl;
-  std::cout << "Ref to a: " << ra << endl;
+  std::cout << "Original a: " << a << std::endl;
+  std::cout << "Ref to a: " << ra << std::endl;
 
   ra = 12;
-  std::cout << "Original a: " << a << endl;
-  std::cout << "Pointer to a: " << *pa << endl;
+  std::cout << "Original a: " << a << std::endl;
+  std::cout << "Pointer to a: " << *pa << std::endl;
 }
 
 void testPointersComparisonOperator() {

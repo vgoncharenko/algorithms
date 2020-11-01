@@ -1,9 +1,9 @@
 //
 // Created by Vitaliy on 2019-09-25.
 // https://leetcode.com/problems/k-closest-points-to-origin/
-// Priority Queue:
-// https://www.geeksforgeeks.org/priority-queue-in-cpp-stl/
-// https://www.geeksforgeeks.org/priority-queue-of-pairs-in-c-ordered-by-first/
+// Priority std::queue:
+// https://www.geeksforgeeks.org/priority-std::queue-in-cpp-stl/
+// https://www.geeksforgeeks.org/priority-std::queue-of-pairs-in-c-ordered-by-first/
 // https://www.geeksforgeeks.org/store-data-triplet-vector-c/
 //
 
@@ -12,12 +12,13 @@
 
 #include <queue>
 #include <vector>
+#include <math.h>
 
-using namespace std;
+
 
 class KClosestPointsToOrigin {
 public:
-    vector<vector<int>> kClosest(vector<vector<int>>& points, int K);
+    std::vector<std::vector<int>> kClosest(std::vector<std::vector<int>>& points, int K);
 };
 
 

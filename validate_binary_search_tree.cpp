@@ -4,7 +4,7 @@
 
 #include "validate_binary_search_tree.h"
 
-bool check(TreeNode *current, map<uint64_t, int> &keys, uint64_t i, int l) {
+bool check(TreeNode *current, std::map<uint64_t, int> &keys, uint64_t i, int l) {
   bool result = true;
   keys[i] = current->val;
   if (current->val != 0) {

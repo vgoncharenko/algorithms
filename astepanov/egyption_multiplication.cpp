@@ -20,8 +20,8 @@ T mult1(T x, T y) {
  */
 template<typename T>
 T mult2(T x, T y) {
-  T min_v = min(x, y);
-  T max_v = max(x, y);
+  T min_v = std::min(x, y);
+  T max_v = std::max(x, y);
   T result = max_v;
   for (T i=1; i<min_v; i++) {
     result += max_v;
@@ -61,8 +61,8 @@ T egpt_mult3_helper(T x, T n) {
 
 template<typename T>
 T mult3(T x, T y) {
-  T min_v = min(x, y);
-  T max_v = max(x, y);
+  T min_v = std::min(x, y);
+  T max_v = std::max(x, y);
 
   return egpt_mult3_helper(max_v, min_v);;
 }
@@ -82,8 +82,8 @@ T egpt_mult4_helper(T r, T x, T n) {
 
 template<typename T>
 T mult4(T x, T y) {
-  T min_v = min(x, y);
-  T max_v = max(x, y);
+  T min_v = std::min(x, y);
+  T max_v = std::max(x, y);
 
   return egpt_mult4_helper(max_v, max_v, min_v - 1);
 }
@@ -107,8 +107,8 @@ T egpt_mult5_helper(T r, T x, T n) {
 
 template<typename T>
 T mult5(T x, T y) {
-  T min_v = min(x, y);
-  T max_v = max(x, y);
+  T min_v = std::min(x, y);
+  T max_v = std::max(x, y);
 
   return egpt_mult5_helper(max_v, max_v, min_v - 1);
 }
@@ -131,8 +131,8 @@ T egpt_mult6_helper(T r, T x, T n) {
 
 template<typename T>
 T mult6(T x, T y) {
-  T min_v = min(x, y);
-  T max_v = max(x, y);
+  T min_v = std::min(x, y);
+  T max_v = std::max(x, y);
 
   while (!isOdd(min_v)) {
     max_v += max_v;

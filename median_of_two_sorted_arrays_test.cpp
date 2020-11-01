@@ -4,20 +4,20 @@
 
 #include "median_of_two_sorted_arrays.h"
 
-void runMedianOfTwoSortedArraysTest(string variationName, vector<int> ar1, vector<int> ar2, double expected)
+void runMedianOfTwoSortedArraysTest(std::string variationName, std::vector<int> ar1, std::vector<int> ar2, double expected)
 {
   MedianOfTwoSortedArrays *solution = new MedianOfTwoSortedArrays();
 //  double result = solution->findMedianSortedArrays(ar1, ar2);
   double result = solution->findMedianSortedArrays2(ar1, ar2);
   if (result != expected)
-    cout << "FAIL " + variationName + ": MedianOfTwoSortedArrays: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< endl;
+    std::cout << "FAIL " + variationName + ": MedianOfTwoSortedArrays: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 void medianOfTwoSortedArraysTest() {
-  string variationName;
-  vector<int> ar1, ar2;
+  std::string variationName;
+  std::vector<int> ar1, ar2;
   double expected;
 
   variationName = "ex0";

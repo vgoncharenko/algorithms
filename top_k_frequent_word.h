@@ -13,11 +13,11 @@
 #include <iterator>
 #include <queue>
 
-using namespace std;
+
 
 class TopKFrequentWords {
 public:
-    vector<string> topKFrequent(std::vector<string> &words, int k);
+    std::vector<std::string> topKFrequent(std::vector<std::string> &words, int k);
 };
 
 #endif //TREE_TOP_K_FREQUENT_WORD_H

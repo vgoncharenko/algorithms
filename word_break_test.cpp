@@ -4,21 +4,21 @@
 
 #include "word_break.h"
 
-void runTest(string variationName, string s, vector<string> &wordDict, bool expected)
+void runTest(std::string variationName, std::string s, std::vector<std::string> &wordDict, bool expected)
 {
   WordBreak *solution = new WordBreak();
   double result = solution->wordBreak(s, wordDict);
   if (result != expected)
-    cout << "FAIL " + variationName + ": WordBreak: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< endl;
+    std::cout << "FAIL " + variationName + ": WordBreak: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 void wordBreakTest() {
-  string variationName;
-  vector<string> wordDict;
+  std::string variationName;
+  std::vector<std::string> wordDict;
   bool expected;
-  string s;
+  std::string s;
 
   variationName = "ex0";
   wordDict = {};

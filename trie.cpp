@@ -18,7 +18,7 @@ TrieNode *Trie::createNode() {
   return node;
 }
 
-void Trie::insert(struct TrieNode *root, string &str) {
+void Trie::insert(struct TrieNode *root, std::string &str) {
   uint32_t size = str.length();
   if (size == 0)
     return;
@@ -33,7 +33,7 @@ void Trie::insert(struct TrieNode *root, string &str) {
   temp->isEndOfWord = true;
 }
 
-bool Trie::search(struct TrieNode * root, string &str) {
+bool Trie::search(struct TrieNode * root, std::string &str) {
   uint32_t size = str.length();
   if (size == 0)
     return false;
@@ -48,7 +48,7 @@ bool Trie::search(struct TrieNode * root, string &str) {
   return (nullptr != temp && temp->isEndOfWord);
 }
 
-bool Trie::search(struct TrieNode * root, string &str, uint32_t index, uint32_t N) {
+bool Trie::search(struct TrieNode * root, std::string &str, uint32_t index, uint32_t N) {
   TrieNode *temp = root;
   for (uint32_t i = index; i < N; ++i) {
     uint8_t index = getIndex(str[i]);

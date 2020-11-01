@@ -4,19 +4,19 @@
 
 #include "validate_binary_search_tree.h"
 
-void trimLeftTrailingSpaces(string &input) {
+void trimLeftTrailingSpaces(std::string &input) {
   input.erase(input.begin(), find_if(input.begin(), input.end(), [](int ch) {
       return !isspace(ch);
   }));
 }
 
-void trimRightTrailingSpaces(string &input) {
+void trimRightTrailingSpaces(std::string &input) {
   input.erase(find_if(input.rbegin(), input.rend(), [](int ch) {
       return !isspace(ch);
   }).base(), input.end());
 }
 
-TreeNode* stringToTreeNode(string input) {
+TreeNode* stringToTreeNode(std::string input) {
   trimLeftTrailingSpaces(input);
   trimRightTrailingSpaces(input);
   input = input.substr(1, input.length() - 2);
@@ -24,18 +24,18 @@ TreeNode* stringToTreeNode(string input) {
     return nullptr;
   }
 
-  string item;
-  stringstream ss;
+  std::string item;
+  std::stringstream ss;
   ss.str(input);
 
   getline(ss, item, ',');
   TreeNode* root = new TreeNode(stoi(item));
-  queue<TreeNode*> nodeQueue;
-  nodeQueue.push(root);
+  std::queue<TreeNode*> nodequeue;
+  nodequeue.push(root);
 
   while (true) {
-    TreeNode* node = nodeQueue.front();
-    nodeQueue.pop();
+    TreeNode* node = nodequeue.front();
+    nodequeue.pop();
 
     if (!getline(ss, item, ',')) {
       break;
@@ -45,7 +45,7 @@ TreeNode* stringToTreeNode(string input) {
     if (item != "null") {
       int leftNumber = stoi(item);
       node->left = new TreeNode(leftNumber);
-      nodeQueue.push(node->left);
+      nodequeue.push(node->left);
     }
 
     if (!getline(ss, item, ',')) {
@@ -56,28 +56,28 @@ TreeNode* stringToTreeNode(string input) {
     if (item != "null") {
       int rightNumber = stoi(item);
       node->right = new TreeNode(rightNumber);
-      nodeQueue.push(node->right);
+      nodequeue.push(node->right);
     }
   }
   return root;
 }
 
-string boolToString(bool input) {
+std::string boolToString(bool input) {
   return input ? "True" : "False";
 }
 
-void runTest(string variationName, string &input, bool expected) {
+void runTest(std::string variationName, std::string &input, bool expected) {
   TreeNode *root = stringToTreeNode(input);
   ValidateBinarySearchTree *solution = new ValidateBinarySearchTree();
   bool result = solution->isValidBST(root);
   if (result != expected)
-    cout << "FAIL " + variationName + ": ValidateBinarySearchTree: \nresult: '" << result << "'\nexpected: '"
-         << expected << "'" << endl;
+    std::cout << "FAIL " + variationName + ": ValidateBinarySearchTree: \nresult: '" << result << "'\nexpected: '"
+         << expected << "'" << std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
-void makeTree(TreeNode *current, vector<int> &input, int pos, int size) {
+void makeTree(TreeNode *current, std::vector<int> &input, int pos, int size) {
   if (pos >= size)
     return;
 
@@ -92,9 +92,9 @@ void makeTree(TreeNode *current, vector<int> &input, int pos, int size) {
 }
 
 void validateBinarySearchTreeTest() {
-  string variationName;
+  std::string variationName;
 
-  string input;
+  std::string input;
   bool expected;
 
   variationName = "ex0";

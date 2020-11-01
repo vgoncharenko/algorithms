@@ -5,13 +5,13 @@
 #include "is-subsequence.h"
 
 
-bool IsSubsequence::isSubsequence(string s, string t)
+bool IsSubsequence::isSubsequence(std::string s, std::string t)
 {
   if (t.size() == 0 && s.size() != 0)
     return false;
   if (s.size() == 0)
     return true;
-  map<char,vector<int>> charMap;
+    std::map<char,std::vector<int>> charMap;
   for (int i=0; i<t.size(); i++) {
     auto index = charMap.find(t[i]);
     if (index == charMap.end())

@@ -7,6 +7,7 @@
 #include <memory>
 #include <utility>
 #include <vector>
+#include "measure.cpp"
 
 class FileReader {
 public:

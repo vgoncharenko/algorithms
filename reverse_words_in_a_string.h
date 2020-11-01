@@ -7,12 +7,13 @@
 #define TREE_REVERSE_WORDS_IN_A_STRING_H
 
 #include <string>
+#include <iostream>
 
-using namespace std;
+
 
 class ReverseWordsInAString {
 public:
-    static string reverseWords(string s);
+    static std::string reverseWords(std::string s);
 };
 
 

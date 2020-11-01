@@ -4,18 +4,18 @@
 
 #include "reverse_words_in_a_string.h"
 
-void runTest(string variationName, string input, string expected)
+void runTest(std::string variationName, std::string input, std::string expected)
 {
   ReverseWordsInAString *solution = new ReverseWordsInAString();
-  string result = solution->reverseWords(input);
+  std::string result = solution->reverseWords(input);
   if (result != expected)
-    cout << "FAIL " + variationName + ": testDeepCopyListWithRandomPointerTest: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< endl;
+    std::cout << "FAIL " + variationName + ": testDeepCopyListWithRandomPointerTest: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 void reverseWordsInAStringTest() {
-  string variationName,
+  std::string variationName,
          input,
          expected;
 

@@ -14,7 +14,7 @@ void testSolutionOfSum ()
 
   for (int i = 0; i < result.size(); i++)
     if (expected[i] != result[i])
-      cout << "FAIL: testSolutionOfSum: \nexpected: " << expected[i] << "\nactual: " << result[i] << endl;
+      std::cout << "FAIL: testSolutionOfSum: \nexpected: " << expected[i] << "\nactual: " << result[i] << std::endl;
 
   std::cout << '\n';
 }

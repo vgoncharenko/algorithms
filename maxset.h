@@ -7,12 +7,14 @@
 #define TREE_MAXSET_H
 
 #include <vector>
+#include <string>
+#include <iostream>
 
-using namespace std;
+
 
 class MaxSet {
 public:
-    vector<int> find(vector<int>& A);
+    std::vector<int> find(std::vector<int>& A);
 };
 
 #endif //TREE_MAXSET_H

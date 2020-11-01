@@ -5,13 +5,13 @@
 #include "length_of_longest_substring.h"
 
 void testLengthOfLongestSubstring() {
-  string input = "abcabcbb";
+  std::string input = "abcabcbb";
   int expected = 3;
   auto *solution = new lengthOfLongestSubstring();
   int result = solution->getLength(input);
 
   if (expected != result)
-    cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << endl;
+    std::cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << std::endl;
 
   std::cout << '\n';
 
@@ -21,7 +21,7 @@ void testLengthOfLongestSubstring() {
   result = solution->getLength(input);
 
   if (expected != result)
-    cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << endl;
+    std::cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << std::endl;
 
   std::cout << '\n';
 
@@ -30,28 +30,28 @@ void testLengthOfLongestSubstring() {
   result = solution->getLength(input);
 
   if (expected != result)
-    cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << endl;
+    std::cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << std::endl;
 
   input = "pwket";
   expected = 5;
   result = solution->getLength(input);
 
   if (expected != result)
-    cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << endl;
+    std::cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << std::endl;
 
   input = "erwpwkew";
   expected = 4;
   result = solution->getLength(input);
 
   if (expected != result)
-    cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << endl;
+    std::cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << std::endl;
 
   input = "ynyo";
   expected = 3;
   result = solution->getLength(input);
 
   if (expected != result)
-    cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << endl;
+    std::cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << std::endl;
 
 
   input = "bpfbhmipx";
@@ -59,14 +59,14 @@ void testLengthOfLongestSubstring() {
   result = solution->getLength(input);
 
   if (expected != result)
-    cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << endl;
+    std::cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << std::endl;
 
   input = "abcdbzkb";
   expected = 5;
   result = solution->getLength(input);
 
   if (expected != result)
-    cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << endl;
+    std::cout << "FAIL: testSolutionOfSum: \nexpected: " << expected << "\nactual: " << result << std::endl;
 
   std::cout << '\n';
 }

@@ -6,7 +6,7 @@
 
 typedef std::unordered_map<char, char> ParenthesesMap;
 
-bool ValidParentheses::isValid(string s) {
+bool ValidParentheses::isValid(std::string s) {
   int N = s.size();
   if (N == 0)
     return true;
@@ -17,7 +17,7 @@ bool ValidParentheses::isValid(string s) {
                   {'(', ')'}
           }
   );
-  stack<char*> stack1;
+    std::stack<char*> stack1;
   char *tmp;
 
   for (int i = 0; i < N; ++i) {

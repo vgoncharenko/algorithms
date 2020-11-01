@@ -10,11 +10,10 @@
 #include <map>
 #include <iterator>
 
-using namespace std;
 
 class SolutionOfSum {
 public:
-    vector<int> twoSum(vector<int> &nums, int target);
+    std::vector<int> twoSum(std::vector<int> &nums, int target);
 };
 
 

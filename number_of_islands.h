@@ -9,12 +9,13 @@
 #include <string>
 #include <algorithm>
 #include <vector>
+#include <iostream>
 
-using namespace std;
+
 
 class NumberOfIslands {
 public:
-    int numIslands(vector<vector<char>>& grid);
+    int numIslands(std::vector<std::vector<char>>& grid);
 };
 
 #endif //TREE_NUMBER_OF_ISLANDS_H

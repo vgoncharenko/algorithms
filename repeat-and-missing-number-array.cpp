@@ -4,10 +4,10 @@
 
 #include "repeat-and-missing-number-array.h"
 
-vector<int> RepeatAndMissingNumberArray::repeatedNumber(const vector<int> &A){
+std::vector<int> RepeatAndMissingNumberArray::repeatedNumber(const std::vector<int> &A){
   if (A.size() == 0) return {};
-  vector <int> AA(A);
-  vector <int> result = {};
+  std::vector <int> AA(A);
+  std::vector <int> result = {};
   sort(AA.begin(), AA.end());
   int f = -1,
       s = -1,

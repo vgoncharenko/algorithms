@@ -12,11 +12,11 @@
 #include <vector>
 #include "trie.h"
 
-using namespace std;
+
 
 class WordBreak {
 public:
-    bool wordBreak(string s, vector<string>& wordDict);
+    bool wordBreak(std::string s, std::vector<std::string>& wordDict);
 };
 
 #endif //TREE_WORD_BREAK_H

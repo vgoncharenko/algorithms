@@ -4,10 +4,10 @@
 
 #include "rotting-oranges.h"
 
-int RottingOranges::orangesRotting(vector<vector<int>>& grid) {
+int RottingOranges::orangesRotting(std::vector<std::vector<int>>& grid) {
   int n = grid.size();
   if (n == 0) return 0;
-  vector<int> r = {-1, 0, 1, 0},
+  std::vector<int> r = {-1, 0, 1, 0},
           c = {0,  1, 0, -1};
   int Min = 1,
           ff = 0, f = 0,
@@ -39,7 +39,7 @@ int RottingOranges::orangesRotting(vector<vector<int>>& grid) {
   return result;
 }
 
-void RottingOranges::h(vector<vector<int>>& grid, int i, int j, int n, int m, int &f, int &ff, int Min, vector<int> r, vector<int> c) {
+void RottingOranges::h(std::vector<std::vector<int>>& grid, int i, int j, int n, int m, int &f, int &ff, int Min, std::vector<int> r, std::vector<int> c) {
   grid[i][j] = 2+Min*2;
   for (int k=0; k<4; k++) {
     if (i+r[k] >= 0 && i+r[k] < n && j+c[k] >= 0 && j+c[k] < m) {

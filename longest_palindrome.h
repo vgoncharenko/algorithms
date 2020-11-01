@@ -13,14 +13,14 @@
 #include <queue>
 #include "max_heap.h"
 
-using namespace std;
+
 
 class LongestPalindrome {
-    int checkIndexesCorrelation(vector<int> &v1, vector<int> &v2);
+    int checkIndexesCorrelation(std::vector<int> &v1, std::vector<int> &v2);
 public:
-    string find(string s);
-    string find2(string s);
-    string find3(string s);
+    std::string find(std::string s);
+    std::string find2(std::string s);
+    std::string find3(std::string s);
 };
 
 

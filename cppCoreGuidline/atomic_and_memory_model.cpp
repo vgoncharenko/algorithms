@@ -6,8 +6,8 @@
 #include <thread>
 
 struct MyAtomic {
-    atomic<int64_t> x = 1;
-    atomic<double> y = 1;
+    std::atomic<int64_t> x = 1;
+    std::atomic<double> y = 1;
 };
 
 template<typename Callable, typename AssertFunction>
@@ -16,14 +16,14 @@ void atomicTest(Callable f, AssertFunction assertF, const int64_t expected, cons
   const int N = 50;
 
   // start threads
-  vector<thread> v;
+  std::vector<std::thread> v;
   for (int i = 0; i < N; ++i) {
-    thread t{f, o};
+      std::thread t{f, o};
     v.push_back(move(t));
   }
 
   // wait threads
-  for_each(v.begin(), v.end(), [](thread &t) { t.join(); });
+  for_each(v.begin(), v.end(), [](std::thread &t) { t.join(); });
 
   // assert result
   if (assertF(o, expected)) {
@@ -73,7 +73,7 @@ void atomicTest(Callable f, AssertFunction assertF, const int64_t expected, cons
 //ret
 void testAtomic() {
   atomicTest([](MyAtomic *o) {
-                 this_thread::sleep_for(chrono::seconds(1));
+                 std::this_thread::sleep_for(std::chrono::seconds(1));
                  o->x++;
              },
              [](MyAtomic *o, const int64_t expected) {
@@ -84,7 +84,7 @@ void testAtomic() {
              );
 
   atomicTest([](MyAtomic *o) {
-                 this_thread::sleep_for(chrono::seconds(1));
+                 std::this_thread::sleep_for(std::chrono::seconds(1));
                  o->x += 1;
              },
              [](MyAtomic *o, const int64_t expected) {
@@ -95,7 +95,7 @@ void testAtomic() {
              );
 
   atomicTest([](MyAtomic *o) {
-                 this_thread::sleep_for(chrono::seconds(1));
+                 std::this_thread::sleep_for(std::chrono::seconds(1));
                  o->x = o->x + 1;
              },
              [](MyAtomic *o, const int64_t expected) {
@@ -112,7 +112,7 @@ void testAtomic() {
 //  }, pow(2, 50), "o->x *= 2");
 
   atomicTest([](MyAtomic *o) {
-                 this_thread::sleep_for(chrono::seconds(1));
+                 std::this_thread::sleep_for(std::chrono::seconds(1));
                  o->x = o->x * 2;
              },
              [](MyAtomic *o, const int64_t expected) {
@@ -129,7 +129,7 @@ void testAtomic() {
 //  }, 51, "o->y++");
 
   atomicTest([](MyAtomic *o) {
-                 this_thread::sleep_for(chrono::seconds(1));
+                 std::this_thread::sleep_for(std::chrono::seconds(1));
                  o->y = o->y + 1;
              },
              [](MyAtomic *o, const int64_t expected) {
@@ -141,14 +141,14 @@ void testAtomic() {
 
   //https://stackoverflow.com/questions/45055402/atomic-double-floating-point-or-sse-avx-vector-load-store-on-x86-64
   atomicTest([](MyAtomic *o) {
-                 this_thread::sleep_for(chrono::seconds(1));
+                 std::this_thread::sleep_for(std::chrono::seconds(1));
                  double desired, expected = o->y.load(std::memory_order_relaxed);
                  do {
                    desired = expected + 1.0;
                    o->x++;
                  } while( !o->y.compare_exchange_weak(expected, desired) );
                  // if o->y == expected => o->y = desired and return true
-                 // elseif o->y != expected => expected = o->y end return false
+                 // elseif o->y != expected => expected = o->y std::end return false
              },
              [](MyAtomic *o, const int64_t expected) {
                  return o->y == expected;

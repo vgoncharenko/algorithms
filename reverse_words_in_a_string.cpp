@@ -6,7 +6,7 @@
 
 // Function to reverse any sequence
 // starting with pointer begin and
-// ending with pointer end
+// std::ending with pointer std::end
 void reverse(char *begin, char *end) {
   char temp;
   while (begin < end) {
@@ -17,7 +17,7 @@ void reverse(char *begin, char *end) {
 }
 
 // Function to reverse words*/
-string ReverseWordsInAString::reverseWords(string s) {
+std::string ReverseWordsInAString::reverseWords(std::string s) {
   if (s.empty()) {
     return s;
   }
@@ -58,7 +58,7 @@ string ReverseWordsInAString::reverseWords(string s) {
     temp++;
   }
 
-  // Reverse the entire string
+  // Reverse the entire std::string
   reverse(&s.at(0), temp - 1 - skip);
 
   return skip > 0 ? s.erase(N - skip) : s;

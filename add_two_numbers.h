@@ -10,7 +10,6 @@
 #include <vector>
 #include <string>
 
-using namespace std;
 
 class AddTwoNumbers {
 public:
@@ -21,7 +20,7 @@ public:
         explicit ListNode(int x) : val(x), next(nullptr) {}
     };
 
-    vector<int> sum(vector<int> input1, vector<int> input2);
+    std::vector<int> sum(std::vector<int> input1, std::vector<int> input2);
 
     ListNode *sum(ListNode *l1, ListNode *l2);
 };

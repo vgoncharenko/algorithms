@@ -4,9 +4,8 @@
 
 #include "b_tree.h"
 
-using namespace std;
 
-BTree::Node *BTree::addNode(string v, Node *parent, Node *prev, Node *next) {
+BTree::Node *BTree::addNode(std::string v, Node *parent, Node *prev, Node *next) {
   Node *node = new Node();
   parent->children[parent->childCount] = node;
   parent->childCount++;
@@ -31,7 +30,7 @@ BTree::Node *BTree::addNode(string v, Node *parent, Node *prev, Node *next) {
   return node;
 }
 
-BTree::Lief *BTree::addLief(string v, Lief *prev, Lief *next) {
+BTree::Lief *BTree::addLief(std::string v, Lief *prev, Lief *next) {
   Lief *lief = new Lief();
   lief->v = v;
   lief->prev = prev;
@@ -46,7 +45,7 @@ BTree::Lief *BTree::addLief(string v, Lief *prev, Lief *next) {
   return lief;
 }
 
-void BTree::changeMax(string newMax, Node *node) {
+void BTree::changeMax(std::string newMax, Node *node) {
   while (node != nullptr) {
     if (node->max.compare(newMax) < 0) {
       node->max = newMax;
@@ -56,7 +55,7 @@ void BTree::changeMax(string newMax, Node *node) {
   }
 }
 
-BTree::Lief *BTree::traverseLief(const string &term, const Node *seekNode) const {
+BTree::Lief *BTree::traverseLief(const std::string &term, const Node *seekNode) const {
   Lief *seekLief = seekNode->lief;
 
   while (seekLief->next != nullptr) {
@@ -70,9 +69,9 @@ BTree::Lief *BTree::traverseLief(const string &term, const Node *seekNode) const
   return seekLief;
 }
 
-BTree::Lief *BTree::traverseLiefToStrongEqual(const string &term, const Node *seekNode, bool prefix) const {
+BTree::Lief *BTree::traverseLiefToStrongEqual(const std::string &term, const Node *seekNode, bool prefix) const {
   Lief *seekLief = seekNode->lief;
-  string value;
+  std::string value;
   while (seekLief != nullptr) {
     if (prefix) {
       value = seekLief->v.substr(0, term.length());
@@ -89,7 +88,7 @@ BTree::Lief *BTree::traverseLiefToStrongEqual(const string &term, const Node *se
   return nullptr;
 }
 
-BTree::Node *BTree::lookupNode(const string &term, Node *node) const {
+BTree::Node *BTree::lookupNode(const std::string &term, Node *node) const {
   Node *seekNode = nullptr;
 
   for (int i = 0; i < node->childCount; i++) {
@@ -161,7 +160,7 @@ BTree::BTree() {
 BTree::Node *BTree::getRoot() const { return root; }
 
 /** Inserts a word into the trie. */
-void BTree::insert(string word) {
+void BTree::insert(std::string word) {
   // Handle the 1 child for root. Like first input
   if (root->children[0] == nullptr) {
     addNode(word, root);
@@ -211,7 +210,7 @@ void BTree::insert(string word) {
 }
 
 /** Returns if the word is in the trie. */
-string BTree::search(string word) {
+std::string BTree::search(std::string word) {
   // Node lookup
   Node *seekNode = lookupNode(word, root);
 
@@ -224,7 +223,7 @@ string BTree::search(string word) {
 }
 
 /** Returns if there is any word in the trie that starts with the given prefix. */
-string BTree::startsWith(string prefix) {
+std::string BTree::startsWith(std::string prefix) {
   // Node lookup
   Node *seekNode = lookupNode(prefix, root);
 

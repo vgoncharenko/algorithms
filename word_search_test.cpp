@@ -4,21 +4,21 @@
 
 #include "word_search.h"
 
-void runTest(string variationName, vector<vector<char>>& grid, const string& word, bool expected)
+void runTest(std::string variationName, std::vector<std::vector<char>>& grid, const std::string& word, bool expected)
 {
   WordSearch *solution = new WordSearch();
   double result = solution->exist(grid, word);
   if (result != expected)
-    cout << "FAIL " + variationName + ": WordSearch: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< endl;
+    std::cout << "FAIL " + variationName + ": WordSearch: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 void wordSearchTest() {
-  string variationName;
-  vector<vector<char>> grid;
+  std::string variationName;
+  std::vector<std::vector<char>> grid;
   bool expected;
-  string word;
+  std::string word;
 
   variationName = "ex0";
   grid = {{}};

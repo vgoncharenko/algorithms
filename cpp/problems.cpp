@@ -8,7 +8,7 @@ private:
     int privateProperty;
 
     void dddPrivate() {
-      cout << "dddPrivate" << endl;
+      std::cout << "dddPrivate" << std::endl;
     }
 public:
     DangerousClassInheritance(int _p) {
@@ -17,7 +17,7 @@ public:
 
     void dddPublic(DangerousClassInheritance *a) {
       a->dddPrivate();
-      cout << "Private property: " << a->privateProperty << endl;
+      std::cout << "Private property: " << a->privateProperty << std::endl;
     }
 };
 
@@ -29,6 +29,6 @@ void testClassInheritance()
   d1->dddPublic(d2);
 }
 
-void problem12_1(string fileName, int k) {
+void problem12_1(std::string fileName, int k) {
 //  getline();
 }

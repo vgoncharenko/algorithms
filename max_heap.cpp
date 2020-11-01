@@ -4,7 +4,7 @@
 
 #include "max_heap.h"
 
-TermMax::TermMax(string _term, unsigned long _value) {
+TermMax::TermMax(std::string _term, unsigned long _value) {
   term = move(_term);
   value = _value;
 }

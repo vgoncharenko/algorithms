@@ -4,9 +4,9 @@
 
 #include "hand-of-straights.h"
 
-using namespace std;
 
-bool HandOfStraights::isNStraightHand(vector<int>& hand, int W){
+
+bool HandOfStraights::isNStraightHand(std::vector<int>& hand, int W){
   int n = hand.size();
   if (n == 0 || W == 0 || n%W != 0)
     return false;

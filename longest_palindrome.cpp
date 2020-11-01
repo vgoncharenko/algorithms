@@ -4,16 +4,16 @@
 
 #include "longest_palindrome.h"
 
-string LongestPalindrome::find(string s) {
+std::string LongestPalindrome::find(std::string s) {
   if (s.size() <= 1) {
     return s;
   }
 
-  string result = "",
+  std::string result = "",
           substr = "",
           middle = "";
-  typedef vector<int> IndexSet;
-  map<string, IndexSet> map1, map2;
+  typedef std::vector<int> IndexSet;
+    std::map<std::string, IndexSet> map1, map2;
   int n = s.length(), max = 0;
 
   for (int i = 0; i < n; i++) {
@@ -55,15 +55,15 @@ string LongestPalindrome::find(string s) {
   return result;
 }
 
-string LongestPalindrome::find2(string s) {
+std::string LongestPalindrome::find2(std::string s) {
   if (s.size() <= 1) {
     return s;
   }
 
-  string substr = "",
+  std::string substr = "",
           substr1 = "",
           substr2 = "";
-  priority_queue<TermMax, vector<TermMax>, TermMaxComparator> maxHeap;
+    std::priority_queue<TermMax, std::vector<TermMax>, TermMaxComparator> maxHeap;
   unsigned long n = s.length();
 
   maxHeap.push(TermMax(s.substr(0, 1), 1));
@@ -99,8 +99,8 @@ string LongestPalindrome::find2(string s) {
   return maxHeap.top().term;
 }
 
-int LongestPalindrome::checkIndexesCorrelation(vector<int> &v1, vector<int> &v2) {
-  vector<int> results = {-3};
+int LongestPalindrome::checkIndexesCorrelation(std::vector<int> &v1, std::vector<int> &v2) {
+  std::vector<int> results = {-3};
   for (int i : v1) {
     for (int j : v2) {
       if (i == j - 1) {
@@ -119,7 +119,7 @@ int LongestPalindrome::checkIndexesCorrelation(vector<int> &v1, vector<int> &v2)
 }
 
 // https://www.geeksforgeeks.org/manachers-algorithm-linear-time-longest-palindromic-substring-part-3-2/
-string LongestPalindrome::find3(string s) {
+std::string LongestPalindrome::find3(std::string s) {
   if (s.size() <= 1) {
     return s;
   }
@@ -152,18 +152,18 @@ string LongestPalindrome::find3(string s) {
       } else if (LPS[curL] == center - curL && curR == N - 1) {
 //      Case 2: L[currentRightPosition] = L[currentLeftPosition] applies when:
 //      i-left palindrome is prefix of center palindrome (means completely contained also)
-//      center palindrome is suffix of input string
+//      center palindrome is suffix of input std::string
 //      Above conditions are satisfied when
 //      L[currentLeftPosition] = centerRightPosition – currentRightPosition (For 1st condition) AND
-//      centerRightPosition = 2*N where N is input string length N (For 2nd condition).
+//      centerRightPosition = 2*N where N is input std::string length N (For 2nd condition).
         LPS[curR] = LPS[curL];
       } else if (LPS[curL] == center - curL && curR < N - 1) {
 //      Case 3: L[currentRightPosition] > = L[currentLeftPosition] applies when:
 //      i-left palindrome is prefix of center palindrome (and so i-left palindrome is completely contained in center palindrome)
-//      center palindrome is NOT suffix of input string
+//      center palindrome is NOT suffix of input std::string
 //      Above conditions are satisfied when
 //      L[currentLeftPosition] = centerRightPosition – currentRightPosition (For 1st condition) AND
-//      centerRightPosition < 2*N where N is input string length N (For 2nd condition).
+//      centerRightPosition < 2*N where N is input std::string length N (For 2nd condition).
         LPS[curR] = LPS[curL];
         expand = true;  // expansion required
       } else if (LPS[curL] > center - curL) {

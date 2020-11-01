@@ -4,8 +4,8 @@
 
 #include "maxset.h"
 
-vector<int> MaxSet::find(vector<int> &A) {
-  vector<int> result = {},
+std::vector<int> MaxSet::find(std::vector<int> &A) {
+  std::vector<int> result = {},
           tempA = {};
   uint64_t sum = 0,
           maxSum = 0;

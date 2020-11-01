@@ -4,44 +4,46 @@
 
 #include <thread>
 #include <mutex>
+#include <iostream>
+#include <vector>
 
-mutex m1;
+std::mutex m1;
 
 void thread_task(int i){
   try{
     while (i-->0) {
       m1.lock();
-      cout << "Thread id: " << this_thread::get_id() << " i: " << i << endl;
+        std::cout << "Thread id: " << std::this_thread::get_id() << " i: " << i << std::endl;
       m1.unlock();
     }
-  } catch (exception e) {
+  } catch (std::exception e) {
     m1.unlock();
   };
 
-  this_thread::sleep_for(chrono::seconds(1));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
-vector<thread> runThreads(int x) {
-  vector<thread> v;
+std::vector<std::thread> runThreads(int x) {
+    std::vector<std::thread> v;
   for (int i = 0; i < x; ++i) {
-    thread t {thread_task, i};
+      std::thread t {thread_task, i};
     v.push_back(move(t));
   }
-  cout << "All threads runed!" << endl;
+    std::cout << "All threads runed!" << std::endl;
 
   return v;
 }
 
-void waitThreads(vector<thread> &&v) {
-    for_each(v.begin(), v.end(), [](thread &t){t.join();});
+void waitThreads(std::vector<std::thread> &&v) {
+    for_each(v.begin(), v.end(), [](std::thread &t){t.join();});
 }
 
 void mainThreads() {
   int x = 10;
-  cout << "Main function 1" << endl;
-  vector<thread> &&v = runThreads(x);
-  cout << "Main function 2" << endl;
+    std::cout << "Main function 1" << std::endl;
+    std::vector<std::thread> &&v = runThreads(x);
+    std::cout << "Main function 2" << std::endl;
   waitThreads(move(v));
-  cout << "Main function 3" << endl;
+    std::cout << "Main function 3" << std::endl;
 }
 

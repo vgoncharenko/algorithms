@@ -1,8 +1,12 @@
 //
 // Created by Vitaliy on 2019-09-26.
 //
+#include <string>
+#include <stack>
+#include <iostream>
+#include <vector>
 
-bool alg_1_1(string s)
+bool alg_1_1(std::string s)
 {
   u_int64_t mask = 0,
             bit = 0;
@@ -20,7 +24,7 @@ bool alg_1_1(string s)
 
 void testAlg_1_1()
 {
-  string variationName,
+  std::string variationName,
          s;
   bool expected,
        res;
@@ -31,24 +35,24 @@ void testAlg_1_1()
   res = alg_1_1(s);
   expected = false;
   if (res != expected)
-    cout << "FAIL " + variationName + ": testAlg_1_1: \nres: " << res << "\nexpected: " << expected << endl;
+    std::cout << "FAIL " + variationName + ": testAlg_1_1: \nres: " << res << "\nexpected: " << expected << std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 
   variationName = "ex2";
   s = "asdfghjklopiuytrewq";
   res = alg_1_1(s);
   expected = true;
   if (res != expected)
-    cout << "FAIL " + variationName + ": testAlg_1_1: \nres: " << res << "\nexpected: " << expected << endl;
+    std::cout << "FAIL " + variationName + ": testAlg_1_1: \nres: " << res << "\nexpected: " << expected << std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 
-vector<int> alg_5_3_prepareVector(int v) {
+std::vector<int> alg_5_3_prepareVector(int v) {
   if (v == 0) return {0};
-  vector<int> res;
+  std::vector<int> res;
   const uint8_t MAX_RANGE = 64;
   int range = 0;
   while (v > 0) {
@@ -66,7 +70,7 @@ vector<int> alg_5_3_prepareVector(int v) {
 
 int alg_5_3(int val)
 {
-  vector<int> v = alg_5_3_prepareVector(val);
+  std::vector<int> v = alg_5_3_prepareVector(val);
   if (v.empty()) return 0;
   unsigned long n = v.size();
   if (n == 1) return 1;
@@ -81,7 +85,7 @@ int alg_5_3(int val)
 
 void testAlg_5_3()
 {
-  string variationName;
+  std::string variationName;
   int v;
   int expected,
       res;
@@ -92,30 +96,30 @@ void testAlg_5_3()
   res = alg_5_3(v);
   expected = 9;
   if (res != expected)
-    cout << "FAIL " + variationName + ": testAlg_5_3: \nres: " << res << "\nexpected: " << expected << endl;
+    std::cout << "FAIL " + variationName + ": testAlg_5_3: \nres: " << res << "\nexpected: " << expected << std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 
   variationName = "ex2";
   v = 63;
   res = alg_5_3(v);
   expected = 6;
   if (res != expected)
-    cout << "FAIL " + variationName + ": testAlg_5_3: \nres: " << res << "\nexpected: " << expected << endl;
+    std::cout << "FAIL " + variationName + ": testAlg_5_3: \nres: " << res << "\nexpected: " << expected << std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 
   variationName = "ex3";
   v = 0;
   res = alg_5_3(v);
   expected = 1;
   if (res != expected)
-    cout << "FAIL " + variationName + ": testAlg_5_3: \nres: " << res << "\nexpected: " << expected << endl;
+    std::cout << "FAIL " + variationName + ": testAlg_5_3: \nres: " << res << "\nexpected: " << expected << std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
-void alg_8_6(int n, stack<int> &s1, stack<int> &s2, stack<int> &s3)
+void alg_8_6(int n, std::stack<int> &s1, std::stack<int> &s2, std::stack<int> &s3)
 {
   if (n <= 0) return;
   alg_8_6(n-1, s1, s3, s2);
@@ -126,7 +130,7 @@ void alg_8_6(int n, stack<int> &s1, stack<int> &s2, stack<int> &s3)
 
 void testAlg_8_6()
 {
-  stack<int> s1, s2, s3;
+    std::stack<int> s1, s2, s3;
   s1.push(5);
   s1.push(4);
   s1.push(3);

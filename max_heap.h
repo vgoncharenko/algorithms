@@ -7,13 +7,13 @@
 
 #include <iostream>
 
-using namespace std;
+
 
 struct TermMax {
-    string term = "";
+    std::string term = "";
     unsigned long value = 0;
 public:
-    TermMax(string _term = "", unsigned long _value = 0);
+    TermMax(std::string _term = "", unsigned long _value = 0);
 
     unsigned long getValue() const;
 };

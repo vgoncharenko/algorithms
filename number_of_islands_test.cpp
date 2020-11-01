@@ -4,19 +4,19 @@
 
 #include "number_of_islands.h"
 
-void runTest(string variationName, vector<vector<char>>& grid, int expected)
+void runTest(std::string variationName, std::vector<std::vector<char>>& grid, int expected)
 {
   NumberOfIslands *solution = new NumberOfIslands();
   double result = solution->numIslands(grid);
   if (result != expected)
-    cout << "FAIL " + variationName + ": NumberOfIslands: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< endl;
+    std::cout << "FAIL " + variationName + ": NumberOfIslands: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 void numberOfIslandsTest() {
-  string variationName;
-  vector<vector<char>> grid;
+  std::string variationName;
+  std::vector<std::vector<char>> grid;
   int expected;
 
   variationName = "ex0";

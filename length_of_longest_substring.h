@@ -13,13 +13,13 @@
 #include <iostream>
 #include <algorithm>
 
-using namespace std;
+
 
 class lengthOfLongestSubstring {
 public:
-    int getLength(string s);
-    int getLength2(string s);
-    int getLength3(string s);
+    int getLength(std::string s);
+    int getLength2(std::string s);
+    int getLength3(std::string s);
 };
 
 

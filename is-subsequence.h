@@ -9,12 +9,13 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <iostream>
 
-using namespace std;
+
 
 class IsSubsequence {
 public:
-    bool isSubsequence(string s, string t);
+    bool isSubsequence(std::string s, std::string t);
 };
 
 

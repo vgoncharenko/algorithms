@@ -2,12 +2,19 @@
 // Created by Vitaliy on 2019-09-23.
 // https://leetcode.com/problems/maximum-width-of-binary-tree
 //
+#include <string>
+#include <iostream>
+#include <map>
+#include <queue>
 
-using namespace std;
+struct TreeNode{
+    TreeNode *left = nullptr;
+    TreeNode *right = nullptr;
+};
 
 class MaximumWidthOfBinaryTree {
 public:
-    map<int,uint32_t> leftMostPositionPerLvl;
+    std::map<int,uint32_t> leftMostPositionPerLvl;
     uint32_t maxW = 0;
 
     int widthOfBinaryTree(TreeNode* root) {
@@ -25,7 +32,7 @@ public:
 
       auto tmp = leftMostPositionPerLvl.insert({depth, pos});
 
-      maxW = max(maxW, pos - tmp.first->second + 1);
+      maxW = std::max(maxW, pos - tmp.first->second + 1);
 
       h(node->left, depth+1, pos*2);
       h(node->right, depth+1, pos*2+1);
@@ -37,7 +44,7 @@ public:
 
          int maxW = 1, W = 0, WW = 0;
          bool hasNode = false;
-         queue<TreeNode*> curQ, nextQ;
+         std::queue<TreeNode*> curQ, nextQ;
          curQ.push(root);
          while(!curQ.empty()) {
              root = curQ.front();
@@ -59,7 +66,7 @@ public:
                  W++;
 
              if (curQ.empty() && !nextQ.empty()) {
-                 maxW = max(maxW, WW);
+                 maxW = std::max(maxW, WW);
                  W = 0;
                  WW = 0;
                  hasNode = false;

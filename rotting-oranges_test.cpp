@@ -4,18 +4,18 @@
 
 #include "rotting-oranges.h"
 
-void runRottingOrangesTest(string &variationName, vector<vector<int>>& grid, int expected) {
+void runRottingOrangesTest(std::string &variationName, std::vector<std::vector<int>>& grid, int expected) {
   RottingOranges *solution = new RottingOranges();
   int result = solution->orangesRotting(grid);
   if (result != expected)
-    cout << "FAIL " + variationName + ": RottingOranges: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< endl;
+    std::cout << "FAIL " + variationName + ": RottingOranges: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 void rottingOrangesTest() {
-  string variationName;
-  vector<vector<int>> grid;
+  std::string variationName;
+  std::vector<std::vector<int>> grid;
   int expected;
 
   variationName = "ex0";

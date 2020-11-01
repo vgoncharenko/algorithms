@@ -4,23 +4,23 @@
 
 #include "dijkstra.h"
 
-void runTest(string &variationName, Vertex root, string &src, string &dst, vector<string> &expected) {
+void runTest(std::string &variationName, Vertex root, std::string &src, std::string &dst, std::vector<std::string> &expected) {
   Dijkstra *solution = new Dijkstra();
-  vector<string> result = solution->findPath(root, src, dst);
+  std::vector<std::string> result = solution->findPath(root, src, dst);
   for (int i = 0; i < expected.size(); ++i) {
     if (expected[i] != result[i])
-      cout << "FAIL " + variationName + ": Dijkstra: \nresult[" << i << "] = '" << result[i] << "'\nexpected[" << i
-           << "] = '" << expected[i] << "'" << endl;
+      std::cout << "FAIL " + variationName + ": Dijkstra: \nresult[" << i << "] = '" << result[i] << "'\nexpected[" << i
+           << "] = '" << expected[i] << "'" << std::endl;
   }
-  cout << variationName + " SUCCESS!" << endl;
+  std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 void dijkstraTest() {
-  string variationName;
+  std::string variationName;
   Vertex *root = new Vertex();
   Edge *edge;
-  vector<string> expected;
-  string src, dst;
+  std::vector<std::string> expected;
+  std::string src, dst;
 
   variationName = "ex0";
   root->name = "A";

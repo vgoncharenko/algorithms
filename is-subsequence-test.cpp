@@ -5,7 +5,7 @@
 #include "is-subsequence.h"
 
 void testIsSubsecuenceTest() {
-  string variationName, s, t;
+  std::string variationName, s, t;
   bool expected, result;
   auto solution = new IsSubsequence();
 
@@ -18,7 +18,7 @@ void testIsSubsecuenceTest() {
   result = solution->isSubsequence(s,t);
 
   if (result != expected)
-    cout << variationName << " FAIL; "<< endl;
+    std::cout << variationName << " FAIL; "<< std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 }

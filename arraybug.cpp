@@ -4,8 +4,8 @@
 
 #include "arraybug.h"
 
-vector<int> ArrayBug::rotateArray(vector<int> & A, int B) {
-  vector<int> ret;
+std::vector<int> ArrayBug::rotateArray(std::vector<int> & A, int B) {
+  std::vector<int> ret;
   if (A.size() == 0 || B == 0)
     return A;
   B = B % A.size();

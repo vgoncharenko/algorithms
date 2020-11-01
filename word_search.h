@@ -9,12 +9,11 @@
 #include <string>
 #include <algorithm>
 #include <vector>
-
-using namespace std;
+#include <iostream>
 
 class WordSearch {
 public:
-    bool exist(vector<vector<char>>& board, string word);
+    bool exist(std::vector<std::vector<char>>& board, std::string word);
 };
 
 #endif //TREE_WORD_SEARCH_H

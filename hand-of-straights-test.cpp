@@ -4,21 +4,21 @@
 
 #include "hand-of-straights.h"
 
-void runTestHandOfStraights(string variationName, bool expected, vector<int> hand, int W) {
+void runTestHandOfStraights(std::string variationName, bool expected, std::vector<int> hand, int W) {
   auto solution = new HandOfStraights();
   bool result = solution->isNStraightHand(hand, W);
 
   if (result != expected)
-    cout << variationName << " FAIL; "<< endl;
+    std::cout << variationName << " FAIL; "<< std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 void testHandOfStraightsTest() {
-  string variationName;
+  std::string variationName;
   bool expected, result;
 
-  vector<int> hand;
+  std::vector<int> hand;
   int W;
 
   variationName = "ex0";

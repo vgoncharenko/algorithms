@@ -4,24 +4,24 @@
 
 #include "repeat-and-missing-number-array.h"
 
-void runRepeatAndMissingNumberArrayTest(string &variationName, vector<int> &A, vector<int> &expected) {
+void runRepeatAndMissingNumberArrayTest(std::string &variationName, std::vector<int> &A, std::vector<int> &expected) {
   RepeatAndMissingNumberArray *solution = new RepeatAndMissingNumberArray();
-  vector<int> result = solution->repeatedNumber(A);
+  std::vector<int> result = solution->repeatedNumber(A);
 
   if (result.size() != expected.size()) {
-    cout << variationName + " FAIL size!" << "\nexpected:" << expected.size() << "\nresult:" << result.size() << endl;
+    std::cout << variationName + " FAIL size!" << "\nexpected:" << expected.size() << "\nresult:" << result.size() << std::endl;
   }
   for (int i = 0; i < expected.size(); ++i) {
     if (expected[i] != result[i])
-      cout << "FAIL " + variationName + ": RepeatAndMissingNumberArray: \nresult[" << i << "] = '" << result[i] << "'\nexpected[" << i << "] = '" << expected[i] << "'" << endl;
+      std::cout << "FAIL " + variationName + ": RepeatAndMissingNumberArray: \nresult[" << i << "] = '" << result[i] << "'\nexpected[" << i << "] = '" << expected[i] << "'" << std::endl;
   }
-  cout << variationName + " SUCCESS!" << endl;
+  std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 void repeatAndMissingNumberArrayTest() {
-  string variationName;
-  vector<int> A;
-  vector<int> expected;
+  std::string variationName;
+  std::vector<int> A;
+  std::vector<int> expected;
 
   variationName = "ex0";
   A = {};

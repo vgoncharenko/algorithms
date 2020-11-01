@@ -4,23 +4,23 @@
 
 #include "spiral-order-matrix-i.h"
 
-void runTest(string &variationName, vector<vector<int>> &A, vector<int> &expected) {
+void runTest(std::string &variationName, std::vector<std::vector<int>> &A, std::vector<int> &expected) {
   SpiralOrderMatrixI *solution = new SpiralOrderMatrixI();
-  vector<int> result = solution->spiralOrder(A);
+  std::vector<int> result = solution->spiralOrder(A);
   if (result.size() != expected.size()) {
-    cout << variationName + " FAIL size!" << "\nexpected:" << expected.size() << "\nresult:" << result.size() << endl;
+    std::cout << variationName + " FAIL size!" << "\nexpected:" << expected.size() << "\nresult:" << result.size() << std::endl;
   }
   for (int i = 0; i < expected.size(); ++i) {
     if (expected[i] != result[i])
-      cout << "FAIL " + variationName + ": SpiralOrderMatrixI: \nresult[" << i << "] = '" << result[i] << "'\nexpected[" << i << "] = '" << expected[i] << "'" << endl;
+      std::cout << "FAIL " + variationName + ": SpiralOrderMatrixI: \nresult[" << i << "] = '" << result[i] << "'\nexpected[" << i << "] = '" << expected[i] << "'" << std::endl;
   }
-  cout << variationName + " SUCCESS!" << endl;
+  std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 void spiralOrderMatrixITest() {
-  string variationName;
-  vector<vector<int>> A;
-  vector<int> expected;
+  std::string variationName;
+  std::vector<std::vector<int>> A;
+  std::vector<int> expected;
 
   variationName = "ex0";
   A = {};

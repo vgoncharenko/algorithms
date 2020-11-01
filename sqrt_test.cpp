@@ -4,17 +4,17 @@
 
 #include "sqrt.h"
 
-void runTest(string &variationName, int x, int expected) {
+void runTest(std::string &variationName, int x, int expected) {
   SQRT *solution = new SQRT();
   int result = solution->sqrt(x);
   if (result != expected)
-    cout << "FAIL " + variationName + ": SQRT: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< endl;
+    std::cout << "FAIL " + variationName + ": SQRT: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 void sqrtTest() {
-  string variationName;
+  std::string variationName;
   int x, expected;
 
   variationName = "ex0";

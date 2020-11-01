@@ -8,7 +8,7 @@
 #include <iostream>
 #include <string>
 
-using namespace std;
+
 
 struct TrieNode {
     const static int ALPHABET_SIZE = 26;
@@ -20,11 +20,11 @@ class Trie {
 public:
     static TrieNode *createNode();
 
-    static void insert(TrieNode *root, string &str);
+    static void insert(TrieNode *root, std::string &str);
 
-    static bool search(TrieNode *root, string &str);
+    static bool search(TrieNode *root, std::string &str);
 
-    static bool search(TrieNode *root, string &str, uint32_t index, uint32_t N);
+    static bool search(TrieNode *root, std::string &str, uint32_t index, uint32_t N);
 
     static uint8_t getIndex(char c);
 };

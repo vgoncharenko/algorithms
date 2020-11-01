@@ -8,11 +8,11 @@
 
 #include <vector>
 
-using namespace std;
+
 
 class RotateMatrix {
 public:
-    void rotate(vector<vector<int> > &A);
+    void rotate(std::vector<std::vector<int> > &A);
 };
 
 #endif //TREE_ROTATE_MATRIX_H

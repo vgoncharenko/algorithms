@@ -4,8 +4,8 @@
 
 #include "3sum.h"
 
-vector<vector<int>> Sum3::threeSum(vector<int>& nums) {
-  vector<vector<int>> result = {};
+std::vector<std::vector<int>> Sum3::threeSum(std::vector<int>& nums) {
+  std::vector<std::vector<int>> result = {};
   if (nums.size() == 0)
     return result;
 

@@ -1,10 +1,13 @@
 //
 // Created by Vitaliy on 2019-09-26.
 //
+#include <string>
+#include <iostream>
+
 
 //class CAnimal {
 //public:
-//    CAnimal(string &_name, int _order): name(_name), order(_order) {};
+//    CAnimal(std::string &_name, int _order): name(_name), order(_order) {};
 //    int setOrder(int _order)
 //    {
 //      order = _order;
@@ -19,7 +22,7 @@
 //      return order > a.getOrder();
 //    }
 //private:
-//    string name {""};
+//    std::string name {""};
 //    int order {0};
 //};
 //
@@ -34,7 +37,7 @@
 //      enq(dog, dogs);
 //    }
 //
-//    void enq(CAnimal *animal, queue<CAnimal*> q)
+//    void enq(CAnimal *animal, std::queue<CAnimal*> q)
 //    {
 //      animal->setOrder(this->order++);
 //      q.push(animal);
@@ -50,7 +53,7 @@
 //      return (CDog*)deq(dogs);
 //    }
 //
-//    CAnimal* deq(queue<CAnimal*> q)
+//    CAnimal* deq(std::queue<CAnimal*> q)
 //    {
 //      CAnimal *animal = q.front();
 //      q.pop();
@@ -67,7 +70,7 @@
 //    }
 //
 //private:
-//    queue<CAnimal*> cats, dogs;
+//    std::queue<CAnimal*> cats, dogs;
 //    int order = 0;
 //};
 

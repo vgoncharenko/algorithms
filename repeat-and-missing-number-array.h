@@ -7,12 +7,13 @@
 #define TREE_REPEAT_AND_MISSING_NUMBER_ARRAY_H
 
 #include <vector>
+#include <iostream>
 
-using namespace std;
+
 
 class RepeatAndMissingNumberArray {
 public:
-    vector<int> repeatedNumber(const vector<int> &A);
+    std::vector<int> repeatedNumber(const std::vector<int> &A);
 };
 
 #endif //TREE_REPEAT_AND_MISSING_NUMBER_ARRAY_H

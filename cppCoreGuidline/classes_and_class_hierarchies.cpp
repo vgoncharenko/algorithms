@@ -60,7 +60,7 @@ void testC82() {
 // B’s comparison accepts conversions for its second operand, but not its first.
 class B {
 public:
-    string name = "b";
+    std::string name = "b";
     int number = 10;
 //    virtual bool operator==(const B& a) const
 //    {
@@ -68,11 +68,11 @@ public:
 //    }
     // ...
     virtual void f() {
-      std::cout << "B::F()" << endl;
+      std::cout << "B::F()" << std::endl;
     }
 
     void f2() {
-      std::cout << "B::F2()" << endl;
+      std::cout << "B::F2()" << std::endl;
     }
 };
 class D : public B {
@@ -84,11 +84,11 @@ public:
 //    }
     // ...
     void f() override {
-      std::cout << "D::F()" << endl;
+      std::cout << "D::F()" << std::endl;
     }
 
     void f2() {
-      std::cout << "D::F2()" << endl;
+      std::cout << "D::F2()" << std::endl;
     }
 };
 
@@ -101,13 +101,13 @@ public:
 //    }
     // ...
     virtual void f() {
-      std::cout << "NotDerivedFromBase::F()" << endl;
+      std::cout << "NotDerivedFromBase::F()" << std::endl;
     }
 };
 
 class DerivedFromNotDerivedFromBase : public NotDerivedFromBase, public B {
     void f() override {
-      std::cout << "DerivedFromNotDerivedFromBase::F()" << endl;
+      std::cout << "DerivedFromNotDerivedFromBase::F()" << std::endl;
     }
 };
 
@@ -126,7 +126,7 @@ void testC83() {
   if (b == d) std::cout << "compare only name == a.name && number == a.number;\n";
   if (d == b) std::cout << "compare only name == a.name && number == a.number;\n"; // it cast both to bcd Type and call corresponding compare operator
 
-  unique_ptr<B> bb = make_unique<D>();
+    std::unique_ptr<B> bb = std::make_unique<D>();
   bb->f();  // call to D::F() because virtual
   bb->f2(); // call to B::F2() because non-virtual
 }
@@ -135,7 +135,7 @@ void testC83() {
 void testC147_f(NotDerivedFromBase a) { // +slice
   try {
     B base = dynamic_cast<B&>(a);
-  } catch (exception e) {
+  } catch (std::exception e) {
     std::cout << "C.147: Use dynamic_cast to a reference type when failure to find the required class is considered an error\n";
   }
 }

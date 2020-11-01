@@ -4,17 +4,17 @@
 
 #include "reverse-integer.h"
 
-void runReverseIntegerTest(string &variationName, int x, int expected) {
+void runReverseIntegerTest(std::string &variationName, int x, int expected) {
   ReverseInteger *solution = new ReverseInteger();
   int result = solution->reverse(x);
   if (result != expected)
-    cout << "FAIL " + variationName + ": ReverseInteger: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< endl;
+    std::cout << "FAIL " + variationName + ": ReverseInteger: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 void reverseIntegerTest() {
-  string variationName;
+  std::string variationName;
   int x, expected;
 
   variationName = "ex0";

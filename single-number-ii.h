@@ -7,12 +7,13 @@
 #define TREE_SINGLE_NUMBER_II_H
 
 #include <vector>
+#include <iostream>
 
-using namespace std;
+
 
 class SingleNumberII {
 public:
-    int singleNumber(vector<int>& nums);
+    int singleNumber(std::vector<int>& nums);
 };
 
 #endif //TREE_SINGLE_NUMBER_II_H

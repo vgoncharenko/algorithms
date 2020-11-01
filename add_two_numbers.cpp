@@ -4,8 +4,8 @@
 
 #include "add_two_numbers.h"
 
-vector<int> AddTwoNumbers::sum(vector<int> input1, vector<int> input2) {
-  vector<int> output;
+std::vector<int> AddTwoNumbers::sum(std::vector<int> input1, std::vector<int> input2) {
+  std::vector<int> output;
   unsigned long count1 = input1.size(), count2 = input2.size();
   int carryBit = 0;
 

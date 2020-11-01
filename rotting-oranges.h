@@ -7,13 +7,14 @@
 #define TREE_ROTTING_ORANGES_H
 
 #include <vector>
+#include <iostream>
 
-using namespace std;
+
 
 class RottingOranges {
 public:
-    int orangesRotting(vector<vector<int>>& grid);
-    void h(vector<vector<int>>& grid, int i, int j, int n, int m, int &f, int &ff, int Min, vector<int> r, vector<int> c);
+    int orangesRotting(std::vector<std::vector<int>>& grid);
+    void h(std::vector<std::vector<int>>& grid, int i, int j, int n, int m, int &f, int &ff, int Min, std::vector<int> r, std::vector<int> c);
 };
 
 #endif //TREE_ROTTING_ORANGES_H

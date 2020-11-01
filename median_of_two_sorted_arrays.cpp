@@ -4,7 +4,7 @@
 
 #include "median_of_two_sorted_arrays.h"
 
-double MedianOfTwoSortedArrays::findMedianSortedArrays(vector<int> &nums1, vector<int> &nums2) {
+double MedianOfTwoSortedArrays::findMedianSortedArrays(std::vector<int> &nums1, std::vector<int> &nums2) {
   int N = nums1.size(),
           M = nums2.size(),
           I = (N + M) / 2,
@@ -12,7 +12,7 @@ double MedianOfTwoSortedArrays::findMedianSortedArrays(vector<int> &nums1, vecto
           j = 0,
           k = 0;
   bool isPair = !((N + M) % 2);
-  vector<int> v(2);
+  std::vector<int> v(2);
 
   do {
     if ((j <= M - 1 && i <= N - 1 && nums1[i] >= nums2[j]) || i > N - 1)
@@ -29,10 +29,10 @@ double MedianOfTwoSortedArrays::findMedianSortedArrays(vector<int> &nums1, vecto
          : v[0];
 }
 
-double MedianOfTwoSortedArrays::findMedianSortedArrays2(vector<int> &nums1, vector<int> &nums2) {
+double MedianOfTwoSortedArrays::findMedianSortedArrays2(std::vector<int> &nums1, std::vector<int> &nums2) {
   int N = nums1.size(),
           M = nums2.size();
-  vector<int> *x, *y;
+  std::vector<int> *x, *y;
 
   if (N > M) {
     x = &nums2;
@@ -55,8 +55,8 @@ double MedianOfTwoSortedArrays::findMedianSortedArrays2(vector<int> &nums1, vect
 
     if (xLMax <= yRMin && yLMax <= xRMin) {
       return isOdd
-             ? max(xLMax, yLMax)
-             : (max(xLMax, yLMax) + min(xRMin, yRMin)) * 1.0 / 2;
+             ? std::max(xLMax, yLMax)
+             : (std::max(xLMax, yLMax) + std::min(xRMin, yRMin)) * 1.0 / 2;
     } else if (xLMax > yRMin) {
       xEnd = xPartition - 1;
     } else if (yLMax > xRMin) {

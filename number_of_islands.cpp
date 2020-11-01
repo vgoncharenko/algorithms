@@ -7,9 +7,9 @@
 
 bool checkBoundaries(int N, int M, int row, int col);
 
-bool isLand(vector<vector<char>> &grid, int row, int col, bool *const *checked);
+bool isLand(std::vector<std::vector<char>> &grid, int row, int col, bool *const *checked);
 
-void DFS(vector<vector<char>> &grid, int row, int col, int N, int M, bool **checked) {
+void DFS(std::vector<std::vector<char>> &grid, int row, int col, int N, int M, bool **checked) {
   static int rowNbr[] = {-1, 0, 0, 1};
   static int colNbr[] = {0, -1, 1, 0};
 
@@ -23,7 +23,7 @@ void DFS(vector<vector<char>> &grid, int row, int col, int N, int M, bool **chec
   }
 }
 
-bool isLand(vector<vector<char>> &grid, int row, int col, bool *const *checked) {
+bool isLand(std::vector<std::vector<char>> &grid, int row, int col, bool *const *checked) {
   return grid[row][col] == '1' && !checked[row][col];
 }
 
@@ -31,7 +31,7 @@ bool checkBoundaries(int N, int M, int row, int col) {
   return (row >= 0) && (row < N) && (col >= 0) && (col < M);
 }
 
-int NumberOfIslands::numIslands(vector<vector<char>> &grid) {
+int NumberOfIslands::numIslands(std::vector<std::vector<char>> &grid) {
   if (grid.empty()) {
     return 0;
   }
@@ -47,7 +47,7 @@ int NumberOfIslands::numIslands(vector<vector<char>> &grid) {
     }
   }
   //memset(checked, false, sizeof(bool) * N * M);
-//  checked = vector<vector<bool>>(N, vector<bool>(M, false));
+//  checked = std::vector<std::vector<bool>>(N, std::vector<bool>(M, false));
 
   for (int i = 0; i < N; i++) {
     for (int j = 0; j < M; j++) {

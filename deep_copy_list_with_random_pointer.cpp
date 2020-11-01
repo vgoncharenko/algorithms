@@ -9,10 +9,10 @@ Node *DeepCopyListWithRandomPointer::copyRandomList(Node *head) {
     return nullptr;
   }
   Node *result = new Node(head->val, head->next, head->random);
-  map<int, Node*> map1;
-  vector<Node*> randomList;
+    std::map<int, Node*> map1;
+  std::vector<Node*> randomList;
 
-  map1.insert(make_pair(head->val, result));
+  map1.insert(std::make_pair(head->val, result));
   if (nullptr != head->random) {
     randomList.push_back(result);
   }
@@ -26,7 +26,7 @@ Node *DeepCopyListWithRandomPointer::copyRandomList(Node *head) {
       randomList.push_back(current);
     }
 
-    map1.insert(make_pair(temp->val, current));
+    map1.insert(std::make_pair(temp->val, current));
 
     temp = temp->next;
     prev = current;

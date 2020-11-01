@@ -7,9 +7,10 @@
 #define TREE_REVERSE_INTEGER_H
 
 #include <vector>
+#include <iostream>
 #include <cmath>
 
-using namespace std;
+
 
 class ReverseInteger {
 public:

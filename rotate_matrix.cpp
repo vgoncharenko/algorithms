@@ -4,7 +4,7 @@
 
 #include "rotate_matrig.h"
 
-void RotateMatrix::rotate(vector<vector<int> > &A) {
+void RotateMatrix::rotate(std::vector<std::vector<int> > &A) {
   // Do not write main() function.
   // Do not read input, instead use the arguments to the function.
   // Do not print the output, instead return values as specified

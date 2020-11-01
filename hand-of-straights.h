@@ -7,12 +7,14 @@
 #define TREE_HAND_OF_STRAIGHTS_H
 
 #include <vector>
+#include <string>
+#include <iostream>
 
-using namespace std;
+
 
 class HandOfStraights {
 public:
-    bool isNStraightHand(vector<int>& hand, int W);
+    bool isNStraightHand(std::vector<int>& hand, int W);
 };
 
 

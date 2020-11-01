@@ -4,23 +4,23 @@
 
 #include "3sum.h"
 
-void runSum3Test(string variationName, vector<int> &A, vector<vector<int>> &expected)
+void runSum3Test(std::string variationName, std::vector<int> &A, std::vector<std::vector<int>> &expected)
 {
   Sum3 *solution = new Sum3();
-  vector<vector<int>> result = solution->threeSum(A);
+  std::vector<std::vector<int>> result = solution->threeSum(A);
   for (int i = 0; i < expected.size(); ++i) {
     for (int j = 0; j < 2; ++j) {
       if (expected[i][j] != result[i][j])
-        cout << "FAIL " + variationName + ": Sum3: \nresult[" << i << "][" << j << "] = '" << result[i][j] << "'\nexpected[" << i << "][" << j << "] = '" << expected[i][j] << "'" << endl;
+        std::cout << "FAIL " + variationName + ": Sum3: \nresult[" << i << "][" << j << "] = '" << result[i][j] << "'\nexpected[" << i << "][" << j << "] = '" << expected[i][j] << "'" << std::endl;
     }
   }
-  cout << variationName + " SUCCESS!" << endl;
+  std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 void Sum3Test() {
-  string variationName;
-  vector<int> A;
-  vector<vector<int>> expected;
+  std::string variationName;
+  std::vector<int> A;
+  std::vector<std::vector<int>> expected;
 
   variationName = "ex0";
   A = {-1,0,1,2,-1,-4};

@@ -4,7 +4,7 @@
 
 #include "min_heap.h"
 
-Term::Term(string _term, uint8_t _value) {
+Term::Term(std::string _term, uint8_t _value) {
   term = move(_term);
   value = _value;
 }

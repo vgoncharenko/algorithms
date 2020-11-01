@@ -5,7 +5,7 @@
 #include "construct-binary-tree-from-preorder-and-inorder-traversal.h"
 
 void
-h(TreeNode *root, vector<int> &preorder, int preorderIndex, vector<int> &inorder, int inorderStart, int inorderEnd) {
+h(TreeNode *root, std::vector<int> &preorder, int preorderIndex, std::vector<int> &inorder, int inorderStart, int inorderEnd) {
   for (int i = inorderStart; i <= inorderEnd; ++i) {
     if (inorder[i] == root->val) {
       if (inorderStart <= i - 1 && preorderIndex + 1 <= preorder.size() - 1) {
@@ -22,7 +22,7 @@ h(TreeNode *root, vector<int> &preorder, int preorderIndex, vector<int> &inorder
   }
 }
 
-struct TreeNode* ConstructBinaryTreeFromPreorderAndInorderTraversal::buildTree(vector<int> &preorder, vector<int> &inorder) {
+struct TreeNode* ConstructBinaryTreeFromPreorderAndInorderTraversal::buildTree(std::vector<int> &preorder, std::vector<int> &inorder) {
   if (preorder.size() == 0 || inorder.size() == 0) {
     return nullptr;
   }
@@ -32,26 +32,26 @@ struct TreeNode* ConstructBinaryTreeFromPreorderAndInorderTraversal::buildTree(v
   return root;
 }
 
-void trimLeftTrailingSpaces(string &input) {
+void trimLeftTrailingSpaces(std::string &input) {
   input.erase(input.begin(), find_if(input.begin(), input.end(), [](int ch) {
       return !isspace(ch);
   }));
 }
 
-void trimRightTrailingSpaces(string &input) {
+void trimRightTrailingSpaces(std::string &input) {
   input.erase(find_if(input.rbegin(), input.rend(), [](int ch) {
       return !isspace(ch);
   }).base(), input.end());
 }
 
-vector<int> stringToIntegerVector(string input) {
-  vector<int> output;
+std::vector<int> stringToIntegerVector(std::string input) {
+  std::vector<int> output;
   trimLeftTrailingSpaces(input);
   trimRightTrailingSpaces(input);
   input = input.substr(1, input.length() - 2);
-  stringstream ss;
+  std::stringstream ss;
   ss.str(input);
-  string item;
+  std::string item;
   char delim = ',';
   while (getline(ss, item, delim)) {
     output.push_back(stoi(item));
@@ -59,13 +59,13 @@ vector<int> stringToIntegerVector(string input) {
   return output;
 }
 
-string treeNodeToString(TreeNode *root) {
+std::string treeNodeToString(TreeNode *root) {
   if (root == nullptr) {
     return "[]";
   }
 
-  string output = "";
-  queue < TreeNode * > q;
+  std::string output = "";
+  std::queue < TreeNode * > q;
   q.push(root);
   while (!q.empty()) {
     TreeNode *node = q.front();
@@ -76,7 +76,7 @@ string treeNodeToString(TreeNode *root) {
       continue;
     }
 
-    output += to_string(node->val) + ", ";
+    output += std::to_string(node->val) + ", ";
     q.push(node->left);
     q.push(node->right);
   }

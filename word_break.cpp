@@ -4,7 +4,7 @@
 
 #include "word_break.h"
 
-bool check(TrieNode *root, string s, uint32_t pos, uint32_t N) {
+bool check(TrieNode *root, std::string s, uint32_t pos, uint32_t N) {
   if (pos == N) return true;
   for (uint32_t i = 1; i <= N - pos; ++i) {
     if (Trie::search(root, s, pos, pos + i) && check(root, s, pos + i, N))
@@ -14,7 +14,7 @@ bool check(TrieNode *root, string s, uint32_t pos, uint32_t N) {
   return false;
 }
 
-bool check2(TrieNode *root, string s) {
+bool check2(TrieNode *root, std::string s) {
   uint32_t N = s.length();
   if (0 == N)
     return true;
@@ -42,7 +42,7 @@ bool check2(TrieNode *root, string s) {
   return d[0][N-1];
 }
 
-bool WordBreak::wordBreak(string s, vector<string> &wordDict) {
+bool WordBreak::wordBreak(std::string s, std::vector<std::string> &wordDict) {
   uint32_t dictSize = wordDict.size(),
           stringLen = s.length();
   if (dictSize == 0 || stringLen == 0)

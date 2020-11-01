@@ -4,18 +4,18 @@
 
 #include "single-number-ii.h"
 
-void runSingleNumberIITest(string &variationName, vector<int> &nums, int expected) {
+void runSingleNumberIITest(std::string &variationName, std::vector<int> &nums, int expected) {
   SingleNumberII *solution = new SingleNumberII();
   int result = solution->singleNumber(nums);
   if (result != expected)
-    cout << "FAIL " + variationName + ": SingleNumberII: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< endl;
+    std::cout << "FAIL " + variationName + ": SingleNumberII: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 void singleNumberIITest() {
-  string variationName;
-  vector<int> nums;
+  std::string variationName;
+  std::vector<int> nums;
   int expected;
 
   variationName = "ex0";

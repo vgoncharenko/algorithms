@@ -10,7 +10,7 @@ Edge::Edge(double _weight, Vertex *_from, Vertex *_dest){
   dest = _dest;
 }
 
-Vertex::Vertex(string _name, vector<Edge*> _edges){
+Vertex::Vertex(std::string _name, std::vector<Edge*> _edges){
   name = _name;
   edges = _edges;
 }
@@ -19,14 +19,14 @@ int EdgeComparator::operator()(const Edge* edge1, const Edge* edge2) {
   return edge1->weight > edge2->weight;
 }
 
-vector<string> Dijkstra::findPath(Vertex &root, string &source, string &destination){
+std::vector<std::string> Dijkstra::findPath(Vertex &root, std::string &source, std::string &destination){
   if (source == destination)
-    return vector<string>{source};
+    return std::vector<std::string>{source};
 
-  vector<string> path = {};
-  map<string, string> minPaths;
-  priority_queue<Edge*, vector<Edge*>, EdgeComparator> minHeap;
-  map<string, uint8_t> distance;
+  std::vector<std::string> path = {};
+    std::map<std::string, std::string> minPaths;
+    std::priority_queue<Edge*, std::vector<Edge*>, EdgeComparator> minHeap;
+    std::map<std::string, uint8_t> distance;
   Edge *tempEdge;
 
   distance[source] = 0;
@@ -56,7 +56,7 @@ vector<string> Dijkstra::findPath(Vertex &root, string &source, string &destinat
 
   }
 
-  string item = destination;
+  std::string item = destination;
   while ("" != item && item != source) {
     path.push_back(item);
     item = minPaths[item];

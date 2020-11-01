@@ -11,7 +11,6 @@
 #include <map>
 #include <iostream>
 
-using namespace std;
 
 struct Vertex;
 
@@ -23,9 +22,9 @@ struct Edge {
 };
 
 struct Vertex {
-    string name = "";
-    vector<Edge*> edges;
-    explicit Vertex(string _name = "", vector<Edge*> _edges = {});
+    std::string name = "";
+    std::vector<Edge*> edges;
+    explicit Vertex(std::string _name = "", std::vector<Edge*> _edges = {});
 };
 
 // To compare two edges
@@ -37,7 +36,7 @@ public:
 
 class Dijkstra {
 public:
-    vector<string> findPath(Vertex &graph, string &source, string &destination);
+    std::vector<std::string> findPath(Vertex &graph, std::string &source, std::string &destination);
 };
 
 #endif //TREE_DIJKSTRA_H

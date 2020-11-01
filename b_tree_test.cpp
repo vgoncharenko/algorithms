@@ -20,8 +20,8 @@ void testCheckCount(BTree::Node *node) {
     }
 
     if (nodeCount != node->childCount) {
-      cout << printf("FAIL: Node element count:\nActual: %d;\nExpected: %d", nodeCount, node->childCount)
-           << endl;
+      std::cout << printf("FAIL: Node element count:\nActual: %d;\nExpected: %d", nodeCount, node->childCount)
+           << std::endl;
     }
   }
 
@@ -37,7 +37,7 @@ void testCheckCount(BTree::Node *node) {
     }
 
     if (liefCount != node->liefCount) {
-      cout << printf("FAIL: Lief count:\nActual: %d;\nExpected: %d", liefCount, node->liefCount) << endl;
+      std::cout << printf("FAIL: Lief count:\nActual: %d;\nExpected: %d", liefCount, node->liefCount) << std::endl;
     }
   }
 }
@@ -57,27 +57,27 @@ void testInsert(BTree *tree) {
 
   // child count test
   if (tree->getRoot()->childCount != 1) {
-    cout << "FAIL: childCount" << endl;
+    std::cout << "FAIL: childCount" << std::endl;
   }
 
   // test first
   if (tree->getRoot()->children[0]->lief->v != "apple") {
-    cout << "FAIL: first element" << endl;
+    std::cout << "FAIL: first element" << std::endl;
   }
 
   // test second
   if (tree->getRoot()->children[0]->lief->next->v != "apple1") {
-    cout << "FAIL: second element" << endl;
+    std::cout << "FAIL: second element" << std::endl;
   }
 
   // test third
   if (tree->getRoot()->children[0]->lief->next->next->v != "apple1") {
-    cout << "FAIL: third element" << endl;
+    std::cout << "FAIL: third element" << std::endl;
   }
 
   // test fifth
   if (tree->getRoot()->children[0]->lief->next->next->next->next->v != "apple2") {
-    cout << "FAIL: fifth element" << endl;
+    std::cout << "FAIL: fifth element" << std::endl;
   }
 
   // test list links
@@ -85,13 +85,13 @@ void testInsert(BTree *tree) {
       || tree->getRoot()->children[0]->lief->next->next->prev->v != "apple1"
       || tree->getRoot()->children[0]->lief->next->next->prev->next->v != "apple1"
           ) {
-    cout << "FAIL: links" << endl;
+    std::cout << "FAIL: links" << std::endl;
   }
 
   // test of node splitting
   u_int16_t i = 2000;
   while (--i > 0) {
-    tree->insert("bar" + to_string(random()));
+    tree->insert("bar" + std::to_string(random()));
     testCheckCount(tree->getRoot());
   }
 
@@ -99,28 +99,28 @@ void testInsert(BTree *tree) {
 }
 
 void testSearch(BTree *tree) {
-  string res = tree->search("apple3");
+  std::string res = tree->search("apple3");
   if ("apple3" != res) {
-    cout << "Fail search: " + res << endl;
+    std::cout << "Fail search: " + res << std::endl;
   }
   res = tree->search("apple3123123");
   if ("Nothing was found." != res) {
-    cout << "Fail search: " + res << endl;
+    std::cout << "Fail search: " + res << std::endl;
   }
 }
 
 void testPrefixSearch(BTree *tree) {
-  string res = tree->startsWith("apple4");
+  std::string res = tree->startsWith("apple4");
   if ("apple4555" != res) {
-    cout << "Fail PrefixSearch: " + res << endl;
+    std::cout << "Fail PrefixSearch: " + res << std::endl;
   }
   res = tree->startsWith("apple45657");
   if ("Nothing was found." != res) {
-    cout << "Fail PrefixSearch: " + res << endl;
+    std::cout << "Fail PrefixSearch: " + res << std::endl;
   }
   res = tree->startsWith("apple");
   if ("apple" != res) {
-    cout << "Fail PrefixSearch: " + res << endl;
+    std::cout << "Fail PrefixSearch: " + res << std::endl;
   }
 }
 
@@ -132,6 +132,6 @@ void testBTree() {
 }
 
 /*
- * =================== END TESTS ZONE ====================
+ * =================== std::end TESTS ZONE ====================
  */
 

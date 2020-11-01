@@ -7,12 +7,13 @@
 #define TREE_ARRAYBUG_H
 
 #include <vector>
+#include <string>
+#include <iostream>
 
-using namespace std;
 
 class ArrayBug {
 public:
-    vector<int> rotateArray(vector<int>& A, int B);
+    std::vector<int> rotateArray(std::vector<int>& A, int B);
 };
 
 #endif //TREE_ARRAYBUG_H

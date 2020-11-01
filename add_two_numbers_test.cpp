@@ -6,16 +6,16 @@
 
 void testAddTwoNumbers() {
   // ex1
-  vector<int> input1 = {2, 4, 3};
-  vector<int> input2 = {5, 6, 4};
-  vector<int> expected = {7, 0, 8};
+  std::vector<int> input1 = {2, 4, 3};
+  std::vector<int> input2 = {5, 6, 4};
+  std::vector<int> expected = {7, 0, 8};
 
   auto *sumator = new AddTwoNumbers();
-  vector<int> output = sumator->sum(input1, input2);
+  std::vector<int> output = sumator->sum(input1, input2);
 
   for (int i = 0; i < output.size(); i++)
     if (expected[i] != output[i])
-      cout << "FAIL: testAddTwoNumbers: \nexpected: " << expected[i] << "\nactual: " << output[i] << endl;
+      std::cout << "FAIL: testAddTwoNumbers: \nexpected: " << expected[i] << "\nactual: " << output[i] << std::endl;
 
   // ex2
   input1 = {3, 4, 9};
@@ -26,7 +26,7 @@ void testAddTwoNumbers() {
 
   for (int i = 0; i < output.size(); i++)
     if (expected[i] != output[i])
-      cout << "FAIL: testAddTwoNumbers: \nexpected: " << expected[i] << "\nactual: " << output[i] << endl;
+      std::cout << "FAIL: testAddTwoNumbers: \nexpected: " << expected[i] << "\nactual: " << output[i] << std::endl;
 
   // ex3
   input1 = {3, 4};
@@ -37,7 +37,7 @@ void testAddTwoNumbers() {
 
   for (int i = 0; i < output.size(); i++)
     if (expected[i] != output[i])
-      cout << "FAIL: testAddTwoNumbers: \nexpected: " << expected[i] << "\nactual: " << output[i] << endl;
+      std::cout << "FAIL: testAddTwoNumbers: \nexpected: " << expected[i] << "\nactual: " << output[i] << std::endl;
 }
 
 void testAddTwoNumbers2() {
@@ -59,7 +59,7 @@ void testAddTwoNumbers2() {
 
   while (expected != nullptr) {
     if (expected->val != output->val) {
-      cout << "FAIL: testAddTwoNumbers: \nexpected: " << expected->val << "\nactual: " << output->val << endl;
+      std::cout << "FAIL: testAddTwoNumbers: \nexpected: " << expected->val << "\nactual: " << output->val << std::endl;
     }
 
     expected = expected->next;

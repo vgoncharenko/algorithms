@@ -9,13 +9,14 @@
 #include <string>
 #include <vector>
 #include <exception>
+#include <iostream>
 
-using namespace std;
+
 
 class MedianOfTwoSortedArrays {
 public:
-    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2);
-    double findMedianSortedArrays2(vector<int>& nums1, vector<int>& nums2);
+    double findMedianSortedArrays(std::vector<int>& nums1, std::vector<int>& nums2);
+    double findMedianSortedArrays2(std::vector<int>& nums1, std::vector<int>& nums2);
 };
 
 #endif //TREE_MEDIAN_OF_TWO_SORTED_ARRAYS_H

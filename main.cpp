@@ -1,5 +1,4 @@
 #include <iostream>
-#include "measure.cpp"
 #include "b_tree_test.cpp"
 #include "find_elements_equelse_to_sum_test.cpp"
 #include "top_k_frequent_word_test.cpp"
@@ -44,6 +43,8 @@
 #include "cppCoreGuidline/classes_and_class_hierarchies.cpp"
 #include "astepanov/gcd.cpp"
 #include "cppCoreGuidline/atomic_and_memory_model.cpp"
+//#include "infixToPostfixAndPrefixNotation.cpp"
+#include "graphic/2d.cpp"
 
 int main() {
 //  testBTree();
@@ -96,7 +97,7 @@ int main() {
 //  sharedPointerTest();
 
 //  testEgyptMult();
-testPrimeNumbers();
+//  testPrimeNumbers();
 
 //  testStringViewExample();
 //  testPointerVsReference();
@@ -110,6 +111,9 @@ testPrimeNumbers();
 //  test_gcd();
 //  testAtomic();
 
-  cout << "SUCCESS!" << endl;
+//  infix::testInfixToPostfix();
+    testNormOfImage();
+
+  std::cout << "SUCCESS!" << std::endl;
   return 0;
 }

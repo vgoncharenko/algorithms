@@ -1,6 +1,18 @@
 cmake_minimum_required(VERSION 3.13)
 project(tree)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
-add_executable(tree main.cpp min_heap.cpp min_heap.h max_heap.cpp max_heap.h b_tree.cpp b_tree.h top_k_frequent_word.cpp top_k_frequent_word.h find_elements_equelse_to_sum.cpp find_elements_equelse_to_sum.h add_two_numbers.cpp add_two_numbers.h length_of_longest_substring.cpp length_of_longest_substring.h longest_palindrome.cpp longest_palindrome.h deep_copy_list_with_random_pointer.cpp deep_copy_list_with_random_pointer.h reverse_words_in_a_string.cpp reverse_words_in_a_string.h median_of_two_sorted_arrays.cpp median_of_two_sorted_arrays.h number_of_islands.cpp number_of_islands.h word_search.cpp word_search.h validate_binary_search_tree.cpp validate_binary_search_tree.h trie.cpp trie.h word_break.cpp word_break.h maxset.cpp maxset.h arraybug.cpp arraybug.h dijkstra.cpp dijkstra.h sqrt.cpp sqrt.h spiral-order-matrix-i.cpp spiral-order-matrix-i.h repeat-and-missing-number-array.cpp repeat-and-missing-number-array.h reverse-integer.cpp reverse-integer.h valid-parentheses.cpp valid-parentheses.h single-number-ii.cpp single-number-ii.h 3sum.cpp 3sum.h is-subsequence.cpp is-subsequence.h rotting-oranges.cpp rotting-oranges.h hand-of-straights.cpp hand-of-straights.h VariadicTemplates.cpp VariadicTemplates.h slicingProblem.cpp slicingProblem.h)
+# Find the packages we need.
+find_package(OpenGL REQUIRED)
+find_package(GLUT REQUIRED)
+set(INCLUDE_DIRS ${OPENGL_INCLUDE_DIR} ${GLUT_INCLUDE_DIR})
+set(LIBRARIES ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
+include_directories(${INCLUDE_DIRS})
+file(GLOB SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+file(GLOB INCLUDE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
+
+add_executable(tree main.cpp ${SOURCE_FILES} ${INCLUDE_FILES})
+
+
+target_link_libraries(tree ${LIBRARIES})

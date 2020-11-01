@@ -4,18 +4,18 @@
 
 #include "valid-parentheses.h"
 
-void runValidParenthesesTest(string &variationName, string s, bool expected) {
+void runValidParenthesesTest(std::string &variationName, std::string s, bool expected) {
   ValidParentheses *solution = new ValidParentheses();
   int result = solution->isValid(s);
   if (result != expected)
-    cout << "FAIL " + variationName + ": ValidParentheses: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< endl;
+      std::cout << "FAIL " + variationName + ": ValidParentheses: \nresult: '" << result << "'\nexpected: '" << expected << "'"<< std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+      std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 void validParenthesesTest() {
-  string variationName;
-  string s;
+  std::string variationName;
+  std::string s;
   bool expected;
 
   variationName = "ex0";

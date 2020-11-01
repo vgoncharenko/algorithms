@@ -4,17 +4,17 @@
 
 #include "longest_palindrome.h"
 
-void ruTest (string input, string expected, string variationName) {
+void ruTest (std::string input, std::string expected, std::string variationName) {
   auto solution = new LongestPalindrome();
-  string result = solution->find3(input);
+  std::string result = solution->find3(input);
   if (expected != result)
-    cout << "FAIL " + variationName + ": testLongestPalindrome: \nexpected: " << expected << "\nactual: " << result << " size: " << result.length() << endl;
+    std::cout << "FAIL " + variationName + ": testLongestPalindrome: \nexpected: " << expected << "\nactual: " << result << " size: " << result.length() << std::endl;
   else
-    cout << variationName + " SUCCESS!" << endl;
+    std::cout << variationName + " SUCCESS!" << std::endl;
 }
 
 void testLongestPalindrome() {
-  string input,
+  std::string input,
          expected,
          variationName;
 

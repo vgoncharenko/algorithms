@@ -79,9 +79,9 @@ private:
     };
 
 //       bad approach:
-//    struct string_model_t : base_model_t {
-//        string_model_t(const std::string s) : data(s) { };
-//        base_model_t* copy_() { return new string_model_t(*this); }
+//    struct std::string_model_t : base_model_t {
+//        std::string_model_t(const std::string s) : data(s) { };
+//        base_model_t* copy_() { return new std::string_model_t(*this); }
 //        void draw_(std::ostream& out, size_t position) const
 //        {
 //          draw(data, out, position);
@@ -150,7 +150,7 @@ void copy_vs_move_test() {
   occ.emplace_back(2);       //move
   occ.emplace_back("dsa");   //move
 
-  draw(occ, cout, 0);
+  draw(occ, std::cout, 0);
 
 //  object_2_container oc;
 //  oc.emplace_back(0);

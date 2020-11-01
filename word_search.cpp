@@ -4,11 +4,11 @@
 
 #include "word_search.h"
 
-bool checkBoundaries(int N, int M, int row, int col, const string &word, int pos, vector<vector<bool>> &checked);
+bool checkBoundaries(int N, int M, int row, int col, const std::string &word, int pos, std::vector<std::vector<bool>> &checked);
 
-bool isMatch(vector<vector<char>> &grid, int row, int col, const string &word, int pos);
+bool isMatch(std::vector<std::vector<char>> &grid, int row, int col, const std::string &word, int pos);
 
-bool DFS(vector<vector<char>> &grid, int row, int col, int N, int M, const string &word, int pos, vector<vector<bool>> &checked) {
+bool DFS(std::vector<std::vector<char>> &grid, int row, int col, int N, int M, const std::string &word, int pos, std::vector<std::vector<bool>> &checked) {
   bool result = false;
   static int rowNbr[] = {-1, 0, 0, 1};
   static int colNbr[] = {0, -1, 1, 0};
@@ -29,15 +29,15 @@ bool DFS(vector<vector<char>> &grid, int row, int col, int N, int M, const strin
   return result;
 }
 
-bool isMatch(vector<vector<char>> &grid, int row, int col, const string &word, int pos) {
+bool isMatch(std::vector<std::vector<char>> &grid, int row, int col, const std::string &word, int pos) {
   return grid[row][col] == word[pos];
 }
 
-bool checkBoundaries(int N, int M, int row, int col, const string &word, int pos, vector<vector<bool>> &checked) {
+bool checkBoundaries(int N, int M, int row, int col, const std::string &word, int pos, std::vector<std::vector<bool>> &checked) {
   return (row >= 0) && (row < N) && (col >= 0) && (col < M) && word.size() > pos && !checked[row][col];
 }
 
-bool WordSearch::exist(vector<vector<char>> &board, string word) {
+bool WordSearch::exist(std::vector<std::vector<char>> &board, std::string word) {
   if (board.empty() || word.empty()) {
     return false;
   }
@@ -46,7 +46,7 @@ bool WordSearch::exist(vector<vector<char>> &board, string word) {
           pos = 0;
   bool result = false;
 
-  vector<vector<bool>> checked = vector<vector<bool>>(N, vector<bool>(M, false));
+  std::vector<std::vector<bool>> checked = std::vector<std::vector<bool>>(N, std::vector<bool>(M, false));
 
   for (int i = 0; i < N; i++) {
     for (int j = 0; j < M; j++) {

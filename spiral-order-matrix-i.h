@@ -7,12 +7,13 @@
 #define TREE_SPIRAL_ORDER_MATRIX_I_H
 
 #include <vector>
+#include <iostream>
 
-using namespace std;
+
 
 class SpiralOrderMatrixI {
 public:
-    vector<int> spiralOrder(const vector<vector<int> > &A);
+    std::vector<int> spiralOrder(const std::vector<std::vector<int> > &A);
 };
 
 #endif //TREE_SPIRAL_ORDER_MATRIX_I_H

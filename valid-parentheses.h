@@ -9,12 +9,13 @@
 #include <stack>
 #include <string>
 #include <unordered_map>
+#include <iostream>
 
-using namespace std;
+
 
 class ValidParentheses {
 public:
-    bool isValid(string s);
+    bool isValid(std::string s);
 };
 
 #endif //TREE_VALID_PARENTHESES_H

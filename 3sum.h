@@ -7,12 +7,13 @@
 #define TREE_3_SUM_H
 
 #include <vector>
+#include <string>
+#include <iostream>
 
-using namespace std;
 
 class Sum3 {
 public:
-  vector<vector<int>> threeSum(vector<int>& nums);
+  std::vector<std::vector<int>> threeSum(std::vector<int>& nums);
 };
 
 #endif //TREE_3_SUM_H

@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-23.
 //
 
-#include "b_tree.h"
+#include "b_tree.cpp"
 
 /*
  * =================== TESTS ZONE ====================

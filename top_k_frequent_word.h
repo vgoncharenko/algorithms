@@ -8,12 +8,10 @@
 #include <iostream>
 #include <vector>
 #include <map>
-#include "min_heap.h"
+#include "min_heap.cpp"
 #include <string>
 #include <iterator>
 #include <queue>
-
-
 
 class TopKFrequentWords {
 public:

@@ -10,7 +10,7 @@
 #include <string>
 #include <algorithm>
 #include <vector>
-#include "trie.h"
+#include "trie.cpp"
 
 class WordBreak {
 public:

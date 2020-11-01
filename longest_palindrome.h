@@ -11,9 +11,7 @@
 #include <algorithm>
 #include <vector>
 #include <queue>
-#include "max_heap.h"
-
-
+#include "max_heap.cpp"
 
 class LongestPalindrome {
     int checkIndexesCorrelation(std::vector<int> &v1, std::vector<int> &v2);

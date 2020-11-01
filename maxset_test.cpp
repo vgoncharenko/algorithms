@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "maxset.h"
+#include "maxset.cpp"
 
 void runTestMaxSet(std::string variationName, std::vector<int> &A, std::vector<int> &expected)
 {

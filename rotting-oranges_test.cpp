@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "rotting-oranges.h"
+#include "rotting-oranges.cpp"
 
 void runRottingOrangesTest(std::string &variationName, std::vector<std::vector<int>>& grid, int expected) {
   RottingOranges *solution = new RottingOranges();

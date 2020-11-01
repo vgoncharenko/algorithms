@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "3sum.h"
+#include "3sum.cpp"
 
 void runSum3Test(std::string variationName, std::vector<int> &A, std::vector<std::vector<int>> &expected)
 {

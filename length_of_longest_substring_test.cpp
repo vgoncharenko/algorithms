@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-25.
 //
 
-#include "length_of_longest_substring.h"
+#include "length_of_longest_substring.cpp"
 
 void testLengthOfLongestSubstring() {
   std::string input = "abcabcbb";

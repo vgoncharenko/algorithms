@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "single-number-ii.h"
+#include "single-number-ii.cpp"
 
 void runSingleNumberIITest(std::string &variationName, std::vector<int> &nums, int expected) {
   SingleNumberII *solution = new SingleNumberII();

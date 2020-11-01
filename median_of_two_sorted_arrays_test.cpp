@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "median_of_two_sorted_arrays.h"
+#include "median_of_two_sorted_arrays.cpp"
 
 void runMedianOfTwoSortedArraysTest(std::string variationName, std::vector<int> ar1, std::vector<int> ar2, double expected)
 {

@@ -4,7 +4,7 @@
 
 #include "deep_copy_list_with_random_pointer.h"
 
-void testDeepCopyListWithRandomPointerTest() {
+void testConstructBinaryTreeFromPreorderAndInorderTraversalTest() {
   std::string variationName;
 
   //{"$id":"1","next":{"$id":"2","next":null,"random":{"$ref":"2"},"val":2},"random":{"$ref":"2"},"val":1}

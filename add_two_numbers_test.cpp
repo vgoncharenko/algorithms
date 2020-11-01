@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-25.
 //
 
-#include "add_two_numbers.h"
+#include "add_two_numbers.cpp"
 
 void testAddTwoNumbers() {
   // ex1

@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "spiral-order-matrix-i.h"
+#include "spiral-order-matrix-i.cpp"
 
 void runTestSpiralOrderMatrix(std::string &variationName, std::vector<std::vector<int>> &A, std::vector<int> &expected) {
   SpiralOrderMatrixI *solution = new SpiralOrderMatrixI();

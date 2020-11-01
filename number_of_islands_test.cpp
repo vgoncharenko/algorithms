@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "number_of_islands.h"
+#include "number_of_islands.cpp"
 
 void runTestNumberOfIslands(std::string variationName, std::vector<std::vector<char>>& grid, int expected)
 {

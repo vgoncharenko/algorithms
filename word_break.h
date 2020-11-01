@@ -12,8 +12,6 @@
 #include <vector>
 #include "trie.h"
 
-
-
 class WordBreak {
 public:
     bool wordBreak(std::string s, std::vector<std::string>& wordDict);

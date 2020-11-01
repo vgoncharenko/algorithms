@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-23.
 //
 
-#include "find_elements_equelse_to_sum.h"
+#include "find_elements_equelse_to_sum.cpp"
 
 void testSolutionOfSum ()
 {

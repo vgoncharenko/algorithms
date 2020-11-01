@@ -9,8 +9,6 @@
 #include <vector>
 #include <iostream>
 
-
-
 class RepeatAndMissingNumberArray {
 public:
     std::vector<int> repeatedNumber(const std::vector<int> &A);

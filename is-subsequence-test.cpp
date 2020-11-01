@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "is-subsequence.h"
+#include "is-subsequence.cpp"
 
 void testIsSubsecuenceTest() {
   std::string variationName, s, t;

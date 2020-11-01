@@ -7,8 +7,6 @@
 
 #include <iostream>
 
-
-
 struct Term {
     std::string term = "";
     uint8_t value = 0;

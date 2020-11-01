@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "longest_palindrome.h"
+#include "longest_palindrome.cpp"
 
 void ruTest (std::string input, std::string expected, std::string variationName) {
   auto solution = new LongestPalindrome();

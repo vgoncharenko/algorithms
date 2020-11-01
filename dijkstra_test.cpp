@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "dijkstra.h"
+#include "dijkstra.cpp"
 
 void runTestDijkstra(std::string &variationName, Vertex root, std::string &src, std::string &dst, std::vector<std::string> &expected) {
   Dijkstra *solution = new Dijkstra();

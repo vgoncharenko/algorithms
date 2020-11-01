@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "valid-parentheses.h"
+#include "valid-parentheses.cpp"
 
 void runValidParenthesesTest(std::string &variationName, std::string s, bool expected) {
   ValidParentheses *solution = new ValidParentheses();

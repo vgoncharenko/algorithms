@@ -7,8 +7,6 @@
 
 #include <iostream>
 
-
-
 struct TermMax {
     std::string term = "";
     unsigned long value = 0;

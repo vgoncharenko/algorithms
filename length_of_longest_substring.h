@@ -13,8 +13,6 @@
 #include <iostream>
 #include <algorithm>
 
-
-
 class lengthOfLongestSubstring {
 public:
     int getLength(std::string s);

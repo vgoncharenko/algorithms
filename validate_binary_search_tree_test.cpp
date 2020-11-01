@@ -2,69 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "validate_binary_search_tree.h"
-
-void trimLeftTrailingSpaces(std::string &input) {
-  input.erase(input.begin(), find_if(input.begin(), input.end(), [](int ch) {
-      return !isspace(ch);
-  }));
-}
-
-void trimRightTrailingSpaces(std::string &input) {
-  input.erase(find_if(input.rbegin(), input.rend(), [](int ch) {
-      return !isspace(ch);
-  }).base(), input.end());
-}
-
-TreeNode* stringToTreeNode(std::string input) {
-  trimLeftTrailingSpaces(input);
-  trimRightTrailingSpaces(input);
-  input = input.substr(1, input.length() - 2);
-  if (!input.size()) {
-    return nullptr;
-  }
-
-  std::string item;
-  std::stringstream ss;
-  ss.str(input);
-
-  getline(ss, item, ',');
-  TreeNode* root = new TreeNode(stoi(item));
-  std::queue<TreeNode*> nodequeue;
-  nodequeue.push(root);
-
-  while (true) {
-    TreeNode* node = nodequeue.front();
-    nodequeue.pop();
-
-    if (!getline(ss, item, ',')) {
-      break;
-    }
-
-    trimLeftTrailingSpaces(item);
-    if (item != "null") {
-      int leftNumber = stoi(item);
-      node->left = new TreeNode(leftNumber);
-      nodequeue.push(node->left);
-    }
-
-    if (!getline(ss, item, ',')) {
-      break;
-    }
-
-    trimLeftTrailingSpaces(item);
-    if (item != "null") {
-      int rightNumber = stoi(item);
-      node->right = new TreeNode(rightNumber);
-      nodequeue.push(node->right);
-    }
-  }
-  return root;
-}
-
-std::string boolToString(bool input) {
-  return input ? "True" : "False";
-}
+#include "validate_binary_search_tree.cpp"
 
 void runTestValidateBinarySearchTree(std::string variationName, std::string &input, bool expected) {
   TreeNode *root = stringToTreeNode(input);

@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "reverse-integer.h"
+#include "reverse-integer.cpp"
 
 void runReverseIntegerTest(std::string &variationName, int x, int expected) {
   ReverseInteger *solution = new ReverseInteger();

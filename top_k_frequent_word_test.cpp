@@ -3,7 +3,7 @@
 // https://leetcode.com/problems/top-k-frequent-words/
 //
 
-#include "top_k_frequent_word.h"
+#include "top_k_frequent_word.cpp"
 
 void testTopKFrequentWords() {
   std::vector<std::string> input = {"i", "love", "leetcode", "i", "love", "coding", "love", "coding", "coding", "coding"};

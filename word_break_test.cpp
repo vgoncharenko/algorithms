@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "word_break.h"
+#include "word_break.cpp"
 
 void runTestWordBreak(std::string variationName, std::string s, std::vector<std::string> &wordDict, bool expected)
 {

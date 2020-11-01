@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "sqrt.h"
+#include "sqrt.cpp"
 
 void runTestSqrt(std::string &variationName, int x, int expected) {
   SQRT *solution = new SQRT();

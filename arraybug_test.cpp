@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "arraybug.h"
+#include "arraybug.cpp"
 
 void runTestArrayBug(std::string variationName, std::vector<int> &A, int B, std::vector<int> &expected)
 {

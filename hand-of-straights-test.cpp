@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "hand-of-straights.h"
+#include "hand-of-straights.cpp"
 
 void runTestHandOfStraights(std::string variationName, bool expected, std::vector<int> hand, int W) {
   auto solution = new HandOfStraights();

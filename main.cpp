@@ -111,7 +111,7 @@ int main() {
 //  testAtomic();
 
 //  infix::testInfixToPostfix();
-    testNormOfImage();
+ //   testNormOfImage();
 
   //std::cout << "SUCCESS!" << std::endl;
   return 0;

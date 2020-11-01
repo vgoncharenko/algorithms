@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "reverse_words_in_a_string.h"
+#include "reverse_words_in_a_string.cpp"
 
 void runTestReverseWordsInAString(std::string variationName, std::string input, std::string expected)
 {

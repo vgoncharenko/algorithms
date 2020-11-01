@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "deep_copy_list_with_random_pointer.h"
+#include "deep_copy_list_with_random_pointer.cpp"
 
 void testDeepCopyListWithRandomPointerTest() {
   std::string variationName;

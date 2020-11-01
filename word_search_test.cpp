@@ -2,7 +2,7 @@
 // Created by Vitaliy on 2019-09-26.
 //
 
-#include "word_search.h"
+#include "word_search.cpp"
 
 void runTestWordSearch(std::string variationName, std::vector<std::vector<char>>& grid, const std::string& word, bool expected)
 {

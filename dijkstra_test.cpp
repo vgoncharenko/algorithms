@@ -4,7 +4,7 @@
 
 #include "dijkstra.h"
 
-void runTest(std::string &variationName, Vertex root, std::string &src, std::string &dst, std::vector<std::string> &expected) {
+void runTestDijkstra(std::string &variationName, Vertex root, std::string &src, std::string &dst, std::vector<std::string> &expected) {
   Dijkstra *solution = new Dijkstra();
   std::vector<std::string> result = solution->findPath(root, src, dst);
   for (int i = 0; i < expected.size(); ++i) {
@@ -27,7 +27,7 @@ void dijkstraTest() {
   src = "A";
   dst = "A";
   expected = {"A"};
-  runTest(variationName, *root, src, dst, expected);
+    runTestDijkstra(variationName, *root, src, dst, expected);
 
   variationName = "ex1";
   root->name = "A";
@@ -35,7 +35,7 @@ void dijkstraTest() {
   src = "A";
   dst = "F";
   expected = {};
-  runTest(variationName, *root, src, dst, expected);
+    runTestDijkstra(variationName, *root, src, dst, expected);
 
   variationName = "ex2";
   root->name = "A";
@@ -54,5 +54,5 @@ void dijkstraTest() {
   src = "A";
   dst = "F";
   expected = {"A", "B", "C", "F"};
-  runTest(variationName, *root, src, dst, expected);
+    runTestDijkstra(variationName, *root, src, dst, expected);
 }

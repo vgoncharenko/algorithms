@@ -4,7 +4,7 @@
 
 #include "spiral-order-matrix-i.h"
 
-void runTest(std::string &variationName, std::vector<std::vector<int>> &A, std::vector<int> &expected) {
+void runTestSpiralOrderMatrix(std::string &variationName, std::vector<std::vector<int>> &A, std::vector<int> &expected) {
   SpiralOrderMatrixI *solution = new SpiralOrderMatrixI();
   std::vector<int> result = solution->spiralOrder(A);
   if (result.size() != expected.size()) {
@@ -25,25 +25,25 @@ void spiralOrderMatrixITest() {
   variationName = "ex0";
   A = {};
   expected = {};
-  runTest(variationName, A, expected);
+    runTestSpiralOrderMatrix(variationName, A, expected);
 
   variationName = "ex1";
   A = {{1,2,3},{4,5,6},{7,8,9}};
   expected = {1,2,3,6,9,8,7,4,5};
-  runTest(variationName, A, expected);
+    runTestSpiralOrderMatrix(variationName, A, expected);
 
   variationName = "ex2";
   A = {{1,2,3}};
   expected = {1,2,3};
-  runTest(variationName, A, expected);
+    runTestSpiralOrderMatrix(variationName, A, expected);
 
   variationName = "ex3";
   A = {{1,2,3},{4,5,6}};
   expected = {1,2,3,6,5,4};
-  runTest(variationName, A, expected);
+    runTestSpiralOrderMatrix(variationName, A, expected);
 
   variationName = "ex4";
   A = {{1},{2},{3}};
   expected = {1,2,3};
-  runTest(variationName, A, expected);
+    runTestSpiralOrderMatrix(variationName, A, expected);
 }

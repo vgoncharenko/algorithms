@@ -4,7 +4,7 @@
 
 #include "reverse_words_in_a_string.h"
 
-void runTest(std::string variationName, std::string input, std::string expected)
+void runTestReverseWordsInAString(std::string variationName, std::string input, std::string expected)
 {
   ReverseWordsInAString *solution = new ReverseWordsInAString();
   std::string result = solution->reverseWords(input);
@@ -22,70 +22,70 @@ void reverseWordsInAStringTest() {
   variationName = "ex0";
   input = "";
   expected = "";
-  runTest(variationName, input, expected);
+    runTestReverseWordsInAString(variationName, input, expected);
 
   variationName = "ex0.1";
   input = "       ";
   expected = "";
-  runTest(variationName, input, expected);
+    runTestReverseWordsInAString(variationName, input, expected);
 
   variationName = "ex0.2";
   input = "  hello world!  ";
   expected = "world! hello";
-  runTest(variationName, input, expected);
+    runTestReverseWordsInAString(variationName, input, expected);
 
   variationName = "ex1";
   input = "abc def ght";
   expected = "ght def abc";
-  runTest(variationName, input, expected);
+    runTestReverseWordsInAString(variationName, input, expected);
 
   variationName = "ex2";
   input = "abcd ef g";
   expected = "g ef abcd";
-  runTest(variationName, input, expected);
+    runTestReverseWordsInAString(variationName, input, expected);
 
   variationName = "ex3";
   input = " abc def ght ";
   expected = "ght def abc";
-  runTest(variationName, input, expected);
+    runTestReverseWordsInAString(variationName, input, expected);
 
   variationName = "ex4";
   input = " abc   def   ght   ";
   expected = "ght def abc";
-  runTest(variationName, input, expected);
+    runTestReverseWordsInAString(variationName, input, expected);
 
   variationName = "ex5";
   input = "def";
   expected = "def";
-  runTest(variationName, input, expected);
+    runTestReverseWordsInAString(variationName, input, expected);
 
   variationName = "ex6";
   input = "d";
   expected = "d";
-  runTest(variationName, input, expected);
+    runTestReverseWordsInAString(variationName, input, expected);
 
   variationName = "ex7";
   input = "         d";
   expected = "d";
-  runTest(variationName, input, expected);
+    runTestReverseWordsInAString(variationName, input, expected);
 
   variationName = "ex8";
   input = "d         ";
   expected = "d";
-  runTest(variationName, input, expected);
+    runTestReverseWordsInAString(variationName, input, expected);
 
   variationName = "ex8.1";
   input = "da         ";
   expected = "da";
-  runTest(variationName, input, expected);
+    runTestReverseWordsInAString(variationName, input, expected);
 
   variationName = "ex9";
   input = "  def  ";
   expected = "def";
-  runTest(variationName, input, expected);
+    runTestReverseWordsInAString(variationName, input, expected);
 
   variationName = "ex10";
   input = "  d e f  ";
   expected = "f e d";
-  runTest(variationName, input, expected);
+    runTestReverseWordsInAString(variationName, input, expected);
 }

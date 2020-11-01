@@ -4,7 +4,7 @@
 
 #include "arraybug.h"
 
-void runTest(std::string variationName, std::vector<int> &A, int B, std::vector<int> &expected)
+void runTestArrayBug(std::string variationName, std::vector<int> &A, int B, std::vector<int> &expected)
 {
   ArrayBug *solution = new ArrayBug();
   std::vector<int> result = solution->rotateArray(A, B);
@@ -24,29 +24,29 @@ void ArrayBugTest() {
   A = {};
   B = 100;
   expected = {};
-  runTest(variationName, A, B, expected);
+    runTestArrayBug(variationName, A, B, expected);
 
   variationName = "ex1";
   A = {0};
   B = 1;
   expected = {0};
-  runTest(variationName, A, B, expected);
+    runTestArrayBug(variationName, A, B, expected);
 
   variationName = "ex2";
   A = {0,1,2,3,4,5};
   B = 1;
   expected = {1,2,3,4,5,0};
-  runTest(variationName, A, B, expected);
+    runTestArrayBug(variationName, A, B, expected);
 
   variationName = "ex3";
   A = {0,1,2,3,4,5};
   B = 12;
   expected = {0,1,2,3,4,5};
-  runTest(variationName, A, B, expected);
+    runTestArrayBug(variationName, A, B, expected);
 
   variationName = "ex4";
   A = {0,1,2,3,4,5};
   B = 4;
   expected = {4,5,0,1,2,3};
-  runTest(variationName, A, B, expected);
+    runTestArrayBug(variationName, A, B, expected);
 }

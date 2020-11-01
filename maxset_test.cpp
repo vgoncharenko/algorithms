@@ -4,7 +4,7 @@
 
 #include "maxset.h"
 
-void runTest(std::string variationName, std::vector<int> &A, std::vector<int> &expected)
+void runTestMaxSet(std::string variationName, std::vector<int> &A, std::vector<int> &expected)
 {
   MaxSet *solution = new MaxSet();
   std::vector<int> result = solution->find(A);
@@ -22,40 +22,40 @@ void maxSetTest() {
   variationName = "ex0";
   A = {};
   expected = {};
-  runTest(variationName, A, expected);
+    runTestMaxSet(variationName, A, expected);
 
   variationName = "ex1";
   A = {0};
   expected = {0};
-  runTest(variationName, A, expected);
+    runTestMaxSet(variationName, A, expected);
 
   variationName = "ex2";
   A = {1,2,3};
   expected = {1,2,3};
-  runTest(variationName, A, expected);
+    runTestMaxSet(variationName, A, expected);
 
   variationName = "ex3";
   A = {1,2,3,0};
   expected = {1,2,3,0};
-  runTest(variationName, A, expected);
+    runTestMaxSet(variationName, A, expected);
 
   variationName = "ex4";
   A = {1,2,3,0,-1};
   expected = {1,2,3,0};
-  runTest(variationName, A, expected);
+    runTestMaxSet(variationName, A, expected);
 
   variationName = "ex5";
   A = {1,2,3,0,-1,0,0,0,0,0,0,0};
   expected = {1,2,3,0};
-  runTest(variationName, A, expected);
+    runTestMaxSet(variationName, A, expected);
 
   variationName = "ex6";
   A = {1,2,3,0,-1,0,0,0,0,0,0,0,1000};
   expected = {0,0,0,0,0,0,0,1000};
-  runTest(variationName, A, expected);
+    runTestMaxSet(variationName, A, expected);
 
   variationName = "ex7";
   A = {1,2,3,0,-1,-2,-2,-2,-2,1000};
   expected = {1000};
-  runTest(variationName, A, expected);
+    runTestMaxSet(variationName, A, expected);
 }

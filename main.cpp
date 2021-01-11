@@ -44,6 +44,8 @@
 #include "cppCoreGuidline/atomic_and_memory_model.cpp"
 //#include "infixToPostfixAndPrefixNotation.cpp"
 #include "graphic/2d.cpp"
+#include "euler.cpp"
+#include "leetcode205.cpp"
 
 int main() {
 //  testBTree();
@@ -112,6 +114,13 @@ int main() {
 
 //  infix::testInfixToPostfix();
  //   testNormOfImage();
+
+//  testexp();
+    testRotation1();
+    testRotation2();
+    testRotation3();
+//    isIsomorphicTest();
+//    testPow();
 
   //std::cout << "SUCCESS!" << std::endl;
   return 0;

@@ -7,6 +7,10 @@
 #include <vector>
 #include <complex>
 // quad timer
+
+#pragma message(__VERSION__)
+//TODO: try clang optimizations
+
 intmax_t factorial (int n) {
     if (n == 0 || n == 1) return 1;
     return n * factorial(n-1);
@@ -15,7 +19,7 @@ intmax_t factorial (int n) {
 double expmy(double x, int n = 18) {
     double sum = 0;
     for (int i=0; i<=n; ++i) {
-        sum += pow(x, double(i)) / factorial(i);
+        sum += pow(x, i) / factorial(i);
     }
 
     return sum;
@@ -27,6 +31,21 @@ void testexp() {
     std::cout << "EXP(3): " << expmy(3) << std::endl;
     std::cout << "EXP(2+3): " << expmy(5) << std::endl;
     std::cout << "EXP(2) * EXP(3): " << (expmy(2) * expmy(3)) << std::endl;
+    std::cout << "POW(EXP(1), 5): " << (pow(expmy(1), 5)) << std::endl;
+    std::cout.precision(19);
+    std::cout << "(pow(sqrt(2), 2)): " << (pow(sqrt(2), 2)) << std::endl;
+
+    std::cout << std::fixed;
+    std::srand(std::time(0));
+    std::cout << "my_EXP() measurements: \n";
+    measure([]{
+        expmy(std::rand());
+    }, 1'000'000);
+
+    std::cout << "std::exp() measurements: \n";
+    measure([]{
+        exp(std::rand());
+    }, 1'000'000);
 }
 
 struct MyVector {
@@ -88,7 +107,6 @@ void testRotation2 () {
         MyMatrix m({ MyVector(std::rand(), std::rand()), MyVector(std::rand(), std::rand())});
         MyVector r = rotation2(v, m);
     }, 10'000'000);
-
 }
 
 MyVector rotation3(MyVector v, double angle) {

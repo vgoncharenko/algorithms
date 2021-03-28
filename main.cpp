@@ -43,9 +43,11 @@
 #include "astepanov/gcd.cpp"
 #include "cppCoreGuidline/atomic_and_memory_model.cpp"
 //#include "infixToPostfixAndPrefixNotation.cpp"
-#include "graphic/2d.cpp"
+#include "graphic/MatrixVectorMult.cpp"
 #include "euler.cpp"
 #include "leetcode205.cpp"
+#include "knuth/forloop.cpp"
+#include "knuth/goto.cpp"
 
 int main() {
 //  testBTree();
@@ -116,11 +118,14 @@ int main() {
  //   testNormOfImage();
 
 //  testexp();
-    testRotation1();
-    testRotation2();
-    testRotation3();
+//    testRotation1();
+//    testRotation2();
+//    testRotation3();
 //    isIsomorphicTest();
 //    testPow();
+
+//    forLoopTest();
+    testMatrixVectorMult();
 
   //std::cout << "SUCCESS!" << std::endl;
   return 0;

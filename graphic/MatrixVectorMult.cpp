@@ -48,6 +48,7 @@ void rowMultTask(float* m,
     for (int rowId = rowFrom; rowId < rowTo; ++rowId) {
         for (int i = 0; i < n; ++i) {
             m[rowId*n + i] *=  vIn[i];
+            //printf("i=%lli,j=%d\n", rowId*n, i);
         }
     }
 }
@@ -60,6 +61,7 @@ void columnAddTask(const float* matrix,
     for (int colId = colFrom; colId < colTo; ++colId) {
         for (int i = 0; i < n; ++i) {
             vOut[colId] += matrix[n * i + colId];
+            //printf("i=%lli,j=%d\n", n * i, colId);
         }
     }
 }
@@ -83,7 +85,8 @@ void testMatrixVectorMultParallelStriped(float* matrix,
 
 void verifyVectors(const float* expected, const float* actual, const uint64_t n) {
     for (int i = 0; i < n; ++i) {
-        if (expected[i] != actual[i]) std::cout << "error in index " << i << "\n";
+        if (expected[i] != actual[i])
+            std::cout << "error in index " << i << " expected=" << expected[i] << " actual=" << actual[i] << " diff=" << (expected[i]-actual[i]) << "\n";
     }
 }
 

@@ -40,28 +40,15 @@ void testMatrixVectorMultSerial(const float* matrix,
     }
 }
 
-void rowMultTask(float* m,
+void rowMultTask(const float* m,
+                 float* vOut,
                  const float* vIn,
                  const int64_t rowFrom,
                  const int64_t rowTo,
                  const int64_t n) {
     for (int rowId = rowFrom; rowId < rowTo; ++rowId) {
         for (int i = 0; i < n; ++i) {
-            m[rowId*n + i] *=  vIn[i];
-            //printf("i=%lli,j=%d\n", rowId*n, i);
-        }
-    }
-}
-
-void columnAddTask(const float* matrix,
-                   float* vOut,
-                   const int64_t colFrom,
-                   const int64_t colTo,
-                   const int64_t n){
-    for (int colId = colFrom; colId < colTo; ++colId) {
-        for (int i = 0; i < n; ++i) {
-            vOut[colId] += matrix[n * i + colId];
-            //printf("i=%lli,j=%d\n", n * i, colId);
+            vOut[i] += m[rowId*n + i] * vIn[i];
         }
     }
 }
@@ -73,12 +60,7 @@ void testMatrixVectorMultParallelStriped(float* matrix,
                                          const uint8_t threadsCount) {
     uint64_t batchSize = n / threadsCount;
     for (int i = 0; i < threadsCount; ++i) {
-        std::thread t{rowMultTask, matrix, vIn, i*batchSize, (i+1)*batchSize, n};
-        t.join();
-    }
-
-    for (int i = 0; i < threadsCount; ++i) {
-        std::thread t{columnAddTask, matrix, vOut, i*batchSize, (i+1)*batchSize, n};
+        std::thread t{rowMultTask, matrix, vOut, vIn, i*batchSize, (i+1)*batchSize, n};
         t.join();
     }
 }
@@ -300,7 +282,7 @@ Tp:
 Median of time taken by function: 42209859846 nanoseconds
 
  */
-void testMatrixVectorMult(){
+void testMatrixVectorMult() {
     uint8_t iterations = 11;
     uint8_t threadsCount = 8;
     auto W = new int[iterations];
@@ -315,22 +297,22 @@ void testMatrixVectorMult(){
         auto vIn = getVector(W[i]);
         auto vOutSerial = new float [W[i]];
 
-        std::cout << "Iteration " << i << "\n";
+        std::cout << "\nIteration " << i << "\n";
         std::cout << "W=" << W[i] * W[i] << "\n";
         std::cout << "Ts:\n";
         measure([&W, &matrix, &vIn, &vOutSerial, i] {
             testMatrixVectorMultSerial(matrix, vIn, vOutSerial, W[i]);
-        }, 1);
+        }, 1, "seconds", "nonverbose");
 
-        std::cout << "Tp:\n";
+        std::cout << "\nTp:\n";
         auto vOutParallelStriped = new float [W[i]];
         auto matrixIn = new float [W[i]*W[i]];
         std::copy(matrix, matrix + W[i]*W[i], matrixIn);
         measure([&W, &matrixIn, &vIn, &vOutParallelStriped, threadsCount, i] {
             testMatrixVectorMultParallelStriped(matrixIn, vIn, vOutParallelStriped, W[i], threadsCount);
-        }, 1);
+        }, 1, "seconds", "nonverbose");
 
-        verifyVectors(vOutSerial, vOutParallelStriped, W[i]);
+        //verifyVectors(vOutSerial, vOutParallelStriped, W[i]);
 
         delete [] matrix;
         delete [] vIn;

@@ -2,6 +2,7 @@
 // Created by Vitaliy on 10/30/20.
 //
 #include <iostream>
+#include <mpi.h>
 
 auto getVector(const uint64_t n) {
     auto vector = new float [n];
@@ -40,6 +41,10 @@ void testMatrixVectorMultSerial(const float* matrix,
     }
 }
 
+// narrow data passing to threads
+// loop unrolling (ptr over int indexes)
+// clang optimizations
+// MPI implementation
 void rowMultTask(const float* m,
                  float* vOut,
                  const float* vIn,
@@ -59,10 +64,14 @@ void testMatrixVectorMultParallelStriped(float* matrix,
                                          const uint64_t n,
                                          const uint8_t threadsCount) {
     uint64_t batchSize = n / threadsCount;
+    std::vector<std::thread> v;
     for (int i = 0; i < threadsCount; ++i) {
-        std::thread t{rowMultTask, matrix, vOut, vIn, i*batchSize, (i+1)*batchSize, n};
-        t.join();
+        std::thread t{rowMultTask, &matrix[i*batchSize], vOut, vIn, i*batchSize, (i+1)*batchSize, n};
+        v.push_back(move(t));
     }
+    for_each(v.begin(), v.end(), [](std::thread &t){
+        t.join();
+    });
 }
 
 void verifyVectors(const float* expected, const float* actual, const uint64_t n) {
@@ -72,219 +81,9 @@ void verifyVectors(const float* expected, const float* actual, const uint64_t n)
     }
 }
 
-/**
- *
-P=8
-Iteration 0
-W=1024
-Ts:
-Median of time taken by function: 3809 nanoseconds
-Tp:
-Median of time taken by function: 592109 nanoseconds
-Iteration 1
-W=4096
-Ts:
-Median of time taken by function: 9100 nanoseconds
-Tp:
-Median of time taken by function: 620558 nanoseconds
-Iteration 2
-W=16384
-Ts:
-Median of time taken by function: 34614 nanoseconds
-Tp:
-Median of time taken by function: 543215 nanoseconds
-Iteration 3
-W=65536
-Ts:
-Median of time taken by function: 136064 nanoseconds
-Tp:
-Median of time taken by function: 684850 nanoseconds
-Iteration 4
-W=262144
-Ts:
-Median of time taken by function: 582283 nanoseconds
-Tp:
-Median of time taken by function: 1889656 nanoseconds
-Iteration 5
-W=1048576
-Ts:
-Median of time taken by function: 2276375 nanoseconds
-Tp:
-Median of time taken by function: 5981433 nanoseconds
-Iteration 6
-W=4194304
-Ts:
-Median of time taken by function: 8850202 nanoseconds
-Tp:
-Median of time taken by function: 59266157 nanoseconds
-Iteration 7
-W=16777216
-Ts:
-Median of time taken by function: 36460935 nanoseconds
-Tp:
-Median of time taken by function: 329410951 nanoseconds
-Iteration 8
-W=67108864
-Ts:
-Median of time taken by function: 139286468 nanoseconds
-Tp:
-Median of time taken by function: 1545603236 nanoseconds
-Iteration 9
-W=268435456
-Ts:
-Median of time taken by function: 576185534 nanoseconds
-Tp:
-Median of time taken by function: 6181602612 nanoseconds
-Iteration 10
-W=1073741824
-Ts:
-Median of time taken by function: 2423606761 nanoseconds
-Tp:
-Median of time taken by function: 40568389126 nanoseconds
-
-
-
- P=16
- Iteration 0
-W=1024
-Ts:
-Median of time taken by function: 3898 nanoseconds
-Tp:
-Median of time taken by function: 1152169 nanoseconds
-Iteration 1
-W=4096
-Ts:
-Median of time taken by function: 9424 nanoseconds
-Tp:
-Median of time taken by function: 741360 nanoseconds
-Iteration 2
-W=16384
-Ts:
-Median of time taken by function: 36242 nanoseconds
-Tp:
-Median of time taken by function: 865152 nanoseconds
-Iteration 3
-W=65536
-Ts:
-Median of time taken by function: 144659 nanoseconds
-Tp:
-Median of time taken by function: 1023548 nanoseconds
-Iteration 4
-W=262144
-Ts:
-Median of time taken by function: 576169 nanoseconds
-Tp:
-Median of time taken by function: 2214874 nanoseconds
-Iteration 5
-W=1048576
-Ts:
-Median of time taken by function: 2267029 nanoseconds
-Tp:
-Median of time taken by function: 7817892 nanoseconds
-Iteration 6
-W=4194304
-Ts:
-Median of time taken by function: 9270075 nanoseconds
-Tp:
-Median of time taken by function: 66025672 nanoseconds
-Iteration 7
-W=16777216
-Ts:
-Median of time taken by function: 51694823 nanoseconds
-Tp:
-Median of time taken by function: 309776650 nanoseconds
-Iteration 8
-W=67108864
-Ts:
-Median of time taken by function: 156049630 nanoseconds
-Tp:
-Median of time taken by function: 1312614132 nanoseconds
-Iteration 9
-W=268435456
-Ts:
-Median of time taken by function: 592997387 nanoseconds
-Tp:
-Median of time taken by function: 5450189165 nanoseconds
-Iteration 10
-W=1073741824
-Ts:
-Median of time taken by function: 2483316830 nanoseconds
-Tp:
-Median of time taken by function: 42919442545 nanoseconds
-
-
- P=32
-Iteration 0
-W=1024
-Ts:
-Median of time taken by function: 3876 nanoseconds
-Tp:
-Median of time taken by function: 2435597 nanoseconds
-Iteration 1
-W=4096
-Ts:
-Median of time taken by function: 9023 nanoseconds
-Tp:
-Median of time taken by function: 1282938 nanoseconds
-Iteration 2
-W=16384
-Ts:
-Median of time taken by function: 34537 nanoseconds
-Tp:
-Median of time taken by function: 1349627 nanoseconds
-Iteration 3
-W=65536
-Ts:
-Median of time taken by function: 132794 nanoseconds
-Tp:
-Median of time taken by function: 1596830 nanoseconds
-Iteration 4
-W=262144
-Ts:
-Median of time taken by function: 533095 nanoseconds
-Tp:
-Median of time taken by function: 2617405 nanoseconds
-Iteration 5
-W=1048576
-Ts:
-Median of time taken by function: 2178682 nanoseconds
-Tp:
-Median of time taken by function: 9911038 nanoseconds
-Iteration 6
-W=4194304
-Ts:
-Median of time taken by function: 8946225 nanoseconds
-Tp:
-Median of time taken by function: 57531172 nanoseconds
-Iteration 7
-W=16777216
-Ts:
-Median of time taken by function: 37730046 nanoseconds
-Tp:
-Median of time taken by function: 311747539 nanoseconds
-Iteration 8
-W=67108864
-Ts:
-Median of time taken by function: 146856660 nanoseconds
-Tp:
-Median of time taken by function: 1445248455 nanoseconds
-Iteration 9
-W=268435456
-Ts:
-Median of time taken by function: 633643096 nanoseconds
-Tp:
-Median of time taken by function: 6009597449 nanoseconds
-Iteration 10
-W=1073741824
-Ts:
-Median of time taken by function: 2547867355 nanoseconds
-Tp:
-Median of time taken by function: 42209859846 nanoseconds
-
- */
 void testMatrixVectorMult() {
-    uint8_t iterations = 11;
-    uint8_t threadsCount = 8;
+    uint8_t iterations = 5;
+    uint8_t threadsCount = 16;
     auto W = new int[iterations];
     W[0] = 32;
     uint8_t q = 2;

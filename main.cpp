@@ -43,7 +43,7 @@
 #include "astepanov/gcd.cpp"
 #include "cppCoreGuidline/atomic_and_memory_model.cpp"
 //#include "infixToPostfixAndPrefixNotation.cpp"
-#include "graphic/MatrixVectorMult.cpp"
+#include "graphic/MatrixArithmetic.cpp"
 #include "euler.cpp"
 #include "leetcode205.cpp"
 #include "knuth/forloop.cpp"
@@ -125,7 +125,8 @@ int main() {
 //    testPow();
 
 //    forLoopTest();
-    testMatrixVectorMult();
+//    testMatrixVectorMult();
+    testMatrixMatrixMult();
 
   //std::cout << "SUCCESS!" << std::endl;
   return 0;

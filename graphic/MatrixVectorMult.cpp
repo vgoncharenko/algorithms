@@ -77,33 +77,36 @@ void testMatrixVectorMultParallelStriped(float* matrix,
 // Data distribution among the processes
 void DataDistribution(const float* pMatrix,
                       float* pProcRows,
-                      float* pVector,
-                      const uint64_t Size,
+                      float* vIn,
+                      const uint64_t n,
                       int RowNum,
                       int ProcNum,
                       int ProcRank) {
     int *pSendNum; // the number of elements sent to the process
     int *pSendInd; // the index of the first data element sent to the process
-    int RestRows=Size; // Number of rows, that haven’t been distributed yet
+    int RestRows = n; // Number of rows, that haven’t been distributed yet
 
-    MPI_Bcast(pVector, Size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-// Alloc memory for temporary objects
+    //Broadcast input Vector to every processors.
+    MPI_Bcast(vIn, n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    // Alloc memory for temporary objects
     pSendInd = new int [ProcNum];
     pSendNum = new int [ProcNum];
-// Define the disposition of the matrix rows for current process
-    RowNum = (Size/ProcNum);
-    pSendNum[0] = RowNum*Size;
+
+    // Define the disposition of the matrix rows for current process
+    RowNum = (n/ProcNum);
+    pSendNum[0] = RowNum*n;
     pSendInd[0] = 0;
     for (int i=1; i<ProcNum; i++) {
         RestRows -= RowNum;
         RowNum = RestRows/(ProcNum-i);
-        pSendNum[i] = RowNum*Size;
+        pSendNum[i] = RowNum*n;
         pSendInd[i] = pSendInd[i-1]+pSendNum[i-1];
     }
-// Scatter the rows
+    // Scatter the rows
     MPI_Scatterv(pMatrix , pSendNum, pSendInd, MPI_FLOAT, pProcRows,
                  pSendNum[ProcRank], MPI_FLOAT, 0, MPI_COMM_WORLD);
-// Free the memory
+    // Free the memory
     delete [] pSendNum;
     delete [] pSendInd;
 }
@@ -155,13 +158,18 @@ void testMatrixVectorMultMPIParallelHorizontalStriped(const float* matrix,
                                                       float* vOut,
                                                       const uint64_t n,
                                                       int ProcNum) {
-    int *argc;
-    char ***argv;
-    int ProcRank = 1;
+
+    char **args[] = {
+            (char**)"-n",
+            (char**)"10",
+            NULL
+    };
+    int argc = 2;
+    int ProcRank;
     float* pProcRows;
     float* pProcResult;
     int RowNum;
-    MPI_Init(argc, argv);
+    MPI_Init(&argc, args);
     MPI_Comm_size(MPI_COMM_WORLD, &ProcNum);
     MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
     DataDistribution(matrix, pProcRows, vIn, n, RowNum, ProcNum, ProcRank);
@@ -178,7 +186,7 @@ void verifyVectors(const float* expected, const float* actual, const uint64_t n)
 }
 
 void testMatrixVectorMult() {
-    uint8_t iterations = 5;
+    uint8_t iterations = 11;
     uint8_t threadsCount = 16;
     auto W = new int[iterations];
     W[0] = 32;
@@ -206,13 +214,23 @@ void testMatrixVectorMult() {
         measure([&W, &matrixIn, &vIn, &vOutParallelStriped, threadsCount, i] {
             testMatrixVectorMultParallelStriped(matrixIn, vIn, vOutParallelStriped, W[i], threadsCount);
         }, 1, "seconds", "nonverbose");
+        verifyVectors(vOutSerial, vOutParallelStriped, W[i]);
 
-        //verifyVectors(vOutSerial, vOutParallelStriped, W[i]);
+//        std::cout << "\nTpMPI:\n";
+//        auto vOutParallelMPIStriped = new float [W[i]];
+//        auto matrixInMPI = new float [W[i]*W[i]];
+//        std::copy(matrix, matrix + W[i]*W[i], matrixInMPI);
+//        measure([&W, &matrixInMPI, &vIn, &vOutParallelMPIStriped, threadsCount, i] {
+//            testMatrixVectorMultMPIParallelHorizontalStriped(matrixInMPI, vIn, vOutParallelMPIStriped, W[i], threadsCount);
+//        }, 1, "seconds", "nonverbose");
+//        verifyVectors(vOutSerial, vOutParallelMPIStriped, W[i]);
 
         delete [] matrix;
         delete [] vIn;
         delete [] vOutSerial;
         delete [] matrixIn;
         delete [] vOutParallelStriped;
+//        delete [] matrixInMPI;
+//        delete [] vOutParallelMPIStriped;
     }
 }

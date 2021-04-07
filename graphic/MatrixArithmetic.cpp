@@ -389,25 +389,25 @@ void testMatrixMatrixMult() {
         auto matrix2 = getMatrix(W[i]);
         auto mOutSerial = new float [W[i]*W[i]];
 
-//        std::cout << "\nIteration " << i << "\n";
-//        std::cout << "W=" << W[i] * W[i] << "\n";
-//        std::cout << "Ts:\n";
-//        measure([&W, &matrix1, &matrix2, &mOutSerial, i] {
-//            testMatrixMatrixMultSerial(matrix1, matrix2, mOutSerial, W[i]);
-//        }, 1, "seconds", "nonverbose");
+        std::cout << "\nIteration " << i << "\n";
+        std::cout << "W=" << W[i] * W[i] << "\n";
+        std::cout << "Ts:\n";
+        measure([&W, &matrix1, &matrix2, &mOutSerial, i] {
+            testMatrixMatrixMultSerial(matrix1, matrix2, mOutSerial, W[i]);
+        }, 1, "seconds", "nonverbose");
 
-//        std::cout << "\nTp:\n";
-//        auto mOutParallelStriped = new float [W[i]*W[i]];
-//        auto matrix1In = new float [W[i]*W[i]];
-//        auto matrix2In = new float [W[i]*W[i]];
-//        std::copy(matrix1, matrix1 + W[i]*W[i], matrix1In);
-//        std::copy(matrix2, matrix2 + W[i]*W[i], matrix2In);
-//        measure([&W, &matrix1In, &matrix2In, &mOutParallelStriped, threadsCount, i] {
-//            testMatrixMatrixMultParallelStriped(matrix1In, matrix2In, mOutParallelStriped, W[i], threadsCount);
-//        }, 1, "seconds", "nonverbose");
-//        verifyMatrices(mOutSerial, mOutParallelStriped, W[i]);
+        std::cout << "\nTp:\n";
+        auto mOutParallelStriped = new float [W[i]*W[i]];
+        auto matrix1In = new float [W[i]*W[i]];
+        auto matrix2In = new float [W[i]*W[i]];
+        std::copy(matrix1, matrix1 + W[i]*W[i], matrix1In);
+        std::copy(matrix2, matrix2 + W[i]*W[i], matrix2In);
+        measure([&W, &matrix1In, &matrix2In, &mOutParallelStriped, threadsCount, i] {
+            testMatrixMatrixMultParallelStriped(matrix1In, matrix2In, mOutParallelStriped, W[i], threadsCount);
+        }, 1, "seconds", "nonverbose");
+        verifyMatrices(mOutSerial, mOutParallelStriped, W[i]);
 
-//        std::cout << "\nTp loop unrolled:\n";
+        std::cout << "\nTp loop unrolled:\n";
         auto mOutParallelStripedLoopUnrolled = new float [W[i]*W[i]];
         auto matrix1InLoopUnrolled = new float [W[i]*W[i]];
         auto matrix2InLoopUnrolled = new float [W[i]*W[i]];
@@ -416,14 +416,14 @@ void testMatrixMatrixMult() {
         measure([&W, &matrix1InLoopUnrolled, &matrix2InLoopUnrolled, &mOutParallelStripedLoopUnrolled, threadsCount, i] {
             testMatrixMatrixMultParallelStripedLoopUnrolled(matrix1InLoopUnrolled, matrix2InLoopUnrolled, mOutParallelStripedLoopUnrolled, W[i], threadsCount);
         }, 1, "seconds", "nonverbose");
-//        verifyMatrices(mOutSerial, mOutParallelStriped, W[i]);
+        verifyMatrices(mOutSerial, mOutParallelStripedLoopUnrolled, W[i]);
 
         delete [] matrix1;
         delete [] matrix2;
         delete [] mOutSerial;
-//        delete [] matrix1In;
-//        delete [] matrix2In;
-//        delete [] mOutParallelStriped;
+        delete [] matrix1In;
+        delete [] matrix2In;
+        delete [] mOutParallelStriped;
         delete [] matrix1InLoopUnrolled;
         delete [] matrix2InLoopUnrolled;
         delete [] mOutParallelStripedLoopUnrolled;

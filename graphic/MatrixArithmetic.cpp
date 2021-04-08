@@ -342,6 +342,43 @@ void rowMatrixMatrixMultHorizontalLoopUnrolledTask(const float* matrix1,
     }
 }
 
+void rowMatrixMatrixMultHorizontalTrueHorizontalTask(const float* matrix1,
+                                       const float* matrix2,
+                                       float* mOut,
+                                       const int64_t rowFrom,
+                                       const int64_t rowTo,
+                                       const int64_t n) {
+    for (int rowId = rowFrom; rowId < rowTo; ++rowId) {
+        for (int i = 0; i < n; ++i) {
+            for (int k = 0; k < n; ++k) {
+                mOut[rowId * n + k] += matrix1[rowId * n + i] * matrix2[i * n + k];
+            }
+        }
+    }
+}
+
+void rowMatrixMatrixMultHorizontalTrueHorizontalLoopUnrolledTask(const float* matrix1,
+                                       const float* matrix2,
+                                       float* mOut,
+                                       const int64_t rowFrom,
+                                       const int64_t rowTo,
+                                       const int64_t n) {
+    for (int rowId = rowFrom; rowId < rowTo; ++rowId) {
+        for (int i = 0; i < n; ++i) {
+            for (int k = 0; k+8 < n; k+=8) {
+                mOut[rowId * n + k] += matrix1[rowId * n + i] * matrix2[i * n + k];
+                mOut[rowId * n + k+1] += matrix1[rowId * n + i] * matrix2[i * n + k+1];
+                mOut[rowId * n + k+2] += matrix1[rowId * n + i] * matrix2[i * n + k+2];
+                mOut[rowId * n + k+3] += matrix1[rowId * n + i] * matrix2[i * n + k+3];
+                mOut[rowId * n + k+4] += matrix1[rowId * n + i] * matrix2[i * n + k+4];
+                mOut[rowId * n + k+5] += matrix1[rowId * n + i] * matrix2[i * n + k+5];
+                mOut[rowId * n + k+6] += matrix1[rowId * n + i] * matrix2[i * n + k+6];
+                mOut[rowId * n + k+7] += matrix1[rowId * n + i] * matrix2[i * n + k+7];
+            }
+        }
+    }
+}
+
 void testMatrixMatrixMultParallelStriped(const float* matrix1,
                                          const float* matrix2,
                                          float* mOut,
@@ -367,6 +404,38 @@ void testMatrixMatrixMultParallelStripedLoopUnrolled(const float* matrix1,
     std::vector<std::thread> v;
     for (int i = 0; i < threadsCount; ++i) {
         std::thread t{rowMatrixMatrixMultHorizontalLoopUnrolledTask, matrix1, matrix2, mOut, i * batchSize, (i + 1) * batchSize, n};
+        v.push_back(move(t));
+    }
+    for_each(v.begin(), v.end(), [](std::thread &t){
+        t.join();
+    });
+}
+
+void testMatrixMatrixMultParallelStripedTrueHorizontal(const float* matrix1,
+                                         const float* matrix2,
+                                         float* mOut,
+                                         const uint64_t n,
+                                         const uint8_t threadsCount) {
+    uint64_t batchSize = n / threadsCount;
+    std::vector<std::thread> v;
+    for (int i = 0; i < threadsCount; ++i) {
+        std::thread t{rowMatrixMatrixMultHorizontalTrueHorizontalTask, matrix1, matrix2, mOut, i * batchSize, (i + 1) * batchSize, n};
+        v.push_back(move(t));
+    }
+    for_each(v.begin(), v.end(), [](std::thread &t){
+        t.join();
+    });
+}
+
+void testMatrixMatrixMultParallelStripedTrueHorizontalLoopUnrolled(const float* matrix1,
+                                         const float* matrix2,
+                                         float* mOut,
+                                         const uint64_t n,
+                                         const uint8_t threadsCount) {
+    uint64_t batchSize = n / threadsCount;
+    std::vector<std::thread> v;
+    for (int i = 0; i < threadsCount; ++i) {
+        std::thread t{rowMatrixMatrixMultHorizontalTrueHorizontalLoopUnrolledTask, matrix1, matrix2, mOut, i * batchSize, (i + 1) * batchSize, n};
         v.push_back(move(t));
     }
     for_each(v.begin(), v.end(), [](std::thread &t){
@@ -418,6 +487,28 @@ void testMatrixMatrixMult() {
         }, 1, "seconds", "nonverbose");
         verifyMatrices(mOutSerial, mOutParallelStripedLoopUnrolled, W[i]);
 
+        std::cout << "\nTp true horizontal:\n";
+        auto mOutParallelStripedTrueHorizontal = new float [W[i]*W[i]];
+        auto matrix1InTrueHorizontal = new float [W[i]*W[i]];
+        auto matrix2InTrueHorizontal = new float [W[i]*W[i]];
+        std::copy(matrix1, matrix1 + W[i]*W[i], matrix1InTrueHorizontal);
+        std::copy(matrix2, matrix2 + W[i]*W[i], matrix2InTrueHorizontal);
+        measure([&W, &matrix1InTrueHorizontal, &matrix2InTrueHorizontal, &mOutParallelStripedTrueHorizontal, threadsCount, i] {
+            testMatrixMatrixMultParallelStripedTrueHorizontal(matrix1InTrueHorizontal, matrix2InTrueHorizontal, mOutParallelStripedTrueHorizontal, W[i], threadsCount);
+        }, 1, "seconds", "nonverbose");
+        verifyMatrices(mOutSerial, mOutParallelStripedTrueHorizontal, W[i]);
+
+        std::cout << "\nTp true horizontal loop unrolled:\n";
+        auto mOutParallelStripedTrueHorizontalLoopUnrolled = new float [W[i]*W[i]];
+        auto matrix1InTrueHorizontalLoopUnrolled = new float [W[i]*W[i]];
+        auto matrix2InTrueHorizontalLoopUnrolled = new float [W[i]*W[i]];
+        std::copy(matrix1, matrix1 + W[i]*W[i], matrix1InTrueHorizontalLoopUnrolled);
+        std::copy(matrix2, matrix2 + W[i]*W[i], matrix2InTrueHorizontalLoopUnrolled);
+        measure([&W, &matrix1InTrueHorizontalLoopUnrolled, &matrix2InTrueHorizontalLoopUnrolled, &mOutParallelStripedTrueHorizontalLoopUnrolled, threadsCount, i] {
+            testMatrixMatrixMultParallelStripedTrueHorizontalLoopUnrolled(matrix1InTrueHorizontalLoopUnrolled, matrix2InTrueHorizontalLoopUnrolled, mOutParallelStripedTrueHorizontalLoopUnrolled, W[i], threadsCount);
+        }, 1, "seconds", "nonverbose");
+        verifyMatrices(mOutSerial, mOutParallelStripedTrueHorizontalLoopUnrolled, W[i]);
+
         delete [] matrix1;
         delete [] matrix2;
         delete [] mOutSerial;
@@ -427,5 +518,11 @@ void testMatrixMatrixMult() {
         delete [] matrix1InLoopUnrolled;
         delete [] matrix2InLoopUnrolled;
         delete [] mOutParallelStripedLoopUnrolled;
+        delete [] matrix1InTrueHorizontal;
+        delete [] matrix2InTrueHorizontal;
+        delete [] mOutParallelStripedTrueHorizontal;
+        delete [] matrix1InTrueHorizontalLoopUnrolled;
+        delete [] matrix2InTrueHorizontalLoopUnrolled;
+        delete [] mOutParallelStripedTrueHorizontalLoopUnrolled;
     }
 }

@@ -525,6 +525,9 @@ void testMatrixMatrixMult() {
             testMatrixMatrixMultParallelStriped(matrix1In, matrix2In, mOutParallelStriped, W[i], threadsCount);
         }, 1, "seconds", "nonverbose");
         verifyMatrices(mOutSerial, mOutParallelStriped, W[i]);
+        delete [] matrix1In;
+        delete [] matrix2In;
+        delete [] mOutParallelStriped;
 
         std::cout << "\nTp loop unrolled:\n";
         auto mOutParallelStripedLoopUnrolled = new float [W[i]*W[i]];
@@ -536,6 +539,9 @@ void testMatrixMatrixMult() {
             testMatrixMatrixMultParallelStripedLoopUnrolled(matrix1InLoopUnrolled, matrix2InLoopUnrolled, mOutParallelStripedLoopUnrolled, W[i], threadsCount);
         }, 1, "seconds", "nonverbose");
         verifyMatrices(mOutSerial, mOutParallelStripedLoopUnrolled, W[i]);
+        delete [] matrix1InLoopUnrolled;
+        delete [] matrix2InLoopUnrolled;
+        delete [] mOutParallelStripedLoopUnrolled;
 
         std::cout << "\nTp true horizontal:\n";
         auto mOutParallelStripedTrueHorizontal = new float [W[i]*W[i]];
@@ -547,6 +553,9 @@ void testMatrixMatrixMult() {
             testMatrixMatrixMultParallelStripedTrueHorizontal(matrix1InTrueHorizontal, matrix2InTrueHorizontal, mOutParallelStripedTrueHorizontal, W[i], threadsCount);
         }, 1, "seconds", "nonverbose");
         verifyMatrices(mOutSerial, mOutParallelStripedTrueHorizontal, W[i]);
+        delete [] matrix1InTrueHorizontal;
+        delete [] matrix2InTrueHorizontal;
+        delete [] mOutParallelStripedTrueHorizontal;
 
         std::cout << "\nTp true horizontal loop unrolled:\n";
         auto mOutParallelStripedTrueHorizontalLoopUnrolled = new float [W[i]*W[i]];
@@ -558,6 +567,9 @@ void testMatrixMatrixMult() {
             testMatrixMatrixMultParallelStripedTrueHorizontalLoopUnrolled(matrix1InTrueHorizontalLoopUnrolled, matrix2InTrueHorizontalLoopUnrolled, mOutParallelStripedTrueHorizontalLoopUnrolled, W[i], threadsCount);
         }, 1, "seconds", "nonverbose");
         verifyMatrices(mOutSerial, mOutParallelStripedTrueHorizontalLoopUnrolled, W[i]);
+        delete [] matrix1InTrueHorizontalLoopUnrolled;
+        delete [] matrix2InTrueHorizontalLoopUnrolled;
+        delete [] mOutParallelStripedTrueHorizontalLoopUnrolled;
 
         std::cout << "\nTp true horizontal loop unrolled std::vector<float>:\n";
         auto mOutParallelStripedTrueHorizontalLoopUnrolledVector = std::vector<float>(W[i]*W[i], 0);
@@ -571,17 +583,5 @@ void testMatrixMatrixMult() {
         delete [] matrix1;
         delete [] matrix2;
         delete [] mOutSerial;
-        delete [] matrix1In;
-        delete [] matrix2In;
-        delete [] mOutParallelStriped;
-        delete [] matrix1InLoopUnrolled;
-        delete [] matrix2InLoopUnrolled;
-        delete [] mOutParallelStripedLoopUnrolled;
-        delete [] matrix1InTrueHorizontal;
-        delete [] matrix2InTrueHorizontal;
-        delete [] mOutParallelStripedTrueHorizontal;
-        delete [] matrix1InTrueHorizontalLoopUnrolled;
-        delete [] matrix2InTrueHorizontalLoopUnrolled;
-        delete [] mOutParallelStripedTrueHorizontalLoopUnrolled;
     }
 }

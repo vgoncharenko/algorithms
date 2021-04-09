@@ -220,7 +220,8 @@ void verifyVectors(const float* expected, const float* actual, const uint64_t n)
     }
 }
 
-void verifyMatrices(const float* expected, const float* actual, const uint64_t n) {
+template<typename T>
+void verifyMatrices(const float* expected, const T& actual, const uint64_t n) {
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
             if (expected[i*n+j] != actual[i*n+j])
@@ -379,6 +380,28 @@ void rowMatrixMatrixMultHorizontalTrueHorizontalLoopUnrolledTask(const float* ma
     }
 }
 
+void rowMatrixMatrixMultHorizontalTrueHorizontalLoopUnrolledVectorTask(const std::vector<float> &matrix1,
+                                       const std::vector<float> &matrix2,
+                                       std::vector<float> &mOut,
+                                       const int64_t rowFrom,
+                                       const int64_t rowTo,
+                                       const int64_t n) {
+    for (int rowId = rowFrom; rowId < rowTo; ++rowId) {
+        for (int i = 0; i < n; ++i) {
+            for (int k = 0; k + 8 < n; k += 8) {
+                mOut[rowId * n + k] += matrix1[rowId * n + i] * matrix2[i * n + k];
+                mOut[rowId * n + k + 1] += matrix1[rowId * n + i] * matrix2[i * n + k + 1];
+                mOut[rowId * n + k + 2] += matrix1[rowId * n + i] * matrix2[i * n + k + 2];
+                mOut[rowId * n + k + 3] += matrix1[rowId * n + i] * matrix2[i * n + k + 3];
+                mOut[rowId * n + k + 4] += matrix1[rowId * n + i] * matrix2[i * n + k + 4];
+                mOut[rowId * n + k + 5] += matrix1[rowId * n + i] * matrix2[i * n + k + 5];
+                mOut[rowId * n + k + 6] += matrix1[rowId * n + i] * matrix2[i * n + k + 6];
+                mOut[rowId * n + k + 7] += matrix1[rowId * n + i] * matrix2[i * n + k + 7];
+            }
+        }
+    }
+}
+
 void testMatrixMatrixMultParallelStriped(const float* matrix1,
                                          const float* matrix2,
                                          float* mOut,
@@ -441,6 +464,33 @@ void testMatrixMatrixMultParallelStripedTrueHorizontalLoopUnrolled(const float* 
     for_each(v.begin(), v.end(), [](std::thread &t){
         t.join();
     });
+}
+
+template<typename T>
+void testMatrixMatrixMultParallelStripedTrueHorizontalLoopUnrolledVector(const std::vector<T> &matrix1,
+                                                                         const std::vector<T> &matrix2,
+                                                                         std::vector<T> &mOut,
+                                                                         const uint64_t n,
+                                                                         const uint8_t threadsCount) {
+    uint64_t batchSize = n / threadsCount;
+    std::vector<std::thread> v;
+    for (int i = 0; i < threadsCount; ++i) {
+        std::thread t{rowMatrixMatrixMultHorizontalTrueHorizontalLoopUnrolledVectorTask, std::ref(matrix1), std::ref(matrix2), std::ref(mOut), i * batchSize, (i + 1) * batchSize, n};
+        v.push_back(move(t));
+    }
+    for_each(v.begin(), v.end(), [](std::thread &t){
+        t.join();
+    });
+}
+
+template<typename T>
+std::vector<T> toVector(const T* matrix, const uint64_t n) {
+    std::vector<T> v(n);
+    for (int i = 0; i < n; ++i) {
+        v[i] = matrix[i];
+    }
+
+    return v;
 }
 
 void testMatrixMatrixMult() {
@@ -508,6 +558,15 @@ void testMatrixMatrixMult() {
             testMatrixMatrixMultParallelStripedTrueHorizontalLoopUnrolled(matrix1InTrueHorizontalLoopUnrolled, matrix2InTrueHorizontalLoopUnrolled, mOutParallelStripedTrueHorizontalLoopUnrolled, W[i], threadsCount);
         }, 1, "seconds", "nonverbose");
         verifyMatrices(mOutSerial, mOutParallelStripedTrueHorizontalLoopUnrolled, W[i]);
+
+        std::cout << "\nTp true horizontal loop unrolled std::vector<float>:\n";
+        auto mOutParallelStripedTrueHorizontalLoopUnrolledVector = std::vector<float>(W[i]*W[i], 0);
+        auto matrix1InTrueHorizontalLoopUnrolledVector = toVector(matrix1, W[i]*W[i]);
+        auto matrix2InTrueHorizontalLoopUnrolledVector = toVector(matrix2, W[i]*W[i]);
+        measure([&W, &matrix1InTrueHorizontalLoopUnrolledVector, &matrix2InTrueHorizontalLoopUnrolledVector, &mOutParallelStripedTrueHorizontalLoopUnrolledVector, threadsCount, i] {
+            testMatrixMatrixMultParallelStripedTrueHorizontalLoopUnrolledVector(matrix1InTrueHorizontalLoopUnrolledVector, matrix2InTrueHorizontalLoopUnrolledVector, mOutParallelStripedTrueHorizontalLoopUnrolledVector, W[i], threadsCount);
+        }, 1, "seconds", "nonverbose");
+        verifyMatrices(mOutSerial, mOutParallelStripedTrueHorizontalLoopUnrolledVector, W[i]);
 
         delete [] matrix1;
         delete [] matrix2;

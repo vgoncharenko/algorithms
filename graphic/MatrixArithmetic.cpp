@@ -5,6 +5,8 @@
 #include <mpi.h>
 #include <exception>
 
+std::basic_string<char, std::char_traits<char>, std::allocator<char>> getMutexMapKey(uint64_t row, uint64_t col);
+
 auto getVector(const uint64_t n) {
     auto vector = new float [n];
 
@@ -18,7 +20,7 @@ auto getVector(const uint64_t n) {
 auto getMatrix(const uint64_t n) {
     auto matrix = new float [n*n];
     for (int i = 0; i < n*n; ++i) {
-        matrix[i] = random() / MAXFLOAT;
+        matrix[i] = random() / 1000000000.0f;
     }
 
     return matrix;
@@ -225,7 +227,7 @@ void verifyMatrices(const float* expected, const T& actual, const uint64_t n) {
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
             if (expected[i*n+j] != actual[i*n+j])
-                std::cout << "error in index " << i << " expected=" << expected[i*n+j] << " actual=" << actual[i*n+j]
+                std::cout << "error in index [" << i << "]" << "[" << j << "] expected=" << expected[i*n+j] << " actual=" << actual[i*n+j]
                           << " diff="
                           << (expected[i*n+j] - actual[i*n+j]) << "\n";
         }
@@ -329,7 +331,7 @@ void rowMatrixMatrixMultHorizontalLoopUnrolledTask(const float* matrix1,
                                        const int64_t n) {
     for (int rowId = rowFrom; rowId < rowTo; ++rowId) {
         for (int i = 0; i < n; ++i) {
-            for (int k = 0; k+8 < n; k+=8) {
+            for (int k = 0; k+8-1 < n; k+=8) {
                 mOut[rowId * n + i] += matrix1[rowId * n + k] * matrix2[k * n + i];
                 mOut[rowId * n + i] += matrix1[rowId * n + k + 1] * matrix2[(k+1) * n + i];
                 mOut[rowId * n + i] += matrix1[rowId * n + k + 2] * matrix2[(k+2) * n + i];
@@ -359,14 +361,14 @@ void rowMatrixMatrixMultHorizontalTrueHorizontalTask(const float* matrix1,
 }
 
 void rowMatrixMatrixMultHorizontalTrueHorizontalLoopUnrolledTask(const float* matrix1,
-                                       const float* matrix2,
-                                       float* mOut,
-                                       const int64_t rowFrom,
-                                       const int64_t rowTo,
-                                       const int64_t n) {
+                                                                 const float* matrix2,
+                                                                 float* mOut,
+                                                                 const int64_t rowFrom,
+                                                                 const int64_t rowTo,
+                                                                 const int64_t n) {
     for (int rowId = rowFrom; rowId < rowTo; ++rowId) {
         for (int i = 0; i < n; ++i) {
-            for (int k = 0; k+8 < n; k+=8) {
+            for (int k = 0; k+8-1 < n; k+=8) {
                 mOut[rowId * n + k] += matrix1[rowId * n + i] * matrix2[i * n + k];
                 mOut[rowId * n + k+1] += matrix1[rowId * n + i] * matrix2[i * n + k+1];
                 mOut[rowId * n + k+2] += matrix1[rowId * n + i] * matrix2[i * n + k+2];
@@ -380,15 +382,40 @@ void rowMatrixMatrixMultHorizontalTrueHorizontalLoopUnrolledTask(const float* ma
     }
 }
 
+void rowMatrixMatrixMultCannonTask(const float* matrix1,
+                                   const float* matrix2,
+                                   float* mOut,
+                                   const int64_t m1ColFrom,
+                                   const int64_t m2RowFrom,
+                                   const int64_t outRowFrom,
+                                   const int64_t outColFrom,
+                                   const int64_t batchSize,
+                                   const int64_t n) {
+    for (int y = outRowFrom; y < outRowFrom + batchSize; ++y) {
+            for (int i = 0; i < batchSize; ++i) {
+                for (int k = outColFrom; k+8-1 < outColFrom + batchSize; k+=8) {
+                    mOut[y * n + k] += matrix1[y * n + m1ColFrom + i] * matrix2[(m2RowFrom+i) * n + k];
+                    mOut[y * n + k+1] += matrix1[y * n + m1ColFrom + i] * matrix2[(m2RowFrom+i) * n + k+1];
+                    mOut[y * n + k+2] += matrix1[y * n + m1ColFrom + i] * matrix2[(m2RowFrom+i) * n + k+2];
+                    mOut[y * n + k+3] += matrix1[y * n + m1ColFrom + i] * matrix2[(m2RowFrom+i) * n + k+3];
+                    mOut[y * n + k+4] += matrix1[y * n + m1ColFrom + i] * matrix2[(m2RowFrom+i) * n + k+4];
+                    mOut[y * n + k+5] += matrix1[y * n + m1ColFrom + i] * matrix2[(m2RowFrom+i) * n + k+5];
+                    mOut[y * n + k+6] += matrix1[y * n + m1ColFrom + i] * matrix2[(m2RowFrom+i) * n + k+6];
+                    mOut[y * n + k+7] += matrix1[y * n + m1ColFrom + i] * matrix2[(m2RowFrom+i) * n + k+7];
+                }
+            }
+    }
+}
+
 void rowMatrixMatrixMultHorizontalTrueHorizontalLoopUnrolledVectorTask(const std::vector<float> &matrix1,
-                                       const std::vector<float> &matrix2,
-                                       std::vector<float> &mOut,
-                                       const int64_t rowFrom,
-                                       const int64_t rowTo,
-                                       const int64_t n) {
+                                                                       const std::vector<float> &matrix2,
+                                                                       std::vector<float> &mOut,
+                                                                       const int64_t rowFrom,
+                                                                       const int64_t rowTo,
+                                                                       const int64_t n) {
     for (int rowId = rowFrom; rowId < rowTo; ++rowId) {
         for (int i = 0; i < n; ++i) {
-            for (int k = 0; k + 8 < n; k += 8) {
+            for (int k = 0; k + 8 - 1 < n; k += 8) {
                 mOut[rowId * n + k] += matrix1[rowId * n + i] * matrix2[i * n + k];
                 mOut[rowId * n + k + 1] += matrix1[rowId * n + i] * matrix2[i * n + k + 1];
                 mOut[rowId * n + k + 2] += matrix1[rowId * n + i] * matrix2[i * n + k + 2];
@@ -419,10 +446,10 @@ void testMatrixMatrixMultParallelStriped(const float* matrix1,
 }
 
 void testMatrixMatrixMultParallelStripedLoopUnrolled(const float* matrix1,
-                                         const float* matrix2,
-                                         float* mOut,
-                                         const uint64_t n,
-                                         const uint8_t threadsCount) {
+                                                     const float* matrix2,
+                                                     float* mOut,
+                                                     const uint64_t n,
+                                                     const uint8_t threadsCount) {
     uint64_t batchSize = n / threadsCount;
     std::vector<std::thread> v;
     for (int i = 0; i < threadsCount; ++i) {
@@ -435,10 +462,10 @@ void testMatrixMatrixMultParallelStripedLoopUnrolled(const float* matrix1,
 }
 
 void testMatrixMatrixMultParallelStripedTrueHorizontal(const float* matrix1,
-                                         const float* matrix2,
-                                         float* mOut,
-                                         const uint64_t n,
-                                         const uint8_t threadsCount) {
+                                                       const float* matrix2,
+                                                       float* mOut,
+                                                       const uint64_t n,
+                                                       const uint8_t threadsCount) {
     uint64_t batchSize = n / threadsCount;
     std::vector<std::thread> v;
     for (int i = 0; i < threadsCount; ++i) {
@@ -451,10 +478,10 @@ void testMatrixMatrixMultParallelStripedTrueHorizontal(const float* matrix1,
 }
 
 void testMatrixMatrixMultParallelStripedTrueHorizontalLoopUnrolled(const float* matrix1,
-                                         const float* matrix2,
-                                         float* mOut,
-                                         const uint64_t n,
-                                         const uint8_t threadsCount) {
+                                                                   const float* matrix2,
+                                                                   float* mOut,
+                                                                   const uint64_t n,
+                                                                   const uint8_t threadsCount) {
     uint64_t batchSize = n / threadsCount;
     std::vector<std::thread> v;
     for (int i = 0; i < threadsCount; ++i) {
@@ -493,9 +520,39 @@ std::vector<T> toVector(const T* matrix, const uint64_t n) {
     return v;
 }
 
+void testMatrixMatrixMultParallelCannon(const float* matrix1,
+                                        const float* matrix2,
+                                        float* mOut,
+                                        const uint64_t n,
+                                        const uint8_t threadsCount) {
+    int sqrtThreadCount = ceil(sqrt(threadsCount));
+    uint64_t batchSize = n / sqrtThreadCount;
+    for (int k = 0; k < sqrtThreadCount; ++k) {
+        std::vector<std::thread> v;
+        for (int p_i = 0; p_i < sqrtThreadCount; ++p_i) {
+            for (int p_j = 0; p_j < sqrtThreadCount; ++p_j) {
+                std::pair<int,int> A = std::make_pair(p_i, ((p_i + p_j + k) % sqrtThreadCount));
+                std::pair<int,int> B = std::make_pair(((p_i + p_j + k) % sqrtThreadCount), p_j);
+                std::pair<int,int> C = std::make_pair(p_i, p_j);
+                std::thread t{rowMatrixMatrixMultCannonTask, matrix1, matrix2, mOut,
+                              A.second * batchSize,
+                              B.first * batchSize,
+                              C.first * batchSize, C.second * batchSize,
+                              batchSize,
+                              n};
+                v.push_back(move(t));
+            }
+        }
+
+        for_each(v.begin(), v.end(), [](std::thread &t) {
+            t.join();
+        });
+    }
+}
+
 void testMatrixMatrixMult() {
     uint8_t iterations = 7;
-    uint8_t threadsCount = 8;
+    uint8_t threadsCount = 16;
     auto W = new int[iterations];
     W[0] = 32;
     uint8_t q = 2;
@@ -579,6 +636,20 @@ void testMatrixMatrixMult() {
             testMatrixMatrixMultParallelStripedTrueHorizontalLoopUnrolledVector(matrix1InTrueHorizontalLoopUnrolledVector, matrix2InTrueHorizontalLoopUnrolledVector, mOutParallelStripedTrueHorizontalLoopUnrolledVector, W[i], threadsCount);
         }, 1, "seconds", "nonverbose");
         verifyMatrices(mOutSerial, mOutParallelStripedTrueHorizontalLoopUnrolledVector, W[i]);
+
+        std::cout << "\nTp Cannon's algorithm:\n";
+        auto mOutParallelCannon = new float [W[i]*W[i]];
+        auto matrix1InCannon = new float [W[i]*W[i]];
+        auto matrix2InCannon = new float [W[i]*W[i]];
+        std::copy(matrix1, matrix1 + W[i]*W[i], matrix1InCannon);
+        std::copy(matrix2, matrix2 + W[i]*W[i], matrix2InCannon);
+        measure([&W, &matrix1InCannon, &matrix2InCannon, &mOutParallelCannon, threadsCount, i] {
+            testMatrixMatrixMultParallelCannon(matrix1InCannon, matrix2InCannon, mOutParallelCannon, W[i], threadsCount);
+        }, 1, "seconds", "nonverbose");
+        //verifyMatrices(mOutSerial, mOutParallelCannon, W[i]);
+        delete [] matrix1InCannon;
+        delete [] matrix2InCannon;
+        delete [] mOutParallelCannon;
 
         delete [] matrix1;
         delete [] matrix2;

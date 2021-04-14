@@ -7,6 +7,8 @@
 
 std::basic_string<char, std::char_traits<char>, std::allocator<char>> getMutexMapKey(uint64_t row, uint64_t col);
 
+std::basic_string<char, std::char_traits<char>, std::allocator<char>> getIdxKey(const std::pair<int, int> &Idx);
+
 auto getVector(const uint64_t n) {
     auto vector = new float [n];
 
@@ -407,6 +409,67 @@ void rowMatrixMatrixMultCannonTask(const float* matrix1,
     }
 }
 
+std::string getIdxKey(const uint64_t i, const uint64_t j) { return std::to_string(i) + '_' + std::to_string(j); }
+
+struct MatrixBlock {
+public:
+    mutable std::mutex mut;
+    std::condition_variable blockIsFree;
+    bool blockIsFreeFlag = false;
+};
+
+void rowMatrixMatrixMultCannonCondVarTask(const float* matrix1,
+                                          const float* matrix2,
+                                          float* mOut,
+                                          const std::unordered_map<std::string, MatrixBlock*> &m1Map,
+                                          const std::unordered_map<std::string, MatrixBlock*> &m2Map,
+                                          int64_t m1ColFrom,
+                                          int64_t m2RowFrom,
+                                          const int64_t outRowFrom,
+                                          const int64_t outColFrom,
+                                          const int64_t batchSize,
+                                          const int64_t n,
+                                          const int64_t blockCount) {
+    uint64_t it = 0;
+    while (it < blockCount) {
+        for (int64_t y = outRowFrom*batchSize; y < outRowFrom*batchSize + batchSize; ++y) {
+            for (int i = 0; i < batchSize; ++i) {
+                for (int64_t k = outColFrom*batchSize; k + 8 - 1 < outColFrom*batchSize + batchSize; k += 8) {
+                    mOut[y * n + k] += matrix1[y * n + m1ColFrom*batchSize + i] * matrix2[(m2RowFrom*batchSize + i) * n + k];
+                    mOut[y * n + k + 1] += matrix1[y * n + m1ColFrom*batchSize + i] * matrix2[(m2RowFrom*batchSize + i) * n + k + 1];
+                    mOut[y * n + k + 2] += matrix1[y * n + m1ColFrom*batchSize + i] * matrix2[(m2RowFrom*batchSize + i) * n + k + 2];
+                    mOut[y * n + k + 3] += matrix1[y * n + m1ColFrom*batchSize + i] * matrix2[(m2RowFrom*batchSize + i) * n + k + 3];
+                    mOut[y * n + k + 4] += matrix1[y * n + m1ColFrom*batchSize + i] * matrix2[(m2RowFrom*batchSize + i) * n + k + 4];
+                    mOut[y * n + k + 5] += matrix1[y * n + m1ColFrom*batchSize + i] * matrix2[(m2RowFrom*batchSize + i) * n + k + 5];
+                    mOut[y * n + k + 6] += matrix1[y * n + m1ColFrom*batchSize + i] * matrix2[(m2RowFrom*batchSize + i) * n + k + 6];
+                    mOut[y * n + k + 7] += matrix1[y * n + m1ColFrom*batchSize + i] * matrix2[(m2RowFrom*batchSize + i) * n + k + 7];
+                }
+            }
+        }
+        auto block1 = m1Map.find(getIdxKey(outRowFrom, m1ColFrom));
+        auto block2 = m2Map.find(getIdxKey(m2RowFrom, outColFrom));
+        {
+            std::scoped_lock lk(block1->second->mut, block2->second->mut);
+            block1->second->blockIsFreeFlag = true;
+            block2->second->blockIsFreeFlag = true;
+        }
+        block1->second->blockIsFree.notify_one();
+        block2->second->blockIsFree.notify_one();
+
+        ++it;
+        m1ColFrom = (m1ColFrom + 1) % blockCount;
+        m2RowFrom = (m2RowFrom + 1) % blockCount;
+
+        auto blockM1 = m1Map.find(getIdxKey(outRowFrom, m1ColFrom));
+        std::unique_lock<std::mutex> blockM1Lock(blockM1->second->mut);
+        blockM1->second->blockIsFree.wait(blockM1Lock, [&blockM1] { return blockM1->second->blockIsFreeFlag; });
+
+        auto blockM2 = m2Map.find(getIdxKey(m2RowFrom, outColFrom));
+        std::unique_lock<std::mutex> blockM2Lock(blockM2->second->mut);
+        blockM2->second->blockIsFree.wait(blockM2Lock, [&blockM2] { return blockM2->second->blockIsFreeFlag; });
+    }
+}
+
 void rowMatrixMatrixMultHorizontalTrueHorizontalLoopUnrolledVectorTask(const std::vector<float> &matrix1,
                                                                        const std::vector<float> &matrix2,
                                                                        std::vector<float> &mOut,
@@ -550,6 +613,47 @@ void testMatrixMatrixMultParallelCannon(const float* matrix1,
     }
 }
 
+void testMatrixMatrixMultParallelCannonCondVar(const float* matrix1,
+                                               const float* matrix2,
+                                               float* mOut,
+                                               const uint64_t n,
+                                               const uint8_t threadsCount) {
+    std::unordered_map<std::string, MatrixBlock*> m1Map(threadsCount);
+    std::unordered_map<std::string, MatrixBlock*> m2Map(threadsCount);
+    int sqrtThreadCount = ceil(sqrt(threadsCount));
+    uint64_t batchSize = n / sqrtThreadCount;
+    std::vector<std::thread> v;
+    for (int p_i = 0; p_i < sqrtThreadCount; ++p_i) {
+        for (int p_j = 0; p_j < sqrtThreadCount; ++p_j) {
+            std::pair<int, int> A = std::make_pair(p_i, ((p_i + p_j) % sqrtThreadCount));
+            m1Map.insert({getIdxKey(A.first, A.second), new MatrixBlock()});
+            std::pair<int, int> B = std::make_pair(((p_i + p_j) % sqrtThreadCount), p_j);
+            m2Map.insert({getIdxKey(B.first, B.second), new MatrixBlock()});
+        }
+    }
+    for (int p_i = 0; p_i < sqrtThreadCount; ++p_i) {
+        for (int p_j = 0; p_j < sqrtThreadCount; ++p_j) {
+            std::pair<int, int> A = std::make_pair(p_i, ((p_i + p_j) % sqrtThreadCount));
+            std::pair<int, int> B = std::make_pair(((p_i + p_j) % sqrtThreadCount), p_j);
+            std::pair<int, int> C = std::make_pair(p_i, p_j);
+            std::thread t{rowMatrixMatrixMultCannonCondVarTask, matrix1, matrix2, mOut,
+                          std::ref(m1Map),
+                          std::ref(m2Map),
+                          A.second,
+                          B.first,
+                          C.first, C.second,
+                          batchSize,
+                          n,
+                          sqrtThreadCount};
+            v.push_back(move(t));
+        }
+    }
+
+    for_each(v.begin(), v.end(), [](std::thread &t) {
+        t.join();
+    });
+}
+
 void testMatrixMatrixMult() {
     uint8_t iterations = 7;
     uint8_t threadsCount = 16;
@@ -650,6 +754,20 @@ void testMatrixMatrixMult() {
         delete [] matrix1InCannon;
         delete [] matrix2InCannon;
         delete [] mOutParallelCannon;
+
+        std::cout << "\nTp Cannon's algorithm with condition variable:\n";
+        auto mOutParallelCannonCondVar = new float [W[i]*W[i]];
+        auto matrix1InCannonCondVar = new float [W[i]*W[i]];
+        auto matrix2InCannonCondVar = new float [W[i]*W[i]];
+        std::copy(matrix1, matrix1 + W[i]*W[i], matrix1InCannonCondVar);
+        std::copy(matrix2, matrix2 + W[i]*W[i], matrix2InCannonCondVar);
+        measure([&W, &matrix1InCannonCondVar, &matrix2InCannonCondVar, &mOutParallelCannonCondVar, threadsCount, i] {
+            testMatrixMatrixMultParallelCannonCondVar(matrix1InCannonCondVar, matrix2InCannonCondVar, mOutParallelCannonCondVar, W[i], threadsCount);
+        }, 1, "seconds", "nonverbose");
+        //verifyMatrices(mOutParallelCannon, mOutParallelCannonCondVar, W[i]);
+        delete [] matrix1InCannonCondVar;
+        delete [] matrix2InCannonCondVar;
+        delete [] mOutParallelCannonCondVar;
 
         delete [] matrix1;
         delete [] matrix2;

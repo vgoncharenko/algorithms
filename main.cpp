@@ -48,6 +48,7 @@
 #include "leetcode205.cpp"
 #include "knuth/forloop.cpp"
 #include "knuth/goto.cpp"
+#include "SortAlgorithms.cpp"
 
 int main() {
 //  testBTree();
@@ -126,7 +127,8 @@ int main() {
 
 //    forLoopTest();
 //    testMatrixVectorMult();
-    testMatrixMatrixMult();
+//    testMatrixMatrixMult();
+    testVectorSort();
 
   //std::cout << "SUCCESS!" << std::endl;
   return 0;

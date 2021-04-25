@@ -8,7 +8,7 @@
 #include <complex>
 // quad timer
 
-#pragma message(__VERSION__)
+//#pragma message(__VERSION__)
 //TODO: try clang optimizations
 
 intmax_t factorial (int n) {

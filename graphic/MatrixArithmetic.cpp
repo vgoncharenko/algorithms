@@ -217,7 +217,16 @@ void testMatrixVectorMultMPIParallelHorizontalStriped(const float* matrix,
     MPI_Finalize();
 }
 
-void verifyVectors(const float* expected, const float* actual, const uint64_t n) {
+template<typename T>
+void verifyVectors(const float* expected, const T& actual, const uint64_t n) {
+    for (int i = 0; i < n; ++i) {
+        if (expected[i] != actual[i])
+            std::cout << "error in index " << i << " expected=" << expected[i] << " actual=" << actual[i] << " diff=" << (expected[i]-actual[i]) << "\n";
+    }
+}
+
+template<typename T>
+void verifyVectors(const T& expected, const T& actual, const uint64_t n) {
     for (int i = 0; i < n; ++i) {
         if (expected[i] != actual[i])
             std::cout << "error in index " << i << " expected=" << expected[i] << " actual=" << actual[i] << " diff=" << (expected[i]-actual[i]) << "\n";

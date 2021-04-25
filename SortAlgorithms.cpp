@@ -69,9 +69,10 @@ public:
         {
             std::scoped_lock lk(m);
             ++count;
+            if (infLimit > count) return *this;
         }
 
-        if (infLimit >= count) {
+        if (infLimit <= count) {
             {
                 std::scoped_lock lk(m);
                 syncAllowed = true;
@@ -90,11 +91,13 @@ public:
 };
 
 template<typename T>
-void compareSplit(T* begin, const uint64_t n, bool directionFlag,
+void compareSplit(T* begin,
+                  T* bufferBegin,
+                  const uint64_t n,
+                  bool directionFlag,
                   std::shared_ptr<BlockBarrier> barrier) {
     T* end = begin + n;
-    auto newContainer = new T[n];
-    T* it = newContainer;
+    auto it = bufferBegin;
     T* curBegin = begin;
     if (directionFlag) {
         T* endLover = curBegin - 1;
@@ -109,7 +112,7 @@ void compareSplit(T* begin, const uint64_t n, bool directionFlag,
             }
             ++it;
         }
-        std::reverse(newContainer, newContainer + n);
+        std::reverse(bufferBegin, bufferBegin + n);
     } else {
         T* beginUpper = end;
         while (curBegin < end && beginUpper < end + n) {
@@ -130,7 +133,9 @@ void compareSplit(T* begin, const uint64_t n, bool directionFlag,
     std::unique_lock<std::mutex> blockM1Lock(barrier->m);
     barrier->condition.wait(blockM1Lock, [&barrier] { return barrier->syncAllowed; });
     // perform split
-    std::copy(newContainer, newContainer + n, begin);
+    for (int i = 0; i < n; ++i) {
+        *(begin + i) = *(bufferBegin + i);
+    }
 }
 
 // O(log2(n/2)*O(n*log2(n))) + O(log2(n)*O(n)) ~ O(n*(log2(n))^2)
@@ -192,14 +197,12 @@ void bitonicSortParallel(I begin, const uint64_t n, const uint8_t threadCount) {
 }
 
 // O(O(log2(n/p/2)*O(n/p*log2(n/p))) + O(log2(n/p)*O(n/p))) + O(log2(p)-1) * O(log2(n) * O(n))
-template<typename I>
-void testBitonicSortCompareSplitParallel(I begin, const uint64_t n, const uint8_t threadCount) {
+template<typename T>
+void testBitonicSortCompareSplitParallel(T* begin, const uint64_t n, const uint8_t threadCount) {
     std::cout << "initial:\n";
     for (int i = 0; i < n; ++i) {
         std::cout << *(begin + i) << ',';
     }
-    std::function<bool(const float*, const float*)> asc = [](auto const it1, auto const it2) {return *it1 > *it2;};
-    std::function<bool(const float*, const float*)> desc = [](auto const it1, auto const it2) {return *it1 < *it2;};
 
     // Sort blocks internally
     // O(O(log2(n/p/2)*O(n/p*log2(n/p))) + O(log2(n/p)*O(n/p)))
@@ -208,7 +211,7 @@ void testBitonicSortCompareSplitParallel(I begin, const uint64_t n, const uint8_
         std::thread t{bitoicSortSerial<float*, std::function<bool(const float*, const float*)>>,
                       begin + n/threadCount * i,
                       n/threadCount,
-                      asc
+                      [](auto const it1, auto const it2) {return *it1 > *it2;}
         };
         sortStep.push_back(move(t));
     }
@@ -221,6 +224,7 @@ void testBitonicSortCompareSplitParallel(I begin, const uint64_t n, const uint8_
     }
 
     //Perform Only Compare-Splits
+    auto buffer = new T[n];
     for (int k = 0; k < log2(threadCount); ++k) {
         const uint64_t threads = threadCount / pow(2, k);
         const uint64_t blockSize = n / threads;
@@ -229,12 +233,14 @@ void testBitonicSortCompareSplitParallel(I begin, const uint64_t n, const uint8_
         for (int i = 0; i < threads; i+=2) {
             std::thread lower{compareSplit<float>,
                           begin + blockSize * i,
+                          buffer + blockSize * i,
                           blockSize,
                           false,
                           std::ref(barrier)
             };
             std::thread upper{compareSplit<float>,
                           begin + blockSize * i + blockSize,
+                          buffer + blockSize * i + blockSize,
                           blockSize,
                           true,
                           std::ref(barrier)

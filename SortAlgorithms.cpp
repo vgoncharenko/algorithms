@@ -10,6 +10,7 @@
 //    return vector;
 //}
 
+// O(1)
 template<typename I, typename cmpFunction>
 void bitonicCompareExchange(I &it1, I &it2, cmpFunction cmp) {
     if (cmp(it1, it2)) {
@@ -19,6 +20,7 @@ void bitonicCompareExchange(I &it1, I &it2, cmpFunction cmp) {
     }
 }
 
+// O(n)
 template<typename I, typename cmpFunction>
 void bitonicSplit(I it1, I it2, cmpFunction cmp) {
     I end = it2;
@@ -28,6 +30,7 @@ void bitonicSplit(I it1, I it2, cmpFunction cmp) {
     }
 }
 
+// O(log2(n)*O(n))
 template<typename I, typename cmpFunction>
 void bitonicMerge(I begin, const uint64_t n, cmpFunction cmp) {
     for (int i = 1; i <= log2(n); ++i) {
@@ -39,6 +42,7 @@ void bitonicMerge(I begin, const uint64_t n, cmpFunction cmp) {
     }
 }
 
+// O(log2(n/2)*O(n*log2(n)))
 template<typename I>
 void bitonicSort(I begin, const uint64_t n) {
     for (int i = 0; i < log2(n/2); ++i) {
@@ -51,12 +55,14 @@ void bitonicSort(I begin, const uint64_t n) {
     }
 }
 
+// O(log2(n/2)*O(n*log2(n))) + O(log2(n)*O(n)) ~ O(n*(log2(n))^2)
 template<typename I, typename cmpFunction>
 void bitoicSortSerial(I vInBegin, const uint64_t n, cmpFunction cmp) {
     bitonicSort(vInBegin, n);
     bitonicMerge(vInBegin, n, cmp);
 }
 
+// O(O(log2(n/p/2)*O(n/p*log2(n/p))) + O(log2(n/p)*O(n/p))) + O(log2(p)-1) * O(log2(n) * O(n))
 template<typename I>
 void bitonicSortParallel(I begin, const uint64_t n, const uint8_t threadCount) {
 //    std::cout << "initial:\n";
@@ -67,6 +73,7 @@ void bitonicSortParallel(I begin, const uint64_t n, const uint8_t threadCount) {
     std::function<bool(const float*, const float*)> desc = [](auto const it1, auto const it2) {return *it1 < *it2;};
 
     // Sort blocks internally
+    // O(O(log2(n/p/2)*O(n/p*log2(n/p))) + O(log2(n/p)*O(n/p)))
     std::vector<std::thread> sortStep;
     for (int i = 0; i < threadCount; ++i) {
         std::thread t{bitoicSortSerial<float*, std::function<bool(const float*, const float*)>>,
@@ -81,6 +88,9 @@ void bitonicSortParallel(I begin, const uint64_t n, const uint8_t threadCount) {
     });
 
     //Perform Only Merges
+    // O(log2(n/p/2) * O(n/p/2)) + O(log2(n/p/4) * O(n/p/4)) + ... + O(log2(n) * O(n))
+    // with small enough p:
+    // O(log2(p)-1) * O(log2(n) * O(n))
     for (int k = 1; k <= log2(threadCount); ++k) {
         const int threads = threadCount / pow(2, k);
         const uint64_t blockSize = n / threads;

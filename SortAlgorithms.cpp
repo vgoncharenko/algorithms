@@ -90,38 +90,47 @@ public:
     }
 };
 
+// O(n)
 template<typename T>
 void compareSplit(T* begin,
                   T* bufferBegin,
                   const uint64_t n,
                   bool directionFlag,
-                  std::shared_ptr<BlockBarrier> barrier) {
+                  BlockBarrier* barrier) {
     T* end = begin + n;
-    auto it = bufferBegin;
+    T* it = bufferBegin;
     T* curBegin = begin;
+    int i = 0, j = 0;
+//    ++curBegin;
+//    {
+//        std::scoped_lock lk(barrier->m);
+//        std::cout << "thread n \n" << "begin:" << *begin << "\ncurBegin:" << *curBegin << "\n";
+//    }
+//
+//    return;
+
     if (directionFlag) {
         T* endLover = curBegin - 1;
         T* endCur = end - 1;
-        while (curBegin <= endCur && endLover > curBegin - 1 - n) {
-            if (*endCur > *endLover) {
-                *it = *endCur;
-                --endCur;
+        while (i+j < n) {
+            if (curBegin <= (endCur-i) && *(endCur-i) > *(endLover-j)) {
+                *it = *(endCur-i);
+                ++i;
             } else {
-                *it = *endLover;
-                --endLover;
+                *it = *(endLover-j);
+                ++j;
             }
             ++it;
         }
         std::reverse(bufferBegin, bufferBegin + n);
     } else {
-        T* beginUpper = end;
-        while (curBegin < end && beginUpper < end + n) {
-            if (*curBegin > *beginUpper) {
-                *it = *beginUpper;
-                ++beginUpper;
+        while (i+j < n) {
+            if (i < n && *(begin+j) > *(end + i)) {
+                *it = *(end + i);
+                ++i;
             } else {
-                *it = *curBegin;
-                ++curBegin;
+                *it = *(begin+j);
+                ++j;
             }
             ++it;
         }
@@ -132,10 +141,25 @@ void compareSplit(T* begin,
     // wait for opposite side to finish compare
     std::unique_lock<std::mutex> blockM1Lock(barrier->m);
     barrier->condition.wait(blockM1Lock, [&barrier] { return barrier->syncAllowed; });
+//
+//    std::cout << "\n\nwhat's now:\n";
+//    for (int k = 0; k < n; ++k) {
+//        std::cout << *(begin + k) << ',';
+//    }
+//    std::cout << "\n\nexpected:\n";
+//    for (int k = 0; k < n; ++k) {
+//        std::cout << *(bufferBegin + k) << ',';
+//    }
+
     // perform split
-    for (int i = 0; i < n; ++i) {
-        *(begin + i) = *(bufferBegin + i);
+    for (int k = 0; k < n; ++k) {
+        *(begin + k) = *(bufferBegin + k);
     }
+//
+//    std::cout << "\n\nactual:\n";
+//    for (int k = 0; k < n; ++k) {
+//        std::cout << *(begin + k) << ',';
+//    }
 }
 
 // O(log2(n/2)*O(n*log2(n))) + O(log2(n)*O(n)) ~ O(n*(log2(n))^2)
@@ -199,10 +223,10 @@ void bitonicSortParallel(I begin, const uint64_t n, const uint8_t threadCount) {
 // O(O(log2(n/p/2)*O(n/p*log2(n/p))) + O(log2(n/p)*O(n/p))) + O(log2(p)-1) * O(log2(n) * O(n))
 template<typename T>
 void testBitonicSortCompareSplitParallel(T* begin, const uint64_t n, const uint8_t threadCount) {
-    std::cout << "initial:\n";
-    for (int i = 0; i < n; ++i) {
-        std::cout << *(begin + i) << ',';
-    }
+//    std::cout << "initial:\n";
+//    for (int i = 0; i < n; ++i) {
+//        std::cout << *(begin + i) << ',';
+//    }
 
     // Sort blocks internally
     // O(O(log2(n/p/2)*O(n/p*log2(n/p))) + O(log2(n/p)*O(n/p)))
@@ -218,32 +242,37 @@ void testBitonicSortCompareSplitParallel(T* begin, const uint64_t n, const uint8
     for_each(sortStep.begin(), sortStep.end(), [](std::thread &t) {
         t.join();
     });
-    std::cout << "\n\nAfter first local sort:\n";
-    for (int i = 0; i < n; ++i) {
-        std::cout << *(begin + i) << ',';
-    }
+//    std::cout << "\n\nAfter first local sort:\n";
+//    for (int i = 0; i < n; ++i) {
+//        std::cout << *(begin + i) << ',';
+//    }
 
     //Perform Only Compare-Splits
-    auto buffer = new T[n];
+    // O(n/p/2 + n/p/4 + ... + n) ~ O(n)
+    T* buffer1 = new T[n];
+    T* buffer2 = begin;
     for (int k = 0; k < log2(threadCount); ++k) {
+        T* primary = (k%2) ? buffer1 : buffer2;
+        T* replica = (k%2) ? buffer2 : buffer1;
         const uint64_t threads = threadCount / pow(2, k);
         const uint64_t blockSize = n / threads;
-        std::shared_ptr<BlockBarrier> barrier(new BlockBarrier(threads));
+        auto barrier = new BlockBarrier(threads);
         std::vector<std::thread> mergeStep;
+
         for (int i = 0; i < threads; i+=2) {
             std::thread lower{compareSplit<float>,
-                          begin + blockSize * i,
-                          buffer + blockSize * i,
-                          blockSize,
-                          false,
-                          std::ref(barrier)
+                              primary + blockSize * i,
+                              replica + blockSize * i,
+                              blockSize,
+                              false,
+                              std::ref(barrier)
             };
             std::thread upper{compareSplit<float>,
-                          begin + blockSize * i + blockSize,
-                          buffer + blockSize * i + blockSize,
-                          blockSize,
-                          true,
-                          std::ref(barrier)
+                              primary + blockSize * i + blockSize,
+                              replica + blockSize * i + blockSize,
+                              blockSize,
+                              true,
+                              std::ref(barrier)
             };
             mergeStep.push_back(move(lower));
             mergeStep.push_back(move(upper));
@@ -251,11 +280,17 @@ void testBitonicSortCompareSplitParallel(T* begin, const uint64_t n, const uint8
         for_each(mergeStep.begin(), mergeStep.end(), [](std::thread &t) {
             t.join();
         });
-        std::cout << "\n\niteration " << k << ":\n";
-        for (int i = 0; i < n; ++i) {
-            std::cout << *(begin + i) << ',';
-        }
+
+//        std::cout << "\n\niteration " << k << ":\n";
+//        for (int i = 0; i < n; ++i) {
+//            std::cout << *(begin + i) << ',';
+//        }
     }
+    int k = log2(threadCount);
+    if (k%2) {
+        begin = buffer1;
+    }
+    //delete[] buffer1;
 }
 
 template<typename I>
@@ -281,7 +316,7 @@ void sanityCheck()
 
 void testVectorSort() {
 //    sanityCheck();
-    uint8_t iterations = 1;
+    uint8_t iterations = 20;
     uint8_t threadsCount = 16;
     auto W = new int[iterations];
     W[0] = 32;
@@ -291,8 +326,8 @@ void testVectorSort() {
     }
 
     for (int i = 0; i < iterations; ++i) {
-        float vIn[] = {10,20,5,9,3,8,12,14,90,0,60,40,23,35,95,18,101,111,115,116,103,105,113,114,106,223,108,1010,117,112,118,119};
-//        auto vIn = getVector(W[i]);
+//        float vIn[] = {10,20,5,9,3,8,12,14,90,0,60,40,23,35,95,18,101,111,115,116,103,105,113,114,106,223,108,1010,117,112,118,119};
+        auto vIn = getVector(W[i]);
         auto expected = new float [W[i]];
         std::copy(vIn, vIn + W[i], expected);
         std::sort(expected, expected + W[i]);
@@ -325,6 +360,6 @@ void testVectorSort() {
         verifyVectors(expected, vOutBitonicCompareSplitParallel, W[i]);
         delete [] vOutBitonicCompareSplitParallel;
 
-//        delete [] vIn;
+        delete [] vIn;
     }
 }

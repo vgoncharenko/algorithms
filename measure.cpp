@@ -7,6 +7,7 @@
 
 template<typename Callable>
 void measure(Callable f,
+             std::vector<float> &resultBuffer,
              int iterations = 10,
              const std::string &timeScale = "nanoseconds",
              const std::string &outputType = "verbose") {
@@ -28,7 +29,18 @@ void measure(Callable f,
     if (outputType == "verbose") {
         std::cout << "Median of time taken by function: "
                   << elapsedTime << " nanoseconds" << std::endl;
-    } else {
+    } else if (outputType == "nonverbose") {
         std::cout << elapsedTime << ", ";
+    } else if (outputType == "to_var") {
+        resultBuffer.push_back(elapsedTime);
     }
+}
+
+template<typename Callable>
+void measure(Callable f,
+             int iterations = 10,
+             const std::string &timeScale = "nanoseconds",
+             const std::string &outputType = "verbose") {
+    std::vector<float> resultBuffer;
+    measure(f, resultBuffer, iterations, timeScale, outputType);
 }

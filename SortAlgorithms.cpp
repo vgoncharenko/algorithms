@@ -10,6 +10,9 @@
 //    return vector;
 //}
 
+auto asc = [](auto const it1, auto const it2) {return *it1 > *it2;};
+auto desc = [](auto const it1, auto const it2) {return *it1 < *it2;};
+
 // O(1)
 template<typename I, typename cmpFunction>
 void bitonicCompareExchange(I &it1, I &it2, cmpFunction cmp) {
@@ -49,8 +52,8 @@ void bitonicSort(I begin, const uint64_t n) {
         const int chunk = pow(2, i);
         const int doubleChunk = chunk * 2;
         for (int j = 0; j < n/doubleChunk; ++j) {
-            if (j%2) bitonicMerge(begin + j*doubleChunk, doubleChunk, [](auto const it1, auto const it2) {return *it1 < *it2;});
-            else bitonicMerge(begin + j*doubleChunk, doubleChunk, [](auto const it1, auto const it2) {return *it1 > *it2;});
+            if (j%2) bitonicMerge(begin + j*doubleChunk, doubleChunk, desc);
+            else bitonicMerge(begin + j*doubleChunk, doubleChunk, asc);
         }
     }
 }
@@ -239,19 +242,19 @@ void bitoicSortSerial(I vInBegin, const uint64_t n, cmpFunction cmp) {
 }
 
 // O(O(log2(n/p/2)*O(n/p*log2(n/p))) + O(log2(n/p)*O(n/p))) + O(log2(p)-1) * O(log2(n) * O(n))
-template<typename I>
-void bitonicSortParallel(I begin, const uint64_t n, const uint8_t threadCount) {
-    std::function<bool(const float*, const float*)> asc = [](auto const it1, auto const it2) {return *it1 > *it2;};
-    std::function<bool(const float*, const float*)> desc = [](auto const it1, auto const it2) {return *it1 < *it2;};
+template<typename T>
+void bitonicSortParallel(T* begin, const uint64_t n, const uint8_t threadCount) {
+    std::function<bool(const T*, const T*)> ascLocal = [](auto const it1, auto const it2) {return *it1 > *it2;};
+    std::function<bool(const T*, const T*)> descLocal = [](auto const it1, auto const it2) {return *it1 < *it2;};
 
-    // Sort blocks internally
+        // Sort blocks internally
     // O(O(log2(n/p/2)*O(n/p*log2(n/p))) + O(log2(n/p)*O(n/p)))
     std::vector<std::thread> sortStep;
     for (int i = 0; i < threadCount; ++i) {
-        std::thread t{bitoicSortSerial<float*, std::function<bool(const float*, const float*)>>,
+        std::thread t{bitoicSortSerial<T*, std::function<bool(const T*, const T*)>>,
                       begin + n/threadCount * i,
                       n/threadCount,
-                      (i%2) ? desc : asc
+                      (i%2) ? descLocal : ascLocal
         };
         sortStep.push_back(move(t));
     }
@@ -268,10 +271,10 @@ void bitonicSortParallel(I begin, const uint64_t n, const uint8_t threadCount) {
         const uint64_t blockSize = n / threads;
         std::vector<std::thread> mergeStep;
         for (int i = 0; i < threads; ++i) {
-            std::thread t{bitonicMerge<float*, std::function<bool(const float*, const float*)>>,
+            std::thread t{bitonicMerge<T*, std::function<bool(const T*, const T*)>>,
                           begin + blockSize * i,
                           blockSize,
-                          (i%2) ? desc : asc
+                          (i%2) ? descLocal : ascLocal
             };
             mergeStep.push_back(move(t));
         }
@@ -288,10 +291,10 @@ void testBitonicSortCompareSplitParallel(T* begin, const uint64_t n, const uint8
     // O(O(log2(n/p/2)*O(n/p*log2(n/p))) + O(log2(n/p)*O(n/p)))
     std::vector<std::thread> sortStep;
     for (int i = 0; i < threadCount; ++i) {
-        std::thread t{bitoicSortSerial<float*, std::function<bool(const float*, const float*)>>,
+        std::thread t{bitoicSortSerial<T*, std::function<bool(const T*, const T*)>>,
                       begin + n/threadCount * i,
                       n/threadCount,
-                      [](auto const it1, auto const it2) {return *it1 > *it2;}
+                      asc
         };
         sortStep.push_back(move(t));
     }
@@ -311,13 +314,13 @@ void testBitonicSortCompareSplitParallel(T* begin, const uint64_t n, const uint8
         std::vector<std::thread> mergeStep;
 
         for (int i = 0; i < threads; i+=2) {
-            std::thread lower{compareSplit<float>,
+            std::thread lower{compareSplit<T>,
                               primary + blockSize * i,
                               replica + blockSize * i,
                               blockSize,
                               false
             };
-            std::thread upper{compareSplit<float>,
+            std::thread upper{compareSplit<T>,
                               primary + blockSize * i + blockSize,
                               replica + blockSize * i + blockSize,
                               blockSize,
@@ -344,10 +347,10 @@ void testBitonicSortCompareSplitWithCopyParallel(T* begin, const uint64_t n, con
     // O(O(log2(n/p/2)*O(n/p*log2(n/p))) + O(log2(n/p)*O(n/p)))
     std::vector<std::thread> sortStep;
     for (int i = 0; i < threadCount; ++i) {
-        std::thread t{bitoicSortSerial<float*, std::function<bool(const float*, const float*)>>,
+        std::thread t{bitoicSortSerial<T*, std::function<bool(const T*, const T*)>>,
                       begin + n/threadCount * i,
                       n/threadCount,
-                      [](auto const it1, auto const it2) {return *it1 > *it2;}
+                      asc
         };
         sortStep.push_back(move(t));
     }
@@ -365,14 +368,14 @@ void testBitonicSortCompareSplitWithCopyParallel(T* begin, const uint64_t n, con
         std::vector<std::thread> mergeStep;
 
         for (int i = 0; i < threads; i+=2) {
-            std::thread lower{compareSplitWithCopy<float>,
+            std::thread lower{compareSplitWithCopy<T>,
                               begin + blockSize * i,
                               buffer + blockSize * i,
                               blockSize,
                               false,
                               std::ref(barrier)
             };
-            std::thread upper{compareSplitWithCopy<float>,
+            std::thread upper{compareSplitWithCopy<T>,
                               begin + blockSize * i + blockSize,
                               buffer + blockSize * i + blockSize,
                               blockSize,
@@ -396,10 +399,10 @@ void testBitonicSortCompareSplitWithInternalBufferParallel(T* begin, const uint6
     // O(O(log2(n/p/2)*O(n/p*log2(n/p))) + O(log2(n/p)*O(n/p)))
     std::vector<std::thread> sortStep;
     for (int i = 0; i < threadCount; ++i) {
-        std::thread t{bitoicSortSerial<float*, std::function<bool(const float*, const float*)>>,
+        std::thread t{bitoicSortSerial<T*, std::function<bool(const T*, const T*)>>,
                       begin + n/threadCount * i,
                       n/threadCount,
-                      [](auto const it1, auto const it2) {return *it1 > *it2;}
+                      asc
         };
         sortStep.push_back(move(t));
     }
@@ -416,13 +419,13 @@ void testBitonicSortCompareSplitWithInternalBufferParallel(T* begin, const uint6
         std::vector<std::thread> mergeStep;
 
         for (int i = 0; i < threads; i+=2) {
-            std::thread lower{compareSplitWithInternalBuffer<float>,
+            std::thread lower{compareSplitWithInternalBuffer<T>,
                               begin + blockSize * i,
                               blockSize,
                               false,
                               std::ref(barrier)
             };
-            std::thread upper{compareSplitWithInternalBuffer<float>,
+            std::thread upper{compareSplitWithInternalBuffer<T>,
                               begin + blockSize * i + blockSize,
                               blockSize,
                               true,
@@ -439,7 +442,7 @@ void testBitonicSortCompareSplitWithInternalBufferParallel(T* begin, const uint6
 
 template<typename I>
 void testBitonicSortSerial(I vInBegin, const uint64_t n) {
-    bitoicSortSerial(vInBegin, n, [](auto const it1, auto const it2) {return *it1 > *it2;});
+    bitoicSortSerial(vInBegin, n, asc);
 }
 
 template<typename I>
@@ -460,7 +463,7 @@ void sanityCheck()
 
 void testVectorSort() {
 //    sanityCheck();
-    uint8_t iterations = 20;
+    uint8_t iterations = 1;
     uint8_t threadsCount = 16;
     auto W = new int[iterations];
     W[0] = 32;
@@ -524,7 +527,7 @@ void testVectorSort() {
         verifyVectors(expected, vOutBitonicCompareSplitParallel, W[i]);
         delete [] vOutBitonicCompareSplitParallel;
 
-        delete [] vIn;
+        //delete [] vIn;
     }
 
     for (size_t i=0; i<results.size(); ++i) {

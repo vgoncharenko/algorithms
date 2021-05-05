@@ -15,7 +15,7 @@ auto desc = [](auto const it1, auto const it2) {return *it1 < *it2;};
 
 // O(1)
 template<typename I, typename cmpFunction>
-void bitonicCompareExchange(I &it1, I &it2, cmpFunction cmp) {
+void compareExchange(I &it1, I &it2, cmpFunction cmp) {
     if (cmp(it1, it2)) {
         auto tmp = *it2;
         *it2 = *it1;
@@ -23,12 +23,22 @@ void bitonicCompareExchange(I &it1, I &it2, cmpFunction cmp) {
     }
 }
 
+// O(1)
+template<typename I, typename cmpFunction>
+void compareExchange(I &it1, I &it2, cmpFunction cmp, bool &swappedFlag) {
+    if (cmp(it1, it2)) {
+        compareExchange(it1, it2, cmp);
+        swappedFlag = true;
+    }
+
+}
+
 // O(n)
 template<typename I, typename cmpFunction>
 void bitonicSplit(I it1, I it2, cmpFunction cmp) {
     I end = it2;
     while (it1 != end) {
-        bitonicCompareExchange(it1, it2, cmp);
+        compareExchange(it1, it2, cmp);
         ++it1; ++it2;
     }
 }
@@ -450,23 +460,57 @@ void testBitonicSortParallel(I vInBegin, const uint64_t n, const uint8_t threadC
     bitonicSortParallel(vInBegin, n, threadCount);
 }
 
+template<typename I>
+void testBubbleSerial(I vInBegin, const uint64_t n){
+    for (int i = 0; i < n; ++i) {
+        bool swappedFlag = false;
+        for (auto it = vInBegin; it < vInBegin + n - i - 1; ++it) {
+            auto next = it + 1;
+            compareExchange(it, next, asc, std::ref(swappedFlag));
+        }
+        if (!swappedFlag) break;
+    }
+}
+
+template<typename I>
+void testBubbleOddEvenTranspositionParallel(I vInBegin, const uint64_t n, const uint8_t threadCount){
+    uint64_t batchSize = n/threadCount/2;
+    uint64_t doubleBatchSize = batchSize*2;
+
+    for (int i = 1; i <= threadCount; ++i) {
+        std::vector<std::thread> sortStep;
+        auto begin = (i%2) ? vInBegin : vInBegin + batchSize;
+        for (auto it = begin; it <= begin + (n - doubleBatchSize - ((1-(i%2))*batchSize)); it+=doubleBatchSize) {
+            std::thread t{[it, doubleBatchSize] {
+                std::sort(it, it + doubleBatchSize);
+            }};
+            sortStep.push_back(move(t));
+        }
+
+        for_each(sortStep.begin(), sortStep.end(), [](std::thread &t) {
+            t.join();
+        });
+    }
+}
+
 void sanityCheck()
 {
 //    std::vector<int> input = {3,5,8,9,10,12,14,20,95,90,60,40,35,23,18,0};
-    std::vector<int> input = {10,20,5,9,3,8,12,14,90,0,60,40,23,35,95,18};
-    std::vector<int> expected(input.size());
+//    std::vector<float> input = {10,20,5,9,3,8,12,14,90,0,60,40,23,35,95,18};
+    std::vector<float> input = {10,20,5,9,3,8,12,14,90,0,60,40,23,35,95,18,101,111,115,116,103,105,113,114,106,223,108,1010,117,112,118,119};
+    std::vector<float> expected(input.size());
     std::copy(input.begin(), input.end(), expected.begin());
     std::sort(expected.begin(), expected.end());
-    testBitonicSortSerial(std::begin(input), input.size());
+    testBubbleOddEvenTranspositionParallel(input.begin(), input.size(), 16);
     verifyVectors(expected, input, input.size());
 }
 
 void testVectorSort() {
-//    sanityCheck();
-    uint8_t iterations = 1;
+    //sanityCheck();return;
+    uint8_t iterations = 21;
     uint8_t threadsCount = 16;
     auto W = new int[iterations];
-    W[0] = 32;
+    W[0] = 1024;
     uint8_t q = 2;
     for (int i = 1; i < iterations; ++i) {
         W[i] = W[i-1] * q;
@@ -475,59 +519,86 @@ void testVectorSort() {
     std::vector<std::vector<float>> results(10, std::vector<float>());
     std::vector<std::string> labels(10);
     for (int i = 0; i < iterations; ++i) {
-//        float vIn[] = {10,20,5,9,3,8,12,14,90,0,60,40,23,35,95,18,101,111,115,116,103,105,113,114,106,223,108,1010,117,112,118,119};
+        //float vIn[] = {10,20,5,9,3,8,12,14,90,0,60,40,23,35,95,18,101,111,115,116,103,105,113,114,106,223,108,1010,117,112,118,119};
         int idx=0;
         auto vIn = getVector(W[i]);
         auto expected = new float [W[i]];
         std::copy(vIn, vIn + W[i], expected);
         std::sort(expected, expected + W[i]);
 
-        labels[idx] = "Serial\n";
-        auto vOutSerial = new float [W[i]];
-        std::copy(vIn, vIn + W[i], vOutSerial);
-        measure([&W, &vOutSerial, i] {
-            testBitonicSortSerial(vOutSerial, W[i]);
-        }, results[idx++], 10, "seconds", "to_var");
-        verifyVectors(expected, vOutSerial, W[i]);
-        delete [] vOutSerial;
+//        labels[idx] = "Serial\n";
+//        auto vOutSerial = new float [W[i]];
+//        std::copy(vIn, vIn + W[i], vOutSerial);
+//        measure([&W, &vOutSerial, i] {
+//            testBitonicSortSerial(vOutSerial, W[i]);
+//        }, results[idx++], 10, "seconds", "to_var");
+//        verifyVectors(expected, vOutSerial, W[i]);
+//        delete [] vOutSerial;
 
-        labels[idx] = "Bitonic Sort Parallel\n";
-        auto vOutBitonicParallel = new float [W[i]];
-        std::copy(vIn, vIn + W[i], vOutBitonicParallel);
-        measure([&W, &vOutBitonicParallel, threadsCount, i] {
-            testBitonicSortParallel(vOutBitonicParallel, W[i], threadsCount);
-        }, results[idx++], 10, "seconds", "to_var");
-        verifyVectors(expected, vOutBitonicParallel, W[i]);
-        delete [] vOutBitonicParallel;
+//        labels[idx] = "Bitonic Sort Parallel\n";
+//        auto vOutBitonicParallel = new float [W[i]];
+//        std::copy(vIn, vIn + W[i], vOutBitonicParallel);
+//        measure([&W, &vOutBitonicParallel, threadsCount, i] {
+//            testBitonicSortParallel(vOutBitonicParallel, W[i], threadsCount);
+//        }, results[idx++], 10, "seconds", "to_var");
+//        verifyVectors(expected, vOutBitonicParallel, W[i]);
+//        delete [] vOutBitonicParallel;
 
-        labels[idx] = "Bitonic Sort Parallel Compare-Split Internal Buffer\n";
-        auto vOutBitonicCompareSplitWithInteralBufferParallel = new float [W[i]];
-        std::copy(vIn, vIn + W[i], vOutBitonicCompareSplitWithInteralBufferParallel);
-        measure([&W, &vOutBitonicCompareSplitWithInteralBufferParallel, threadsCount, i] {
-            testBitonicSortCompareSplitWithInternalBufferParallel(vOutBitonicCompareSplitWithInteralBufferParallel, W[i], threadsCount);
-        }, results[idx++], 10, "seconds", "to_var");
-        verifyVectors(expected, vOutBitonicCompareSplitWithInteralBufferParallel, W[i]);
-        delete [] vOutBitonicCompareSplitWithInteralBufferParallel;
+//        labels[idx] = "Bitonic Sort Parallel Compare-Split Internal Buffer\n";
+//        auto vOutBitonicCompareSplitWithInteralBufferParallel = new float [W[i]];
+//        std::copy(vIn, vIn + W[i], vOutBitonicCompareSplitWithInteralBufferParallel);
+//        measure([&W, &vOutBitonicCompareSplitWithInteralBufferParallel, threadsCount, i] {
+//            testBitonicSortCompareSplitWithInternalBufferParallel(vOutBitonicCompareSplitWithInteralBufferParallel, W[i], threadsCount);
+//        }, results[idx++], 10, "seconds", "to_var");
+//        verifyVectors(expected, vOutBitonicCompareSplitWithInteralBufferParallel, W[i]);
+//        delete [] vOutBitonicCompareSplitWithInteralBufferParallel;
+//
+//        labels[idx] = "Bitonic Sort Parallel Compare-Split With Copy\n";
+//        auto vOutBitonicCompareSplitWithCopyParallel = new float [W[i]];
+//        std::copy(vIn, vIn + W[i], vOutBitonicCompareSplitWithCopyParallel);
+//        measure([&W, &vOutBitonicCompareSplitWithCopyParallel, threadsCount, i] {
+//            testBitonicSortCompareSplitWithCopyParallel(vOutBitonicCompareSplitWithCopyParallel, W[i], threadsCount);
+//        }, results[idx++], 10, "seconds", "to_var");
+//        verifyVectors(expected, vOutBitonicCompareSplitWithCopyParallel, W[i]);
+//        delete [] vOutBitonicCompareSplitWithCopyParallel;
+//
+//        labels[idx] = "Bitonic Sort Parallel Compare-Split Optimized\n";
+//        auto vOutBitonicCompareSplitParallel = new float [W[i]];
+//        std::copy(vIn, vIn + W[i], vOutBitonicCompareSplitParallel);
+//        measure([&W, &vOutBitonicCompareSplitParallel, threadsCount, i] {
+//            testBitonicSortCompareSplitParallel(vOutBitonicCompareSplitParallel, W[i], threadsCount);
+//        }, results[idx++], 10, "seconds", "to_var");
+//        verifyVectors(expected, vOutBitonicCompareSplitParallel, W[i]);
+//        delete [] vOutBitonicCompareSplitParallel;
 
-        labels[idx] = "Bitonic Sort Parallel Compare-Split With Copy\n";
-        auto vOutBitonicCompareSplitWithCopyParallel = new float [W[i]];
-        std::copy(vIn, vIn + W[i], vOutBitonicCompareSplitWithCopyParallel);
-        measure([&W, &vOutBitonicCompareSplitWithCopyParallel, threadsCount, i] {
-            testBitonicSortCompareSplitWithCopyParallel(vOutBitonicCompareSplitWithCopyParallel, W[i], threadsCount);
-        }, results[idx++], 10, "seconds", "to_var");
-        verifyVectors(expected, vOutBitonicCompareSplitWithCopyParallel, W[i]);
-        delete [] vOutBitonicCompareSplitWithCopyParallel;
+//        labels[idx] = "Bubble Sort Serial\n";
+//        auto vOutBubbleSerial = new float [W[i]];
+//        std::copy(vIn, vIn + W[i], vOutBubbleSerial);
+//        measure([&W, &vOutBubbleSerial, i] {
+//            testBubbleSerial(vOutBubbleSerial, W[i]);
+//        }, results[idx++], 10, "seconds", "to_var");
+//        verifyVectors(expected, vOutBubbleSerial, W[i]);
+//        delete [] vOutBubbleSerial;
 
-        labels[idx] = "Bitonic Sort Parallel Compare-Split Optimized\n";
-        auto vOutBitonicCompareSplitParallel = new float [W[i]];
-        std::copy(vIn, vIn + W[i], vOutBitonicCompareSplitParallel);
-        measure([&W, &vOutBitonicCompareSplitParallel, threadsCount, i] {
-            testBitonicSortCompareSplitParallel(vOutBitonicCompareSplitParallel, W[i], threadsCount);
+        labels[idx] = "Bubble Sort Odd-Even Transposition Parallel\n";
+        auto vOutBubbleOddEvenTranspositionParallel = new float [W[i]];
+        std::copy(vIn, vIn + W[i], vOutBubbleOddEvenTranspositionParallel);
+        measure([&W, &vOutBubbleOddEvenTranspositionParallel, i, threadsCount] {
+            testBubbleOddEvenTranspositionParallel(vOutBubbleOddEvenTranspositionParallel, W[i], threadsCount);
         }, results[idx++], 10, "seconds", "to_var");
-        verifyVectors(expected, vOutBitonicCompareSplitParallel, W[i]);
-        delete [] vOutBitonicCompareSplitParallel;
+        verifyVectors(expected, vOutBubbleOddEvenTranspositionParallel, W[i]);
+        delete [] vOutBubbleOddEvenTranspositionParallel;
 
-        //delete [] vIn;
+        labels[idx] = "Fastest sequential \n";
+        auto vOutFastestSerial = new float [W[i]];
+        std::copy(vIn, vIn + W[i], vOutFastestSerial);
+        measure([&W, &vOutFastestSerial, i] {
+            std::sort(vOutFastestSerial, vOutFastestSerial+W[i]);
+        }, results[idx++], 10, "seconds", "to_var");
+        verifyVectors(expected, vOutFastestSerial, W[i]);
+        delete [] vOutFastestSerial;
+
+        delete [] vIn;
     }
 
     for (size_t i=0; i<results.size(); ++i) {

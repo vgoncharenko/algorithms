@@ -472,6 +472,9 @@ void testBubbleSerial(I vInBegin, const uint64_t n){
     }
 }
 
+/**
+ * O(p*(n/p)*log(n/p)) = O(n*log(n/p))
+ */
 template<typename I>
 void testBubbleOddEvenTranspositionParallel(I vInBegin, const uint64_t n, const uint8_t threadCount){
     uint64_t batchSize = n/threadCount/2;
@@ -507,7 +510,7 @@ void sanityCheck()
 
 void testVectorSort() {
     //sanityCheck();return;
-    uint8_t iterations = 21;
+    uint8_t iterations = 20;
     uint8_t threadsCount = 16;
     auto W = new int[iterations];
     W[0] = 1024;

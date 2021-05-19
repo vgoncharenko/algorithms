@@ -15,5 +15,11 @@ include_directories(${INCLUDE_DIRS})
 
 add_executable(tree main.cpp ${SOURCE_FILES} ${INCLUDE_FILES})
 
+#add_definitions(-DMY_DEBUG)
+#add_definitions(-DMY_NOT_MOVABLE)
+#add_definitions(-DMY_TEST)
+#profiling
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
 
 target_link_libraries(tree ${LIBRARIES})

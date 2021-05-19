@@ -6,6 +6,7 @@
 #include <complex.h>
 #include <future>
 #include <chrono>
+#include <type_traits>
 
 //auto getVector(const uint64_t n) {
 //    std::vector<int> vector = {10,20,5,9,3,8,12,14,90,0,60,40,23,35,95,18};
@@ -507,6 +508,11 @@ void testBubbleSerial(I vInBegin, const uint64_t n){
 //}
 
 template<typename I>
+auto getPivot(I vInBegin, const uint64_t n) {
+    return *(vInBegin+(rand() % n));
+}
+
+template<typename I>
 void testQuickSerial(I vInBegin, const uint64_t n){
     if (n <= 1) return;
     I l = vInBegin;
@@ -560,6 +566,7 @@ struct LocalRearrangementResult
 template<typename T>
 struct GlobalRearrangementResult
 {
+public:
     T* sBegin;
     T* sTail;
     std::mutex sMutex;
@@ -579,6 +586,44 @@ typedef std::future<void> ThreadPoolCallbackFuture;
 typedef int ThreadId;
 typedef LocalRearrangementFuture ThreadPoolFuture;
 
+class Timeout: public std::exception
+{
+    virtual const char* what() const throw()
+    {
+        return "Timeout occurred while waiting for available thread to run.";
+    }
+} timeoutException;
+
+class NotCopyable: public std::exception
+{
+    virtual const char* what() const throw()
+    {
+        return "Instance of not copyable class.";
+    }
+} notCopyableException;
+
+template<typename I, typename T>
+LocalRearrangementResult<ScalarType> quickSortParallelLocalRearrangement(I begin, const uint64_t size, T pivot){
+    T* S = new T[size];
+    T* L = new T[size];
+
+    I end = begin + size;
+    T* curS = S;
+    T* curL = L;
+    while (begin < end) {
+        if (*begin <= pivot) {
+            *curS = *begin;
+            ++curS;
+        } else {
+            *curL = *begin;
+            ++curL;
+        }
+        ++begin;
+    }
+
+    return LocalRearrangementResult<ScalarType>{S, curS - S, L, curL - L};
+}
+
 void quickSortParallelGlobalRearrangement(LocalRearrangementResult<ScalarType> localResult,
                                           std::shared_ptr<GlobalRearrangementResult<ScalarType>> globalResult){
     if (localResult.s_count > 0) {
@@ -586,7 +631,12 @@ void quickSortParallelGlobalRearrangement(LocalRearrangementResult<ScalarType> l
         auto localBegin = globalResult->sTail;
         globalResult->sTail += localResult.s_count;
         sLock.unlock();
+#ifdef MY_NOT_MOVABLE
         std::copy(localResult.S, localResult.S + localResult.s_count, localBegin);
+#else
+        //localBegin = localResult.S;
+        std::move(localResult.S, localResult.S + localResult.s_count, localBegin);
+#endif
     }
 
     if (localResult.l_count > 0) {
@@ -594,8 +644,22 @@ void quickSortParallelGlobalRearrangement(LocalRearrangementResult<ScalarType> l
         globalResult->lTail -= localResult.l_count;
         auto localBegin = globalResult->lTail;
         lLock.unlock();
+#ifdef MY_NOT_MOVABLE
         std::copy(localResult.L, localResult.L + localResult.l_count, localBegin);
+#else
+        //localBegin = localResult.L;
+        std::move(localResult.L, localResult.L + localResult.l_count, localBegin);
+#endif
     }
+}
+
+template<typename I, typename T>
+void quickSortParallelLocalRearrangementWithStoreInGlobal(I begin,
+                                                     const uint64_t size,
+                                                     T pivot,
+                                                     std::shared_ptr<GlobalRearrangementResult<ScalarType>> globalResult){
+    LocalRearrangementResult<ScalarType> local = quickSortParallelLocalRearrangement(begin, size, pivot);
+    quickSortParallelGlobalRearrangement(local, globalResult);
 }
 
 struct ThreadSample {
@@ -608,15 +672,7 @@ struct ThreadCallbackSample {
     ThreadPoolCallbackFuture f;
 };
 
-class Timeout: public std::exception
-{
-    virtual const char* what() const throw()
-    {
-        return "Timeout occurred while waiting for available thread to run.";
-    }
-} timeoutException;
-
-class ThreadPool{
+class ThreadPool {
 private:
     std::queue<ThreadSample> queue;
     std::queue<ThreadCallbackSample> callbackQueue;
@@ -643,7 +699,9 @@ public:
             throw timeoutException;
         }
         blockM1Lock.unlock();
-
+#ifdef MY_DEBUG
+        std::printf("Start threadId %d\n", threadId);
+#endif
         ThreadPoolFuture fut = std::async(std::launch::async, std::forward<F&&>(f), std::forward<Args&&>(args)...);
         queue.emplace(ThreadSample{threadId, std::move(fut)});
     }
@@ -659,6 +717,9 @@ public:
             if (res == std::future_status::timeout) {
                 queue.emplace(std::move(t));
             } else if (res == std::future_status::ready) {
+#ifdef MY_DEBUG
+                std::printf("Finish threadId %d\n", t.id);
+#endif
                 resultSet[t.id] = t.f.get();
                 this->count.fetch_sub(1, std::memory_order_acq_rel);
                 ThreadPoolCallbackFuture fut = std::async(std::launch::async,
@@ -666,6 +727,9 @@ public:
                                                           std::forward<ThreadPoolResultSample>(resultSet[t.id]),
                                                           std::forward<callbackArgs&&>(args)...);
                 callbackQueue.emplace(ThreadCallbackSample{t.id, std::move(fut)});
+#ifdef MY_DEBUG
+                std::printf("Start callback threadId %d\n", t.id);
+#endif
             }
         }
 
@@ -679,46 +743,207 @@ public:
                 callbackQueue.emplace(std::move(t));
             } else if (res == std::future_status::ready) {
                 t.f.get();
+#ifdef MY_DEBUG
+                std::printf("Finish callback threadId %d\n", t.id);
+#endif
             }
         }
     }
 };
 
 
-template<typename I, typename T>
-LocalRearrangementResult<ScalarType> quickSortParallelLocalRearrangement(I begin, const uint64_t size, T pivot){
-    T* S = new T[size];
-    T* L = new T[size];
+struct PersistentThreadSample {
+    ThreadId id;
+    std::future<void> f;
+};
 
-    I end = begin + size;
-    T* curS = S;
-    T* curL = L;
-    while (begin < end) {
-        if (*begin <= pivot) {
-            *curS = *begin;
-            ++curS;
-        } else {
-            *curL = *begin;
-            ++curL;
+struct ThreadEvent{
+    PersistentThreadSample threadSample;
+
+    ThreadEvent() = default;
+
+    explicit ThreadEvent (PersistentThreadSample _threadSample) : threadSample(std::move(_threadSample)){}
+
+};
+
+struct TerminateThreadEvent : public ThreadEvent{
+    TerminateThreadEvent() = default;
+};
+
+template<typename ThreadEvent>
+class ThreadPoolQueue {
+    std::mutex mFront;
+    std::mutex mBack;
+    std::queue<std::unique_ptr<ThreadEvent>> eventQueue;
+public:
+    std::unique_ptr<ThreadEvent>&& pullEvent() {
+        std::unique_ptr<ThreadEvent> event;
+        {
+            std::lock_guard<std::mutex> frontLock(mFront);
+            event = std::move(eventQueue.front());
+            eventQueue.pop();
         }
-        ++begin;
+
+        return std::move(event);
     }
 
-    return LocalRearrangementResult<ScalarType>{S, curS - S, L, curL - L};
+    void pushEvent(std::unique_ptr<ThreadEvent> event) {
+        std::lock_guard<std::mutex> backLock(mBack);
+        eventQueue.push(std::move(event));
+    }
+
+    bool empty() {
+        return eventQueue.empty();
+    }
+};
+
+class PersistentThread {
+private:
+    std::shared_ptr<ThreadPoolQueue<ThreadEvent>> eventQueue;
+    std::condition_variable eventInQueue;
+    std::mutex m;
+
+public:
+    bool inProgress = false;
+
+    PersistentThread(const PersistentThread&) {
+        throw notCopyableException;
+    };
+    PersistentThread &  operator=(const  PersistentThread &)  = delete;
+    ~PersistentThread() = default;
+
+    explicit PersistentThread(std::shared_ptr<ThreadPoolQueue<ThreadEvent>> _eventQueue): eventQueue(_eventQueue){}
+
+
+    void operator() () {
+        while (true) {
+            std::unique_lock<std::mutex> waitLock(m);
+            eventInQueue.wait(waitLock, [_eventQueue=this->eventQueue] { return !_eventQueue->empty(); });
+            auto event = this->eventQueue->pullEvent();
+            waitLock.unlock();
+            if (std::is_same<TerminateThreadEvent, decltype(event.get())>::value) break;
+            this->inProgress = true;
+            event->threadSample.f.get();
+            this->inProgress = false;
+        }
+    }
+};
+
+
+
+class PersistentThreadPool {
+private:
+    std::shared_ptr<ThreadPoolQueue<ThreadEvent>> eventQueue;
+    std::unique_ptr<std::vector<PersistentThread>> threadQueue;
+    std::mutex m;
+    const uint8_t maxSize;
+    std::atomic<int> count = 0;
+    std::condition_variable isAvailable;
+public:
+    explicit PersistentThreadPool (uint8_t _maxSize)
+            : maxSize(_maxSize) {
+
+        for (int i = 0; i < maxSize; ++i) {
+            auto threadInstance = PersistentThread(eventQueue);
+            std::thread t{threadInstance};
+            threadQueue->push_back(threadInstance);
+        }
+    };
+
+    template<class F, class... Args>
+    void runThread(F&& func,
+                   int8_t threadId,
+                   Args&&... args) {
+#ifdef MY_DEBUG
+        std::printf("Start threadId %d\n", threadId);
+#endif
+        auto fut = std::async(std::launch::deferred,
+                                          std::forward<F&&>(func),
+                                          std::forward<Args&&>(args)...);
+        eventQueue->pushEvent(std::make_unique<ThreadEvent>(ThreadEvent(PersistentThreadSample{threadId, std::move(fut)})));
+    }
+
+    void waitForThreads() {
+        for_each(threadQueue->begin(), threadQueue->end(), [this](const auto &it) {
+            std::unique_lock<std::mutex> blockM1Lock(m);
+            isAvailable.wait(blockM1Lock, [it] { return it.inProgress; });
+        });
+    }
+
+    void terminate() {
+        eventQueue->pushEvent(std::make_unique<TerminateThreadEvent>(TerminateThreadEvent()));
+    }
+};
+
+template<typename I>
+void testQuickSortWithStableThreadPoolParallel(I vInBegin,
+                                               const uint64_t n,
+                                               const int8_t threadCount) {
+    auto threadPool = std::make_shared<PersistentThreadPool>(n);
+    quickSortWithStableThreadPoolParallel(vInBegin, n, threadCount, threadPool);
+    threadPool->terminate();
 }
 
 template<typename I>
-auto getPivotAsFirst(I vInBegin, const uint64_t n) {
-    return *(vInBegin+(rand() % n));
+void quickSortWithStableThreadPoolParallel(I vInBegin,
+                                               const uint64_t n,
+                                               const int8_t threadCount,
+                                               std::shared_ptr<PersistentThreadPool> threadPool){
+#ifdef MY_DEBUG
+    std::printf("Start testQuickSortParallel N:%llu; threadCount:%d\n", n, threadCount);
+#endif
+    if (threadCount <= 1) {
+        std::sort(vInBegin, vInBegin + n);
+        return;
+    }
+    auto pivot = getPivot(vInBegin, n);
+    uint64_t batchSize = n/threadCount;
+    auto buffer = new ScalarType[n];
+    auto globalRearrangeResult = std::make_shared<GlobalRearrangementResult<ScalarType>>();
+    globalRearrangeResult->sBegin = buffer;
+    globalRearrangeResult->sTail = buffer;
+    //globalRearrangeResult->lBegin = buffer + n;
+    globalRearrangeResult->lTail = buffer + n;
+
+    int8_t i = 0;
+    auto end = vInBegin + n;
+    auto cursor = vInBegin;
+    while (cursor < end) {
+        int curBatchSize = (2*batchSize < (end - cursor)) ? batchSize : (end - cursor);
+        threadPool->runThread(quickSortParallelLocalRearrangementWithStoreInGlobal<I, ScalarType>, i, cursor, curBatchSize, pivot, globalRearrangeResult);
+        if (cursor + curBatchSize == end) break;
+        ++i;
+        cursor += batchSize;
+    }
+
+    threadPool->waitForThreads();
+
+    size_t sSize = globalRearrangeResult->sTail - globalRearrangeResult->sBegin;
+    int8_t sThreadCount = round(threadCount * (float(sSize) / n));
+    std::thread t{quickSortWithStableThreadPoolParallel<float*>, globalRearrangeResult->sBegin, sSize, sThreadCount, threadPool};
+    quickSortWithStableThreadPoolParallel(globalRearrangeResult->lTail, n - sSize, threadCount - sThreadCount, threadPool);
+    t.join();
+#ifdef MY_NOT_MOVABLE
+    std::copy(globalRearrangeResult->sBegin, globalRearrangeResult->sBegin + n, vInBegin);
+#else
+    vInBegin = globalRearrangeResult->sBegin;
+    //std::move(globalRearrangeResult->sBegin, globalRearrangeResult->sBegin + n, vInBegin);
+#endif
+#ifdef MY_DEBUG
+    std::printf("End testQuickSortParallel N:%llu; threadCount:%d\n", n, threadCount);
+#endif
 }
 
 template<typename I>
 void testQuickSortParallel(I vInBegin, const uint64_t n, const int8_t threadCount){
+#ifdef MY_DEBUG
+    std::printf("Start testQuickSortParallel N:%llu; threadCount:%d\n", n, threadCount);
+#endif
     if (threadCount <= 1) {
-        testQuickSerial(vInBegin, n);
+        std::sort(vInBegin, vInBegin + n);
         return;
     }
-    auto pivot = getPivotAsFirst(vInBegin, n);
+    auto pivot = getPivot(vInBegin, n);
     uint64_t batchSize = n/threadCount;
     auto buffer = new ScalarType[n];
     auto globalRearrangeResult = std::make_shared<GlobalRearrangementResult<ScalarType>>();
@@ -733,8 +958,9 @@ void testQuickSortParallel(I vInBegin, const uint64_t n, const int8_t threadCoun
     auto end = vInBegin + n;
     auto cursor = vInBegin;
     while (cursor < end) {
-        int curBatchSize = batchSize > (end - cursor) ? (end - cursor) : batchSize;
+        int curBatchSize = (2*batchSize < (end - cursor)) ? batchSize : (end - cursor);
         threadPool->runThread(quickSortParallelLocalRearrangement<I, ScalarType>, i, cursor, curBatchSize, pivot);
+        if (cursor + curBatchSize == end) break;
         ++i;
         cursor += batchSize;
     }
@@ -742,10 +968,19 @@ void testQuickSortParallel(I vInBegin, const uint64_t n, const int8_t threadCoun
     threadPool->waitForThreads(globalRearrangeResult);
 
     size_t sSize = globalRearrangeResult->sTail - globalRearrangeResult->sBegin;
-    int8_t sThreadCount = ceil(threadCount * (float(sSize) / n));
-    testQuickSortParallel(globalRearrangeResult->sBegin, sSize, sThreadCount);
+    int8_t sThreadCount = round(threadCount * (float(sSize) / n));
+    std::thread t{testQuickSortParallel<float*>, globalRearrangeResult->sBegin, sSize, sThreadCount};
     testQuickSortParallel(globalRearrangeResult->lTail, n - sSize, threadCount - sThreadCount);
+    t.join();
+#ifdef MY_NOT_MOVABLE
     std::copy(globalRearrangeResult->sBegin, globalRearrangeResult->sBegin + n, vInBegin);
+#else
+    vInBegin = globalRearrangeResult->sBegin;
+    //std::move(globalRearrangeResult->sBegin, globalRearrangeResult->sBegin + n, vInBegin);
+#endif
+#ifdef MY_DEBUG
+    std::printf("End testQuickSortParallel N:%llu; threadCount:%d\n", n, threadCount);
+#endif
 }
 
 void sanityCheck()
@@ -758,16 +993,27 @@ void sanityCheck()
     std::vector<float> expected(input.size());
     std::copy(input.begin(), input.end(), expected.begin());
     std::sort(expected.begin(), expected.end());
-    testQuickSortParallel(input.begin(), input.size(), 5);
+    //testQuickSortParallel(input.begin(), input.size(), 5);
     verifyVectors(expected, input, input.size());
 }
 
 void testVectorSort() {
 //    sanityCheck();return;
-    uint8_t iterations = 7;
+    uint8_t iterations = 1;
     uint8_t threadsCount = 16;
-    auto W = new int[iterations];
-    W[0] = 1024;
+    auto W = new uint64_t[iterations];
+//    W[0] = 1024;
+    //W[0] = 8589934592;
+//    W[0] = 2147483648;
+//    W[0] = 1073741824;
+    W[0] = 67108864;
+//    Fastest sequential
+//    6.10807,
+//    Quick parallel with more threads because of ceil:
+//    1.38042,
+//    Quick parallel with less threads because of round:
+//    1.2775,
+
     uint8_t q = 2;
     for (int i = 1; i < iterations; ++i) {
         W[i] = W[i-1] * q;
@@ -779,9 +1025,11 @@ void testVectorSort() {
         //float vIn[] = {10,20,5,9,3,8,12,14,90,0,60,40,23,35,95,18,101,111,115,116,103,105,113,114,106,223,108,1010,117,112,118,119};
         int idx=0;
         auto vIn = getVector(W[i]);
+#ifdef MY_TEST
         auto expected = new float [W[i]];
         std::copy(vIn, vIn + W[i], expected);
         std::sort(expected, expected + W[i]);
+#endif
 
 //        labels[idx] = "Serial\n";
 //        auto vOutSerial = new float [W[i]];
@@ -842,18 +1090,24 @@ void testVectorSort() {
 //        std::copy(vIn, vIn + W[i], vOutBubbleOddEvenTranspositionParallel);
 //        measure([&W, &vOutBubbleOddEvenTranspositionParallel, i, threadsCount] {
 //            testBubbleOddEvenTranspositionParallel(vOutBubbleOddEvenTranspositionParallel, W[i], threadsCount);
-//        }, results[idx++], 10, "seconds", "to_var");
-//        verifyVectors(expected, vOutBubbleOddEvenTranspositionParallel, W[i]);
+//        }, results[idx++], 1, "seconds", "to_var");
+//        //verifyVectors(expected, vOutBubbleOddEvenTranspositionParallel, W[i]);
 //        delete [] vOutBubbleOddEvenTranspositionParallel;
-//
+
 //        labels[idx] = "Fastest sequential \n";
+//#ifdef MY_TEST
 //        auto vOutFastestSerial = new float [W[i]];
 //        std::copy(vIn, vIn + W[i], vOutFastestSerial);
+//#else
+//        auto vOutFastestSerial = vIn;
+//#endif
 //        measure([&W, &vOutFastestSerial, i] {
 //            std::sort(vOutFastestSerial, vOutFastestSerial+W[i]);
-//        }, results[idx++], 10, "seconds", "to_var");
+//        }, results[idx++], 1, "seconds", "to_var");
+//#ifdef MY_TEST
 //        verifyVectors(expected, vOutFastestSerial, W[i]);
 //        delete [] vOutFastestSerial;
+//#endif
 
 //        labels[idx] = "Quick sequential:\n";
 //        auto vOutQuickSerial = new float [W[i]];
@@ -864,14 +1118,35 @@ void testVectorSort() {
 //        verifyVectors(expected, vOutQuickSerial, W[i]);
 //        delete [] vOutQuickSerial;
 
-        labels[idx] = "Quick parallel:\n";
-        auto vOutQuickParallel = new float [W[i]];
-        std::copy(vIn, vIn + W[i], vOutQuickParallel);
-        measure([&W, &vOutQuickParallel, i, threadsCount] {
-            testQuickSortParallel(vOutQuickParallel, W[i], threadsCount);
-        }, results[idx++], 10, "seconds", "to_var");
-        verifyVectors(expected, vOutQuickParallel, W[i]);
-        delete [] vOutQuickParallel;
+//        labels[idx] = "Quick parallel:\n";
+//#ifdef MY_TEST
+//        auto vOutQuickParallel = new float [W[i]];
+//        std::copy(vIn, vIn + W[i], vOutQuickParallel);
+//#else
+//        auto vOutQuickParallel = vIn;
+//#endif
+//        measure([&W, &vOutQuickParallel, i, threadsCount] {
+//            testQuickSortParallel(vOutQuickParallel, W[i], threadsCount);
+//        }, results[idx++], 1, "seconds", "to_var");
+//#ifdef MY_TEST
+//        verifyVectors(expected, vOutQuickParallel, W[i]);
+//        delete [] vOutQuickParallel;
+//#endif
+
+        labels[idx] = "Quick parallel with persistent thread pool:\n";
+#ifdef MY_TEST
+        auto vOutQuickPersistentThreadPoolParallel = new float [W[i]];
+        std::copy(vIn, vIn + W[i], vOutQuickPersistentThreadPoolParallel);
+#else
+        auto vOutQuickPersistentThreadPoolParallel = vIn;
+#endif
+        measure([&W, &vOutQuickPersistentThreadPoolParallel, i, threadsCount] {
+            testQuickSortWithStableThreadPoolParallel(vOutQuickPersistentThreadPoolParallel, W[i], threadsCount);
+        }, results[idx++], 1, "seconds", "to_var");
+#ifdef MY_TEST
+        verifyVectors(expected, vOutQuickPersistentThreadPoolParallel, W[i]);
+        delete [] vOutQuickPersistentThreadPoolParallel;
+#endif
 
         delete [] vIn;
     }

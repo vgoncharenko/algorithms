@@ -774,9 +774,12 @@ template<typename ThreadEvent>
 class ThreadPoolQueue {
     std::mutex mFront;
     std::mutex mBack;
-    std::queue<std::unique_ptr<ThreadEvent>> eventQueue;
+    std::queue<std::unique_ptr<ThreadEvent>> eventQueue{};
 public:
     std::unique_ptr<ThreadEvent>&& pullEvent() {
+#ifdef MY_DEBUG
+        std::printf("Pull event from the queue\n");
+#endif
         std::unique_ptr<ThreadEvent> event;
         {
             std::lock_guard<std::mutex> frontLock(mFront);
@@ -788,6 +791,9 @@ public:
     }
 
     void pushEvent(std::unique_ptr<ThreadEvent> event) {
+#ifdef MY_DEBUG
+        std::printf("Push event to the queue\n");
+#endif
         std::lock_guard<std::mutex> backLock(mBack);
         eventQueue.push(std::move(event));
     }
@@ -799,29 +805,30 @@ public:
 
 class PersistentThread {
 private:
-    std::shared_ptr<ThreadPoolQueue<ThreadEvent>> eventQueue;
+    ThreadPoolQueue<ThreadEvent> *eventQueue;
     std::condition_variable eventInQueue;
     std::mutex m;
 
 public:
     bool inProgress = false;
 
-    PersistentThread(const PersistentThread&) {
-        throw notCopyableException;
-    };
-    PersistentThread &  operator=(const  PersistentThread &)  = delete;
-    ~PersistentThread() = default;
+//    PersistentThread(const PersistentThread&) {
+//        throw notCopyableException;
+//    };
+//    PersistentThread &  operator=(const  PersistentThread &)  = delete;
+//    ~PersistentThread() = default;
 
-    explicit PersistentThread(std::shared_ptr<ThreadPoolQueue<ThreadEvent>> _eventQueue): eventQueue(_eventQueue){}
+    explicit PersistentThread(ThreadPoolQueue<ThreadEvent> *_eventQueue): eventQueue(_eventQueue){}
 
-
-    void operator() () {
+    void run() {
         while (true) {
             std::unique_lock<std::mutex> waitLock(m);
-            eventInQueue.wait(waitLock, [_eventQueue=this->eventQueue] { return !_eventQueue->empty(); });
+            std::chrono::milliseconds span (1000);
+            eventInQueue.wait_for(waitLock, span, [_eventQueue=this->eventQueue] { return !_eventQueue->empty(); });
             auto event = this->eventQueue->pullEvent();
             waitLock.unlock();
-            if (std::is_same<TerminateThreadEvent, decltype(event.get())>::value) break;
+            if (std::is_same<TerminateThreadEvent, decltype(event.get())>::value)
+                break;
             this->inProgress = true;
             event->threadSample.f.get();
             this->inProgress = false;
@@ -833,8 +840,9 @@ public:
 
 class PersistentThreadPool {
 private:
-    std::shared_ptr<ThreadPoolQueue<ThreadEvent>> eventQueue;
-    std::unique_ptr<std::vector<PersistentThread>> threadQueue;
+    ThreadPoolQueue<ThreadEvent> eventQueue;
+    std::vector<PersistentThread*> threadQueue;
+    std::vector<std::thread> threads;
     std::mutex m;
     const uint8_t maxSize;
     std::atomic<int> count = 0;
@@ -844,9 +852,10 @@ public:
             : maxSize(_maxSize) {
 
         for (int i = 0; i < maxSize; ++i) {
-            auto threadInstance = PersistentThread(eventQueue);
-            std::thread t{threadInstance};
-            threadQueue->push_back(threadInstance);
+            auto threadInstance = new PersistentThread(&eventQueue);
+            std::thread t{[&threadInstance]{ threadInstance->run(); }};
+            threadQueue.push_back(threadInstance);
+            threads.push_back(std::move(t));
         }
     };
 
@@ -860,18 +869,26 @@ public:
         auto fut = std::async(std::launch::deferred,
                                           std::forward<F&&>(func),
                                           std::forward<Args&&>(args)...);
-        eventQueue->pushEvent(std::make_unique<ThreadEvent>(ThreadEvent(PersistentThreadSample{threadId, std::move(fut)})));
+        eventQueue.pushEvent(std::make_unique<ThreadEvent>(ThreadEvent(PersistentThreadSample{threadId, std::move(fut)})));
     }
 
     void waitForThreads() {
-        for_each(threadQueue->begin(), threadQueue->end(), [this](const auto &it) {
+        for_each(threadQueue.begin(), threadQueue.end(), [this](const auto &it) {
             std::unique_lock<std::mutex> blockM1Lock(m);
-            isAvailable.wait(blockM1Lock, [it] { return it.inProgress; });
+            std::chrono::milliseconds span (1000);
+            isAvailable.wait_for(blockM1Lock, span, [it] { return it->inProgress; });
         });
     }
 
     void terminate() {
-        eventQueue->pushEvent(std::make_unique<TerminateThreadEvent>(TerminateThreadEvent()));
+        eventQueue.pushEvent(std::make_unique<TerminateThreadEvent>(TerminateThreadEvent()));
+        for_each(threads.begin(), threads.end(), [](std::thread &t) {
+            t.join();
+        });
+    }
+
+    ~PersistentThreadPool () {
+        this->terminate();
     }
 };
 
@@ -879,7 +896,7 @@ template<typename I>
 void testQuickSortWithStableThreadPoolParallel(I vInBegin,
                                                const uint64_t n,
                                                const int8_t threadCount) {
-    auto threadPool = std::make_shared<PersistentThreadPool>(n);
+    auto threadPool = std::make_shared<PersistentThreadPool>(threadCount);
     quickSortWithStableThreadPoolParallel(vInBegin, n, threadCount, threadPool);
     threadPool->terminate();
 }
@@ -920,7 +937,7 @@ void quickSortWithStableThreadPoolParallel(I vInBegin,
 
     size_t sSize = globalRearrangeResult->sTail - globalRearrangeResult->sBegin;
     int8_t sThreadCount = round(threadCount * (float(sSize) / n));
-    std::thread t{quickSortWithStableThreadPoolParallel<float*>, globalRearrangeResult->sBegin, sSize, sThreadCount, threadPool};
+    std::thread t{quickSortWithStableThreadPoolParallel<ScalarType*>, globalRearrangeResult->sBegin, sSize, sThreadCount, threadPool};
     quickSortWithStableThreadPoolParallel(globalRearrangeResult->lTail, n - sSize, threadCount - sThreadCount, threadPool);
     t.join();
 #ifdef MY_NOT_MOVABLE
@@ -969,7 +986,7 @@ void testQuickSortParallel(I vInBegin, const uint64_t n, const int8_t threadCoun
 
     size_t sSize = globalRearrangeResult->sTail - globalRearrangeResult->sBegin;
     int8_t sThreadCount = round(threadCount * (float(sSize) / n));
-    std::thread t{testQuickSortParallel<float*>, globalRearrangeResult->sBegin, sSize, sThreadCount};
+    std::thread t{testQuickSortParallel<ScalarType*>, globalRearrangeResult->sBegin, sSize, sThreadCount};
     testQuickSortParallel(globalRearrangeResult->lTail, n - sSize, threadCount - sThreadCount);
     t.join();
 #ifdef MY_NOT_MOVABLE
@@ -1002,11 +1019,11 @@ void testVectorSort() {
     uint8_t iterations = 1;
     uint8_t threadsCount = 16;
     auto W = new uint64_t[iterations];
-//    W[0] = 1024;
+    W[0] = 1024;
     //W[0] = 8589934592;
 //    W[0] = 2147483648;
 //    W[0] = 1073741824;
-    W[0] = 67108864;
+//    W[0] = 67108864;
 //    Fastest sequential
 //    6.10807,
 //    Quick parallel with more threads because of ceil:

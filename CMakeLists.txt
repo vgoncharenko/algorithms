@@ -15,7 +15,7 @@ include_directories(${INCLUDE_DIRS})
 
 add_executable(tree main.cpp ${SOURCE_FILES} ${INCLUDE_FILES})
 
-add_definitions(-DMY_DEBUG)
+#add_definitions(-DMY_DEBUG)
 #add_definitions(-DMY_NOT_MOVABLE)
 add_definitions(-DMY_TEST)
 #profiling

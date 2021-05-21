@@ -583,6 +583,7 @@ typedef LocalRearrangementResult<ScalarType> ThreadPoolResultSample;
 typedef void ThreadPoolCallbackFunction(LocalRearrangementResult<ScalarType> localResult,
                                         std::shared_ptr<GlobalRearrangementResult<ScalarType>> globalResult);
 typedef std::future<void> ThreadPoolCallbackFuture;
+typedef std::future<void> PersistentThreadPoolFuture;
 typedef int ThreadId;
 typedef LocalRearrangementFuture ThreadPoolFuture;
 
@@ -655,9 +656,12 @@ void quickSortParallelGlobalRearrangement(LocalRearrangementResult<ScalarType> l
 
 template<typename I, typename T>
 void quickSortParallelLocalRearrangementWithStoreInGlobal(I begin,
-                                                     const uint64_t size,
-                                                     T pivot,
-                                                     std::shared_ptr<GlobalRearrangementResult<ScalarType>> globalResult){
+                                                          const uint64_t size,
+                                                          T pivot,
+                                                          std::shared_ptr<GlobalRearrangementResult<ScalarType>> globalResult){
+#ifdef MY_DEBUG
+    std::printf("quickSortParallelLocalRearrangementWithStoreInGlobal size:%llu; pivot=%f\n", size, pivot);
+#endif
     LocalRearrangementResult<ScalarType> local = quickSortParallelLocalRearrangement(begin, size, pivot);
     quickSortParallelGlobalRearrangement(local, globalResult);
 }
@@ -692,7 +696,7 @@ public:
     template<class F, class... Args>
     void runThread(F&& f, int8_t threadId, Args&&... args) {
         std::unique_lock<std::mutex> blockM1Lock(m);
-        std::chrono::milliseconds span (1000);
+        std::chrono::milliseconds span (100);
         if (isAvailable.wait_for(blockM1Lock, span, [this] { return this->maxSize > this->count; })) {
             count.fetch_add(1, std::memory_order_relaxed);
         } else {
@@ -736,7 +740,7 @@ public:
         while (!callbackQueue.empty()) {
             ThreadCallbackSample t = std::move(callbackQueue.front());
             callbackQueue.pop();
-            std::chrono::milliseconds span (1000);
+            std::chrono::milliseconds span (100);
             auto res = t.f.wait_for(span);
 
             if (res == std::future_status::timeout) {
@@ -751,86 +755,94 @@ public:
     }
 };
 
-
 struct PersistentThreadSample {
     ThreadId id;
-    std::future<void> f;
+    PersistentThreadPoolFuture f;
 };
 
 struct ThreadEvent{
-    PersistentThreadSample threadSample;
+    std::unique_ptr<PersistentThreadSample> threadSample;
 
     ThreadEvent() = default;
 
-    explicit ThreadEvent (PersistentThreadSample _threadSample) : threadSample(std::move(_threadSample)){}
+    explicit ThreadEvent (std::unique_ptr<PersistentThreadSample> _threadSample) : threadSample(std::move(_threadSample)){}
 
-};
-
-struct TerminateThreadEvent : public ThreadEvent{
-    TerminateThreadEvent() = default;
 };
 
 template<typename ThreadEvent>
 class ThreadPoolQueue {
+private:
+    bool stopQueue = false;
     std::mutex mFront;
     std::mutex mBack;
     std::queue<std::unique_ptr<ThreadEvent>> eventQueue{};
+    std::condition_variable eventInQueue;
 public:
-    std::unique_ptr<ThreadEvent>&& pullEvent() {
-#ifdef MY_DEBUG
-        std::printf("Pull event from the queue\n");
-#endif
+
+    std::unique_ptr<ThreadEvent> pullEvent() {
         std::unique_ptr<ThreadEvent> event;
-        {
-            std::lock_guard<std::mutex> frontLock(mFront);
-            event = std::move(eventQueue.front());
-            eventQueue.pop();
+        std::unique_lock<std::mutex> waitLock(mFront);
+        eventInQueue.wait(waitLock, [this] { return !this->eventQueue.empty() || this->stopQueue; });
+        if (this->stopQueue) {
+            return event;
         }
+        event = std::move(eventQueue.front());
+#ifdef MY_DEBUG
+        if (event->threadSample != nullptr)
+            std::printf("Pull event from the queue thread# %d\n", event->threadSample->id);
+#endif
+        eventQueue.pop();
+        waitLock.unlock();
 
         return std::move(event);
     }
 
     void pushEvent(std::unique_ptr<ThreadEvent> event) {
 #ifdef MY_DEBUG
-        std::printf("Push event to the queue\n");
+        if (event->threadSample != nullptr)
+            std::printf("Push event to the queue thread# %d\n", event->threadSample->id);
 #endif
         std::lock_guard<std::mutex> backLock(mBack);
         eventQueue.push(std::move(event));
+        eventInQueue.notify_one();
     }
 
     bool empty() {
         return eventQueue.empty();
+    }
+
+    void terminate() {
+        stopQueue = true;
+        eventInQueue.notify_all();
     }
 };
 
 class PersistentThread {
 private:
     ThreadPoolQueue<ThreadEvent> *eventQueue;
-    std::condition_variable eventInQueue;
-    std::mutex m;
 
 public:
     bool inProgress = false;
+    bool stopSignal = false;
 
-//    PersistentThread(const PersistentThread&) {
-//        throw notCopyableException;
-//    };
-//    PersistentThread &  operator=(const  PersistentThread &)  = delete;
-//    ~PersistentThread() = default;
+    PersistentThread(const PersistentThread& obj) = delete;
+    PersistentThread &  operator=(const  PersistentThread &)  = delete;
+    PersistentThread() = default;
+    ~PersistentThread() = default;
 
-    explicit PersistentThread(ThreadPoolQueue<ThreadEvent> *_eventQueue): eventQueue(_eventQueue){}
+    explicit PersistentThread(ThreadPoolQueue<ThreadEvent> *_eventQueue)
+    : eventQueue(_eventQueue){}
 
     void run() {
-        while (true) {
-            std::unique_lock<std::mutex> waitLock(m);
-            std::chrono::milliseconds span (1000);
-            eventInQueue.wait_for(waitLock, span, [_eventQueue=this->eventQueue] { return !_eventQueue->empty(); });
+        while (!this->stopSignal) {
             auto event = this->eventQueue->pullEvent();
-            waitLock.unlock();
-            if (std::is_same<TerminateThreadEvent, decltype(event.get())>::value)
-                break;
+            if (nullptr == event) return;
             this->inProgress = true;
-            event->threadSample.f.get();
+#ifdef MY_DEBUG
+            if (event->threadSample != nullptr)
+                std::printf("Process sample for thread# %d\n", int(event->threadSample->id));
+#endif
+            event->threadSample->f.get();
             this->inProgress = false;
         }
     }
@@ -853,7 +865,7 @@ public:
 
         for (int i = 0; i < maxSize; ++i) {
             auto threadInstance = new PersistentThread(&eventQueue);
-            std::thread t{[&threadInstance]{ threadInstance->run(); }};
+            std::thread t{[threadInstance]{ threadInstance->run(); }};
             threadQueue.push_back(threadInstance);
             threads.push_back(std::move(t));
         }
@@ -867,24 +879,35 @@ public:
         std::printf("Start threadId %d\n", threadId);
 #endif
         auto fut = std::async(std::launch::deferred,
-                                          std::forward<F&&>(func),
-                                          std::forward<Args&&>(args)...);
-        eventQueue.pushEvent(std::make_unique<ThreadEvent>(ThreadEvent(PersistentThreadSample{threadId, std::move(fut)})));
+                              std::forward<F &&>(func),
+                              std::forward<Args &&>(args)...);
+        eventQueue.pushEvent(std::make_unique<ThreadEvent>(
+                ThreadEvent(std::make_unique<PersistentThreadSample>(
+                        PersistentThreadSample{threadId, std::move(fut)}
+                ))));
     }
 
     void waitForThreads() {
         for_each(threadQueue.begin(), threadQueue.end(), [this](const auto &it) {
             std::unique_lock<std::mutex> blockM1Lock(m);
-            std::chrono::milliseconds span (1000);
+            std::chrono::milliseconds span (10);
             isAvailable.wait_for(blockM1Lock, span, [it] { return it->inProgress; });
         });
     }
 
-    void terminate() {
-        eventQueue.pushEvent(std::make_unique<TerminateThreadEvent>(TerminateThreadEvent()));
+    void stopThreads() {
+        eventQueue.terminate();
+        for_each(threadQueue.begin(), threadQueue.end(), [](const auto &it) {
+            it->stopSignal = true;
+        });
         for_each(threads.begin(), threads.end(), [](std::thread &t) {
             t.join();
         });
+    }
+
+    void terminate() {
+        this->waitForThreads();
+        this->stopThreads();
     }
 
     ~PersistentThreadPool () {
@@ -898,14 +921,13 @@ void testQuickSortWithStableThreadPoolParallel(I vInBegin,
                                                const int8_t threadCount) {
     auto threadPool = std::make_shared<PersistentThreadPool>(threadCount);
     quickSortWithStableThreadPoolParallel(vInBegin, n, threadCount, threadPool);
-    threadPool->terminate();
 }
 
 template<typename I>
 void quickSortWithStableThreadPoolParallel(I vInBegin,
-                                               const uint64_t n,
-                                               const int8_t threadCount,
-                                               std::shared_ptr<PersistentThreadPool> threadPool){
+                                           const uint64_t n,
+                                           const int8_t threadCount,
+                                           std::shared_ptr<PersistentThreadPool> threadPool){
 #ifdef MY_DEBUG
     std::printf("Start testQuickSortParallel N:%llu; threadCount:%d\n", n, threadCount);
 #endif
@@ -1010,16 +1032,16 @@ void sanityCheck()
     std::vector<float> expected(input.size());
     std::copy(input.begin(), input.end(), expected.begin());
     std::sort(expected.begin(), expected.end());
-    //testQuickSortParallel(input.begin(), input.size(), 5);
+    //testQuickSortWithStableThreadPoolParallel(input.begin(), input.size(), 5);
     verifyVectors(expected, input, input.size());
 }
 
 void testVectorSort() {
 //    sanityCheck();return;
     uint8_t iterations = 1;
-    uint8_t threadsCount = 16;
+    uint8_t threadsCount = 5;
     auto W = new uint64_t[iterations];
-    W[0] = 1024;
+    W[0] = 100;
     //W[0] = 8589934592;
 //    W[0] = 2147483648;
 //    W[0] = 1073741824;
